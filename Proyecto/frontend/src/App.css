@@ -1,0 +1,54 @@
+/* Asegurar que todo el contenido ocupe toda la pantalla */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.App {
+  flex: 1;
+}
+
+/* El footer queda fijo al final de la página */
+.footer {
+  background-color: #F4B400;
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Media Queries para pantallas pequeñas */
+@media (max-width: 768px) {
+  .product-card {
+    width: 180px; /* Reduce el tamaño de las tarjetas en pantallas pequeñas */
+  }
+
+  .slider {
+    width: 100%; /* El slider ocupará el 100% del ancho en móviles */
+  }
+
+  .footer {
+    flex-direction: column; /* Asegura que los elementos del footer se apilen verticalmente en pantallas pequeñas */
+    text-align: center;
+  }
+
+  .footer-section {
+    margin-bottom: 10px;
+  }
+  .login-form {
+    padding: 20px;
+    width: 100%;
+  }
+}

@@ -1,0 +1,24 @@
+.product-card {
+  text-align: center;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 220px;
+  margin: 10px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.product-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Media Query para pantallas pequeñas */
+@media (max-width: 768px) {
+  .product-card {
+    width: 180px; /* Ajusta el tamaño de las tarjetas en pantallas pequeñas */
+  }
+}
