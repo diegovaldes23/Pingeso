@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage'; // Importa la página de inicio de sesión
 import RegisterPage from './pages/RegisterPage'; // Importa la página de registro
 import './App.css';
+import CallbackPage from "./pages/CallbackPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             </>
           } />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/callback" element={<CallbackPage />}/>
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
         <Footer />

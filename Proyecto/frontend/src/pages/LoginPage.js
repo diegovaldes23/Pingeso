@@ -1,23 +1,37 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Si usas React Router
 import React from 'react';
-import './LoginPage.css'; // Importa los estilos
 
-function LoginPage() {
-  return (
-    <div className="login-container">
-      <form className="login-form">
-        <h2>Iniciar Sesión</h2>
-        <label htmlFor="email">Email</label>
-        <input type="email" id="email" placeholder="Ingresa tu email" />
+function Callback() {
+  const navigate = useNavigate();
 
-        <label htmlFor="password">Contraseña</label>
-        <input type="password" id="password" placeholder="Ingresa tu contraseña" />
+  useEffect(() => {
+    // Extraer el code de la URL
+    const queryParams = new URLSearchParams(window.location.search);
+    const authorizationCode = queryParams.get('code');
 
-        <button type="submit">Iniciar Sesión</button>
+    if (authorizationCode) {
+      // Enviar el código al backend para intercambiarlo por el access_token
+      fetch('http://localhost:3001/getAccessToken', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: authorizationCode }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Access token:', data.access_token);
+          // Haz lo que necesites con el token
+          navigate('/success');
+        })
+        .catch(error => {
+          console.error('Error getting access token:', error);
+        });
+    }
+  }, []);
 
-        <p>¿No tienes cuenta? <a href="/register">Regístrate</a></p>
-      </form>
-    </div>
-  );
+  return <div>Autenticando...</div>;
 }
 
-export default LoginPage;
+export default Callback;
