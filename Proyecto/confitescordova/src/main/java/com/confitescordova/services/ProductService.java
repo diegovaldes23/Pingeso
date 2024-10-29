@@ -83,4 +83,70 @@ public class ProductService {
             return null; // Retorna null en caso de error
         }
     }
+
+    public Product createProduct(Long storeId, Product product) {
+        HttpHeaders headers = getHeaders();
+        String url = API_BASE_URL.replace("{store_id}", storeId.toString());
+
+        try {
+            String productJson = objectMapper.writeValueAsString(product);
+            HttpEntity<String> entity = new HttpEntity<>(productJson, headers);
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.POST,
+                    entity,
+                    String.class
+            );
+
+            return handleResponse(response);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al serializar el producto a JSON: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error al realizar la solicitud POST: " + e.getMessage());
+        }
+    }
+
+    public Product handleResponse(ResponseEntity<String> response) {
+        try {
+            if (response.getStatusCode() == HttpStatus.CREATED) {
+                return objectMapper.readValue(response.getBody(), Product.class);
+            } else {
+                throw new RuntimeException("Error al crear producto: Código de estado " + response.getBody());
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al deserializar la respuesta del producto " + e.getMessage());
+        }
+    }
+
+    public Product updateProduct(Long storeId, Long productID, Product updatedProduct) {
+        HttpHeaders headers = getHeaders();
+        String url = API_BASE_URL.replace("{store_id}", storeId.toString()) + "/" + productID;
+
+        try {
+            // Serializar el objeto Product actualizado a JSON
+            String updatedProductJson = objectMapper.writeValueAsString(updatedProduct);
+            HttpEntity<String> entity = new HttpEntity<>(updatedProductJson, headers);
+
+            // Hacer la solicitud PUT para actualizar el producto
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, entity, String.class);
+
+            return handleUpdateResponse(response);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al serializar el producto actualizado a JSON", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al realizar la solicitud PUT", e);
+        }
+    }
+
+    private Product handleUpdateResponse(ResponseEntity<String> response) {
+        try {
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return objectMapper.readValue(response.getBody(), Product.class);
+            } else {
+                throw new RuntimeException("Error al actualizar producto: Código de estado " + response.getStatusCode());
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al deserializar la respuesta del producto actualizado", e);
+        }
+    }
 }
