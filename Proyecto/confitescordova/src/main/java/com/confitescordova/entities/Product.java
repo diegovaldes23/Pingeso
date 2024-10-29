@@ -1,18 +1,19 @@
 package com.confitescordova.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Product {
     private Long id;
-    private String name;
-    private List<String> categories;
+    private Map<String, String> name;
+    private Map<String, String> description;
+    private Map<String, String> handle; // Añadir el campo handle
     private List<Variant> variants;
-    private String description;
-    private List<Image> images;
-    private String seo_title;
-    private String seo_description;
-    private Boolean free_shipping;
+    private String canonical_url;
 }

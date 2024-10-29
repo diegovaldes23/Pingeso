@@ -7,13 +7,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping("/products/{storeId}")
-    public Product getProducts(@PathVariable Long storeId) {
+    private String storeIdString = "5336632";
+    Long storeId = Long.parseLong(storeIdString);
+
+    @GetMapping("/products")
+    public List<Product> getProducts() {
         return productService.getAllProducts(storeId);
+    }
+
+    @GetMapping("/products/{productId}")
+    public Product getProductById(@PathVariable("productId") Long productId) {
+        return productService.getProductById(storeId, productId);
     }
 }
