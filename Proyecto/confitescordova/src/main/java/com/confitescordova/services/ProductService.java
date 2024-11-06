@@ -149,4 +149,25 @@ public class ProductService {
             throw new RuntimeException("Error al deserializar la respuesta del producto actualizado", e);
         }
     }
+
+    public void deleteProduct(Long storeId, Long productId){
+        HttpHeaders headers = getHeaders();
+        String url = API_BASE_URL.replace("{store_id}", storeId.toString()) + "/" + productId;
+
+        try {
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            // Hacer la solicitud DELETE
+            ResponseEntity<Void> response = restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
+
+            // Verificar el estado de la respuesta
+            if (response.getStatusCode() == HttpStatus.OK || response.getStatusCode() == HttpStatus.NO_CONTENT) {
+                System.out.println("Producto eliminado exitosamente.");
+            } else {
+                throw new RuntimeException("Error al eliminar el producto: Código de estado " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al realizar la solicitud DELETE", e);
+        }
+    }
 }
