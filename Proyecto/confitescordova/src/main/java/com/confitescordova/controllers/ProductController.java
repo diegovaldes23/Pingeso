@@ -26,6 +26,17 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
+    @GetMapping("/products/sorted")
+    public ResponseEntity<List<Product>> getSortedProducts(
+            @RequestParam String sortBy
+    ) {
+        List<Product> products = productService.getSortedProducts(storeId, sortBy);
+        if (products.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
+
     @GetMapping("/products/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable("productId") Long productId) {
         Product product = productService.getProductById(storeId, productId);
@@ -33,6 +44,19 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+
+    @GetMapping("/products/filtered")
+    public ResponseEntity<List<Product>> getFilteredProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice
+    ){
+        List<Product> products = productService.getFilteredProducts(storeId, categoryId, minPrice, maxPrice);
+        if (products.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     @PostMapping("/products")

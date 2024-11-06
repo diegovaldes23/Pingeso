@@ -170,4 +170,65 @@ public class ProductService {
             throw new RuntimeException("Error al realizar la solicitud DELETE", e);
         }
     }
+
+    public List<Product> getSortedProducts(Long storeId, String sortBy){
+        String url = API_BASE_URL.replace("{store_id}", storeId.toString()) + "?sort_by=" + sortBy;
+        String responseBody = makeGetRequest(url);
+
+        if (responseBody == null) {
+            return List.of();
+        }
+
+        try {
+            Product[] productArray = objectMapper.readValue(responseBody, Product[].class);
+            return Arrays.asList(productArray);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error al realizar petición GET de productos ordenados", e);
+        }
+    }
+
+    public List<Product> getFilteredProducts(Long storeID, Long categoryId, Double minPrice, Double maxPrice) {
+        // Verificar que al menos uno de los parámetros esté presente
+        if (categoryId == null && minPrice == null && maxPrice == null) {
+            throw new IllegalArgumentException("Debe proporcionar al menos un parámetro de filtro (categoría o rango de precio).");
+        }
+
+        // Construir la URL base
+        StringBuilder urlBuilder = new StringBuilder(API_BASE_URL.replace("{store_id}", storeID.toString()));
+
+        // Agregar parámetros de consulta si están presentes
+        boolean hasParams = false;
+        if (categoryId != null) {
+            urlBuilder.append(hasParams ? "&" : "?").append("category_id=").append(categoryId);
+            hasParams = true;
+        }
+        if (minPrice != null) {
+            urlBuilder.append(hasParams ? "&" : "?").append("min_stock=").append(minPrice);
+            hasParams = true;
+        }
+        if (maxPrice != null) {
+            urlBuilder.append(hasParams ? "&" : "?").append("max_stock=").append(maxPrice);
+        }
+
+        // Convertir el StringBuilder a String
+        String url = urlBuilder.toString();
+
+        // Realizar la solicitud GET
+        String responseBody = makeGetRequest(url);
+
+        if (responseBody == null) {
+            return List.of(); // Retorna una lista vacía en caso de error
+        }
+
+        try {
+            Product[] productArray = objectMapper.readValue(responseBody, Product[].class);
+            return Arrays.asList(productArray);
+        } catch (JsonProcessingException e) {
+            System.err.println("Error al procesar el JSON: " + e.getMessage());
+            e.printStackTrace();
+            return List.of(); // Retorna una lista vacía en caso de error
+        }
+    }
+
+
 }
