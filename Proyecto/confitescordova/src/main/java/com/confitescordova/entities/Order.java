@@ -1,0 +1,86 @@
+package com.confitescordova.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+public class Order {
+    private long id;
+    private String token;
+    private String storeId;
+    private String contactEmail;
+    private String contactName;
+    private String contactPhone;
+    private String contactIdentification;
+    private Integer shippingMinDays;
+    private Integer shippingMaxDays;
+    private String billingName;
+    private String billingPhone;
+    private String billingAddress;
+    private String billingNumber;
+    private String billingFloor;
+    private String billingLocality;
+    private String billingZipcode;
+    private String billingCity;
+    private String billingProvince;
+    private String billingCountry;
+    private double shippingCostOwner;
+    private double shippingCostCustomer;
+    private List<String> coupon;
+    private PromotionalDiscount promotionalDiscount;
+    private double subtotal;
+    private double discount;
+    private double discountCoupon;
+    private double discountGateway;
+    private double total;
+    private double totalUsd;
+    private boolean checkoutEnabled;
+    private double weight;
+    private String currency;
+    private String language;
+    private String gateway;
+    private String gatewayId;
+    private String gatewayName;
+    private String shipping;
+    private String shippingOption;
+    private String shippingOptionCode;
+    private String shippingOptionReference;
+    private String shippingPickupDetails;
+    private String shippingTrackingNumber;
+    private String shippingTrackingUrl;
+    private String shippingStoreBranchName;
+    private String shippingPickupType;
+    private List<String> shippingSuboption;
+    private Map<String, Object> extra;
+    private String storefront;
+    private String note;
+    private String createdAt;
+    private String updatedAt;
+    private CompletedAt completedAt;
+    private String nextAction;
+    private PaymentDetails paymentDetails;
+    private List<String> attributes;
+    private Customer customer;
+    private List<Product> products;
+    private int number;
+    private String cancelReason;
+    private String ownerNote;
+    private String cancelledAt;
+    private String closedAt;
+    private String readAt;
+    private String status;
+    private String paymentStatus;
+    private String gatewayLink;
+    private String shippingCarrierName;
+    private Address shippingAddress;
+    private String shippingStatus;
+    private String shippedAt;
+    private String paidAt;
+    private String landingUrl;
+    private ClientDetails clientDetails;
+    private String appId;
+}
