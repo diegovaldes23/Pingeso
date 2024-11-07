@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -202,13 +203,6 @@ public class ProductService {
             urlBuilder.append(hasParams ? "&" : "?").append("category_id=").append(categoryId);
             hasParams = true;
         }
-        if (minPrice != null) {
-            urlBuilder.append(hasParams ? "&" : "?").append("min_stock=").append(minPrice);
-            hasParams = true;
-        }
-        if (maxPrice != null) {
-            urlBuilder.append(hasParams ? "&" : "?").append("max_stock=").append(maxPrice);
-        }
 
         // Convertir el StringBuilder a String
         String url = urlBuilder.toString();
@@ -222,7 +216,40 @@ public class ProductService {
 
         try {
             Product[] productArray = objectMapper.readValue(responseBody, Product[].class);
-            return Arrays.asList(productArray);
+            List<Product> products = Arrays.asList(productArray);
+
+            // Aplicar filtrado manual por precio si es necesario
+            return products.stream()
+                    .filter(product -> {
+                        boolean matches = true;
+                        if(minPrice != null){
+                            matches = matches && product.getVariants().stream()
+                                    .anyMatch(variant -> {
+                                        try {
+                                            Double price = Double.parseDouble(variant.getPrice());
+                                            return price >= minPrice;
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Error al convertir el precio: " + e.getMessage());
+                                            return false;
+                                        }
+                                    });
+                        }
+                        if(maxPrice != null){
+                            matches = matches && product.getVariants().stream()
+                                    .anyMatch(variant -> {
+                                        try {
+                                            Double price = Double.parseDouble(variant.getPrice());
+                                            return price <= maxPrice;
+                                        } catch (NumberFormatException e) {
+                                            System.err.println("Error al convertir el precio: " + e.getMessage());
+                                            return false;
+                                        }
+                                    });
+                        }
+                        return matches;
+                    })
+                    .collect(Collectors.toList());
+
         } catch (JsonProcessingException e) {
             System.err.println("Error al procesar el JSON: " + e.getMessage());
             e.printStackTrace();
