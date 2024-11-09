@@ -25,7 +25,7 @@ public class CustomerService {
 
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "bearer " + ACCESS_TOKEN);  // Corrección: Authorization
+        headers.set("Authentication", "bearer " + ACCESS_TOKEN);  // Corrección: Authorization
         headers.set("User-Agent", USER_AGENT);
         headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         return headers;
