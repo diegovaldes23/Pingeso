@@ -7,10 +7,9 @@ import ProductSlider from './components/Slider';
 import ProductList from './components/ProductList';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import CallbackPage from './pages/CallbackPage';
 import AddProductPage from './pages/AddProductPage';
-import OrderPage from './pages/OrderPage'; // Importa la nueva página de pedidos
-import ContactPage from './pages/ContactPage'; // Importa la nueva página de contacto
+import OrderPage from './pages/OrderPage'; 
+import ContactPage from './pages/ContactPage'; 
 import './App.css';
 
 function App() {

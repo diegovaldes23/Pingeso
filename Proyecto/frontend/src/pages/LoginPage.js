@@ -29,7 +29,7 @@ function Callback() {
           console.error('Error getting access token:', error);
         });
     }
-  }, []);
+  }, [navigate]); // Agregar navigate como dependencia
 
   return <div>Autenticando...</div>;
 }
