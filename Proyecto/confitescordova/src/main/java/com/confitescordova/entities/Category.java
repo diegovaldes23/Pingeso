@@ -1,7 +1,12 @@
 package com.confitescordova.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
 public class Category {
     private Long id;
     private List<String> name; // Lista de nombres en cada idioma soportado por la tienda

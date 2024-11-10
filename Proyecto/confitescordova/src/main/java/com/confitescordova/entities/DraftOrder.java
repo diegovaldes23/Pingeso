@@ -1,0 +1,81 @@
+package com.confitescordova.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
+
+import java.util.List;
+import java.util.Map;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Data
+public class DraftOrder {
+    private Long id;
+    private String token;
+    private Long store_id;
+    private String abandoned_checkout_url;
+    private Integer shipping_min_days;
+    private Integer shipping_max_days;
+    private String billing_name;
+    private String billing_phone;
+    private String billing_address;
+    private String billing_number;
+    private String billing_floor;
+    private String billing_locality;
+    private String billing_city;
+    private String billing_province;
+    private String billing_country;
+    private Double shipping_cost_owner;
+    private Double shipping_cost_customer;
+    private List<String> coupon;
+    private Double promotional_discount;
+    private Double subtotal;
+    private Double discount;
+    private Double discount_coupon;
+    private Double discount_gateway;
+    private Double total;
+    private Double total_usd;
+    private Boolean checkout_enabled;
+    private Double weight;
+    private String currency;
+    private String language;
+    private String gateway;
+    private String gateway_id;
+    private String shipping;
+    private String shipping_option;
+    private String shipping_option_code;
+    private String shipping_option_reference;
+    private String shipping_pickup_details;
+    private String shipping_tracking_number;
+    private String shipping_tracking_url;
+    private String shipping_store_branch_name;
+    private String shipping_pickup_type;
+    private List<String> shipping_suboption;
+    private Map<String, Object> extra;
+    private String storefront;
+    private String note;
+    private String created_at;
+    private String updated_at;
+    private String completed_at;
+    private String next_action;
+    private Map<String, Object> payment_details;
+    private List<Map<String, Object>> attributes;
+    private Customer customer;
+    private List<Product> products;
+    private Map<String, Object> clearsale;
+    private Integer number;
+    private String cancel_reason;
+    private String owner_note;
+    private String cancelled_at;
+    private String closed_at;
+    private String read_at;
+    private String status;
+    private String payment_status;
+    private String shipping_address;
+    private String shipping_status;
+    private String shipped_at;
+    private String paid_at;
+    private String landing_url;
+    private Map<String, Object> client_details;
+    private String app_id;
+    private String checkout_url;
+}
