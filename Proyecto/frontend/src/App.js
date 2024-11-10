@@ -26,7 +26,6 @@ function App() {
             </>
           } />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/callback" element={<CallbackPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/add-product" element={<AddProductPage />} /> {/* Nueva ruta para agregar producto */}
           <Route path="/order" element={<OrderPage />} /> {/* Ruta para la página de pedidos */}
