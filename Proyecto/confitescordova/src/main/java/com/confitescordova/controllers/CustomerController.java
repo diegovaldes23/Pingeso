@@ -1,13 +1,14 @@
 package com.confitescordova.controllers;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import com.confitescordova.entities.Customer;
 import com.confitescordova.services.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CustomerController {
@@ -23,34 +24,27 @@ public class CustomerController {
         if (customers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(customers, HttpStatus.OK);
-    }
 
-    @GetMapping("/customers/{customerId}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable("customerId") Long customerId) {
-        Customer customer = customerService.getCustomerById(storeId, customerId);
-        if (customer == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(customer, HttpStatus.OK);
+        return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
     @PostMapping("/customers")
     public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-        Customer createdCustomer = customerService.createCustomer(storeId, customer);
-        if (createdCustomer == null) {
+        Customer createdCostumer = customerService.createCustomer(storeId, customer);
+        if (createdCostumer == null) {
             return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return new ResponseEntity<>(createdCustomer, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(createdCostumer, HttpStatus.CREATED);
     }
 
     @PutMapping("/customers/{customerId}")
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer, @PathVariable("customerId") Long customerId) {
-        Customer updatedCustomer = customerService.updateCustomer(storeId, customerId, customer);
-        if (updatedCustomer == null) {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable("customerId") Long customerId, @RequestBody Customer customer) {
+        Customer updatedCostumer = customerService.updateCustomer(storeId, customerId, customer);
+        if (updatedCostumer == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
+        return new ResponseEntity<>(updatedCostumer, HttpStatus.OK);
     }
 
     @DeleteMapping("/customers/{customerId}")

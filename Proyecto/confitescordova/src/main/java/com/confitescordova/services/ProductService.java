@@ -87,6 +87,7 @@ public class ProductService {
 
     public Product createProduct(Long storeId, Product product) {
         HttpHeaders headers = getHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String url = API_BASE_URL.replace("{store_id}", storeId.toString());
 
         try {
@@ -121,6 +122,7 @@ public class ProductService {
 
     public Product updateProduct(Long storeId, Long productID, Product updatedProduct) {
         HttpHeaders headers = getHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String url = API_BASE_URL.replace("{store_id}", storeId.toString()) + "/" + productID;
 
         try {

@@ -82,6 +82,7 @@ public class CustomerService {
     // Para crear clientes
     public Customer createCustomer(Long storeId, Customer customer) {
         HttpHeaders headers = getHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String url = API_BASE_URL.replace("{store_id}", storeId.toString());
 
         try {
@@ -116,6 +117,7 @@ public class CustomerService {
     // Para actualizar datos del cliente
     public Customer updateCustomer(Long storeId, Long customerId, Customer updatedCustomer) {
         HttpHeaders headers = getHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         String url = API_BASE_URL.replace("{store_id}", storeId.toString()) + "/" + customerId;
 
         try {
