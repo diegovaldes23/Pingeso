@@ -12,10 +12,17 @@ html, body {
 }
 
 .App {
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
-/* El footer queda fijo al final de la página */
+/* Contenedor de contenido principal para que el footer se mantenga al fondo */
+.content {
+  flex: 1;
+}
+
+/* Estilos del footer */
 .footer {
   background-color: #F4B400;
   color: white;
@@ -24,31 +31,17 @@ html, body {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  position: relative;
-  bottom: 0;
   width: 100%;
 }
 
-/* Media Queries para pantallas pequeñas */
+/* Estilos para pantallas pequeñas */
 @media (max-width: 768px) {
-  .product-card {
-    width: 180px; /* Reduce el tamaño de las tarjetas en pantallas pequeñas */
-  }
-
-  .slider {
-    width: 100%; /* El slider ocupará el 100% del ancho en móviles */
-  }
-
   .footer {
-    flex-direction: column; /* Asegura que los elementos del footer se apilen verticalmente en pantallas pequeñas */
+    flex-direction: column;
     text-align: center;
   }
 
   .footer-section {
     margin-bottom: 10px;
-  }
-  .login-form {
-    padding: 20px;
-    width: 100%;
   }
 }

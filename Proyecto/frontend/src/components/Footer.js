@@ -8,17 +8,23 @@ function Footer() {
       <div className="footer-section">
         <h3>Información</h3>
         <ul>
-          <li>Quiénes somos</li>
-          <li>Preguntas frecuentes</li>
-          <li>Despachos</li>
+          <li><a href="/about">Quiénes somos</a></li>
+          <li><a href="/faq">Preguntas frecuentes</a></li>
+          <li><a href="/shipping">Despachos</a></li>
         </ul>
       </div>
       <div className="footer-section">
         <h3>Redes Sociales</h3>
         <div className="social-icons">
-          <FaInstagram />
-          <FaFacebook />
-          <FaPinterest />
+          <a href="https://instagram.com" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            <FaInstagram />
+          </a>
+          <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+            <FaFacebook />
+          </a>
+          <a href="https://pinterest.com" aria-label="Pinterest" target="_blank" rel="noopener noreferrer">
+            <FaPinterest />
+          </a>
         </div>
       </div>
       <div className="footer-section">
