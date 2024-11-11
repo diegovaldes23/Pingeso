@@ -10,7 +10,8 @@ import RegisterPage from './pages/RegisterPage';
 import AddProductPage from './pages/AddProductPage';
 import OrderPage from './pages/OrderPage';
 import ContactPage from './pages/ContactPage';
-import CartPage from './pages/CartPage'; // Importa la página del carrito
+import CartPage from './pages/CartPage';
+import AdminEditProductPage from './pages/AdminEditProductPage'; 
 import './App.css';
 
 function App() {
@@ -28,10 +29,11 @@ function App() {
             } />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/add-product" element={<AddProductPage />} /> {/* Nueva ruta para agregar producto */}
-            <Route path="/order" element={<OrderPage />} /> {/* Ruta para la página de pedidos */}
-            <Route path="/contact" element={<ContactPage />} /> {/* Ruta para la página de contacto */}
-            <Route path="/cart" element={<CartPage />} /> {/* Ruta para la página del carrito */}
+            <Route path="/add-product" element={<AddProductPage />} />
+            <Route path="/order" element={<OrderPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/admin/edit-product" element={<AdminEditProductPage />} /> {/* Ruta para edición de productos */}
           </Routes>
         </div>
         <Footer />
