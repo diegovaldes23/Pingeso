@@ -1,6 +1,5 @@
 import React from 'react';
 import ProductCard from './ProductCard';
-import './ProductList.css';
 
 function ProductList() {
   const products = [
@@ -11,7 +10,7 @@ function ProductList() {
   ];
 
   return (
-    <div className="product-list">
+    <div className="flex justify-center gap-5 flex-wrap mx-auto p-5">
       {products.map(product => (
         <ProductCard key={product.id} product={product} />
       ))}
