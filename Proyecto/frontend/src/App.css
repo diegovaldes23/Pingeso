@@ -1,47 +1,48 @@
 /* Asegurar que todo el contenido ocupe toda la pantalla */
 html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-#root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.App {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-/* Contenedor de contenido principal para que el footer se mantenga al fondo */
-.content {
-  flex: 1;
-}
-
-/* Estilos del footer */
-.footer {
-  background-color: #F4B400;
-  color: white;
-  padding: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-/* Estilos para pantallas pequeñas */
-@media (max-width: 768px) {
-  .footer {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #root {
+    display: flex;
     flex-direction: column;
-    text-align: center;
+    min-height: 100vh;
   }
-
-  .footer-section {
-    margin-bottom: 10px;
+  
+  .App {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
-}
+  
+  /* Contenedor de contenido principal para que el footer se mantenga al fondo */
+  .content {
+    flex: 1;
+  }
+  
+  /* Estilos del footer */
+  .footer {
+    background-color: #F4B400;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  /* Estilos para pantallas pequeñas */
+  @media (max-width: 768px) {
+    .footer {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .footer-section {
+      margin-bottom: 10px;
+    }
+  }
+  
