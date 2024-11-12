@@ -13,6 +13,7 @@ import ContactPage from './pages/ContactPage';
 import CartPage from './pages/CartPage';
 import AdminEditProductPage from './pages/AdminEditProductPage'; 
 import './App.css';
+import AdminOrdersPage from './pages/AdminOrdersPage';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/admin/edit-product" element={<AdminEditProductPage />} /> {/* Ruta para edición de productos */}
+            <Route path="/admin/orders" element={<AdminOrdersPage />}/>
           </Routes>
         </div>
         <Footer />

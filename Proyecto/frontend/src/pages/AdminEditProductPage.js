@@ -1,122 +1,67 @@
 // src/pages/AdminEditProductPage.js
 import React from 'react';
-import './AdminEditProduct.css';
+import ProductCard from '../components/ProductCard';
 
 function AdminEditProductPage() {
   return (
-    <div className="admin-edit-product-page">
-      <div className="category-bar">
-        <a href="#helados" className="category-link active">Helados</a>
-        <a href="#dulces" className="category-link">Dulces</a>
-        <a href="#donas" className="category-link">Donas</a>
-        <a href="#mas" className="category-link">Más</a>
+    <div className="p-5 font-sans">
+      <div className="flex justify-center bg-white py-4 border-b-2 border-gray-300 mb-5">
+        <a href="#helados" className="text-gray-700 font-bold uppercase px-5 py-2 hover:text-red-600 border-b-2 border-transparent hover:border-red-600">Helados</a>
+        <a href="#dulces" className="text-gray-700 font-bold uppercase px-5 py-2 hover:text-red-600 border-b-2 border-transparent hover:border-red-600">Dulces</a>
+        <a href="#donas" className="text-gray-700 font-bold uppercase px-5 py-2 hover:text-red-600 border-b-2 border-transparent hover:border-red-600">Donas</a>
+        <a href="#mas" className="text-gray-700 font-bold uppercase px-5 py-2 hover:text-red-600 border-b-2 border-transparent hover:border-red-600">Más</a>
       </div>
 
-      <section id="helados" className="product-section">
-        <h2>Helados</h2>
-        <div className="product-list">
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Helado de Chocolate" className="product-image" />
-            <h3>Helado de Chocolate</h3>
-            <p>Exquisito helado de chocolate belga.</p>
-            <p className="price">$12.900</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Helado de Vainilla" className="product-image" />
-            <h3>Helado de Vainilla</h3>
-            <p>Cremoso helado de vainilla.</p>
-            <p className="price">$11.500</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Helado de Fresa" className="product-image" />
-            <h3>Helado de Fresa</h3>
-            <p>Helado de fresa con trozos naturales.</p>
-            <p className="price">$10.900</p>
-            <button className="edit-button">Editar</button>
-          </div>
-        </div>
-      </section>
+      <section id="helados" className="mb-8 text-center">
+        <h2 className="text-2xl text-gray-800 mb-4">Helados</h2>
+        <div className="flex gap-5 flex-wrap justify-center">
+          <ProductCard
+            image="/images/brownies.png"
+            title="Helado de Chocolate"
+            description="Exquisito helado de chocolate belga."
+            price="$12.900"
+          >
+            <div className="flex justify-center mt-2">
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded font-bold hover:bg-red-700 w-full max-w-xs"
+                onClick={() => console.log('Editar Helado de Chocolate')}
+              >
+                Editar
+              </button>
+            </div>
+          </ProductCard>
 
-      <section id="dulces" className="product-section">
-        <h2>Dulces</h2>
-        <div className="product-list">
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Caramelos Frutales" className="product-image" />
-            <h3>Caramelos Frutales</h3>
-            <p>Surtido de caramelos con sabor a frutas.</p>
-            <p className="price">$5.500</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Chocolate" className="product-image" />
-            <h3>Chocolate</h3>
-            <p>Delicioso chocolate oscuro.</p>
-            <p className="price">$6.200</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Gomitas" className="product-image" />
-            <h3>Gomitas</h3>
-            <p>Gomitas de sabores variados.</p>
-            <p className="price">$4.900</p>
-            <button className="edit-button">Editar</button>
-          </div>
-        </div>
-      </section>
+          <ProductCard
+            image="/images/brownies.png"
+            title="Helado de Vainilla"
+            description="Cremoso helado de vainilla."
+            price="$11.500"
+          >
+            <div className="flex justify-center mt-2">
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded font-bold hover:bg-red-700 w-full max-w-xs"
+                onClick={() => console.log('Editar Helado de Vainilla')}
+              >
+                Editar
+              </button>
+            </div>
+          </ProductCard>
 
-      <section id="donas" className="product-section">
-        <h2>Donas</h2>
-        <div className="product-list">
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Dona de Chocolate" className="product-image" />
-            <h3>Dona de Chocolate</h3>
-            <p>Dona cubierta de chocolate.</p>
-            <p className="price">$3.500</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Dona de Vainilla" className="product-image" />
-            <h3>Dona de Vainilla</h3>
-            <p>Dona con glaseado de vainilla.</p>
-            <p className="price">$3.200</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Dona de Fresa" className="product-image" />
-            <h3>Dona de Fresa</h3>
-            <p>Dona cubierta con glaseado de fresa.</p>
-            <p className="price">$3.000</p>
-            <button className="edit-button">Editar</button>
-          </div>
-        </div>
-      </section>
-
-      <section id="mas" className="product-section">
-        <h2>Más</h2>
-        <div className="product-list">
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Brownie" className="product-image" />
-            <h3>Brownie</h3>
-            <p>Brownie de chocolate con nueces.</p>
-            <p className="price">$4.500</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Cupcake" className="product-image" />
-            <h3>Cupcake</h3>
-            <p>Cupcake con frosting de vainilla.</p>
-            <p className="price">$3.800</p>
-            <button className="edit-button">Editar</button>
-          </div>
-          <div className="product-item">
-            <img src="/images/brownies.png" alt="Macarons" className="product-image" />
-            <h3>Macarons</h3>
-            <p>Macarons de varios sabores.</p>
-            <p className="price">$5.200</p>
-            <button className="edit-button">Editar</button>
-          </div>
+          <ProductCard
+            image="/images/brownies.png"
+            title="Helado de Fresa"
+            description="Helado de fresa con trozos naturales."
+            price="$10.900"
+          >
+            <div className="flex justify-center mt-2">
+              <button
+                className="bg-red-600 text-white py-2 px-4 rounded font-bold hover:bg-red-700 w-full max-w-xs"
+                onClick={() => console.log('Editar Helado de Fresa')}
+              >
+                Editar
+              </button>
+            </div>
+          </ProductCard>
         </div>
       </section>
     </div>

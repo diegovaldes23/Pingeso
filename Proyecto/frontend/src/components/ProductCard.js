@@ -1,11 +1,14 @@
+// src/components/ProductCard.js
 import React from 'react';
 
-function ProductCard({ product }) {
+function ProductCard({ image, title, description, price, children }) {
   return (
-    <div className="text-center rounded-lg p-4 bg-white shadow-md w-[220px] m-2 transform transition-transform duration-300 hover:scale-105 sm:w-[180px]">
-      <img src={product.img} alt={product.name} className="w-full h-[150px] object-cover rounded-lg" />
-      <h3 className="mt-4 font-semibold text-gray-800">{product.name}</h3>
-      <p className="text-gray-600">${product.price.toLocaleString('es-CL')}</p>
+    <div className="w-48 bg-white p-4 border rounded-lg shadow text-center relative">
+      <img src={image} alt={title} className="w-full h-auto rounded mb-3" />
+      <h3 className="text-lg text-gray-800 mb-2 min-h-[80px] flex items-center justify-center">{title}</h3>
+      <p className="text-gray-600 mb-2">{description}</p>
+      <p className="text-lg font-bold text-gray-800 mb-3">{price}</p>
+      {children}
     </div>
   );
 }
