@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const backend = "http://localhost:8080/";
+
 function AdminOrdersPage() {
   const [orders, setOrders] = useState([
     { 
@@ -58,7 +60,7 @@ function AdminOrdersPage() {
 
   // Función para obtener órdenes del backend (simulada aquí con useEffect)
   useEffect(() => {
-    fetch('/api/orders')
+    fetch(backend)
       .then(response => response.json())
       .then(data => setOrders(data))
       .catch(error => console.error('Error al obtener las órdenes:', error));
@@ -92,6 +94,7 @@ function AdminOrdersPage() {
   // Función para aplicar automáticamente los filtros de comuna y categoría
   useEffect(() => {
     // Llama al backend con los filtros seleccionados
+    
     fetch(`/api/orders?commune=${commune}&category=${category}&year=${year}&month=${month}`)
       .then(response => response.json())
       .then(data => setOrders(data))

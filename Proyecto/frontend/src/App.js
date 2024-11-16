@@ -9,8 +9,6 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import AddProductPage from './pages/AddProductPage';
 import OrderPage from './pages/OrderPage';
-import ContactPage from './pages/ContactPage';
-import CartPage from './pages/CartPage';
 import AdminEditProductPage from './pages/AdminEditProductPage'; 
 import './App.css';
 import AdminOrdersPage from './pages/AdminOrdersPage';
@@ -32,8 +30,6 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/add-product" element={<AddProductPage />} />
             <Route path="/order" element={<OrderPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/cart" element={<CartPage />} />
             <Route path="/admin/edit-product" element={<AdminEditProductPage />} /> {/* Ruta para edición de productos */}
             <Route path="/admin/orders" element={<AdminOrdersPage />}/>
           </Routes>
