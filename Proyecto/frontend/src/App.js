@@ -1,23 +1,30 @@
-// src/App.js
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import './App.css';
-import OrdersPage from './pages/OrdersPage';
-import Sidebar from './components/Sidebar';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Sidebar from "./components/Sidebar";
+import OrdersPage from "./pages/OrdersPage"; // Componente para visualización de pedidos
+import MenuPage from "./pages/MenuPage";
+import CostsPage from "./pages/CostsPage";
+import StatisticsPage from "./pages/StatisticsPage";
+import HomePage from "./pages/HomePage";
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <div className="App">
+      <div className="flex">
         <Sidebar />
-        <div className="content">
+        <div className="flex-1 p-6">
           <Routes>
-            <Route path="/admin/orders" element={<OrdersPage />}/>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/menu" element={<MenuPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/orders-visualization" element={<OrdersPage />} />
+            <Route path="/costs" element={<CostsPage />} />
+            <Route path="/statistics" element={<StatisticsPage />} />
           </Routes>
         </div>
       </div>
     </Router>
   );
-}
+};
 
 export default App;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom"; // Importar React Router
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -31,7 +32,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">🏠</span>
-          {!isCollapsed && <span>Inicio</span>}
+          {!isCollapsed && <Link to="/">Inicio</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
@@ -39,7 +40,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">🍰</span>
-          {!isCollapsed && <span>Menú</span>}
+          {!isCollapsed && <Link to="/menu">Menú</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
@@ -47,7 +48,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">📱</span>
-          {!isCollapsed && <span>Gestión de pedidos</span>}
+          {!isCollapsed && <Link to="/orders">Gestión de pedidos</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
@@ -55,7 +56,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">👀</span>
-          {!isCollapsed && <span>Visualización de pedidos</span>}
+          {!isCollapsed && <Link to="/orders-visualization">Visualización de pedidos</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
@@ -63,7 +64,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">💲</span>
-          {!isCollapsed && <span>Costos asociados</span>}
+          {!isCollapsed && <Link to="/costs">Costos asociados</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
@@ -71,7 +72,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">📊</span>
-          {!isCollapsed && <span>Estadísticas varias</span>}
+          {!isCollapsed && <Link to="/statistics">Estadísticas varias</Link>}
         </li>
       </ul>
     </div>
