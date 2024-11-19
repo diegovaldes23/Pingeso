@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
-import OrdersPage from "./pages/OrdersPage"; // Componente para visualización de pedidos
+import OrdersPage from "./pages/OrdersList"; // Componente para visualización de pedidos
 import MenuPage from "./pages/MenuPage";
 import CostsPage from "./pages/CostsPage";
 import StatisticsPage from "./pages/StatisticsPage";
