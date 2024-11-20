@@ -6,11 +6,7 @@ const OrdersPage = ({ orders, setOrders, filterStatus, setFilterStatus, handleSt
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleViewDetails = (orderId) => {
-    const order = orders.find((o) => o.id === orderId);
-    setSelectedOrder(order);
-    setIsModalOpen(true);
-  };
+  // Buscar cómo hacer variables globales
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -27,7 +23,8 @@ const OrdersPage = ({ orders, setOrders, filterStatus, setFilterStatus, handleSt
         orders={filteredOrders}
         handleStatusChange={handleStatusChange}
         getStatusClass={getStatusClass} // Pasa getStatusClass aquí
-        handleViewDetails={handleViewDetails}
+        isModalOpen={isModalOpen}
+        selectedOrder={selectedOrder}
       />
       <OrderDetailsModal
         isOpen={isModalOpen}

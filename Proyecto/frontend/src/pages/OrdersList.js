@@ -1,6 +1,8 @@
 import React from 'react';
+import handleViewDetails from '../utils/detalles';
 
-const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, handleViewDetails }) => {
+const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, isModalOpen, selectedOrder}) => {
+    
   return (
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
       <thead className="bg-purple-800">
@@ -48,7 +50,7 @@ const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, handleVie
               </td>
               <td className="py-2 px-4 border text-center">
                 <button
-                  onClick={() => handleViewDetails(order.id)}
+                  onClick={() => handleViewDetails(order.id, orders, isModalOpen, selectedOrder)}
                   className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
                   Ver detalle
