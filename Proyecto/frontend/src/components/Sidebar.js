@@ -48,7 +48,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">📱</span>
-          {!isCollapsed && <Link to="/orders">Gestión de pedidos</Link>}
+          {!isCollapsed && <Link to="/add-order">Agregar pedido</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${
