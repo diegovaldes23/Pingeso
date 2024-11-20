@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function AddOrderPage() {
+function AddOrderPage({orders, setOrders}) {
     const [customerName, setCustomerName] = useState('');
     const [phone, setPhone] = useState('');
     const [region, setRegion] = useState('');
@@ -73,6 +73,21 @@ function AddOrderPage() {
             initialPayment,
             subtotal,
         });
+        const newOrder = {
+            customerName,
+            phone,
+            region,
+            commune,
+            date,
+            products,
+            deliveryCost,
+            status,
+            customerType,
+            purchaseSource,
+            initialPayment,
+            subtotal,
+        }
+        setOrders([...orders, newOrder]);
         // Aquí puedes enviar los datos al backend
     };
 

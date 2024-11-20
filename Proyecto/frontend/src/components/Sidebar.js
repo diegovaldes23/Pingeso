@@ -56,7 +56,7 @@ const Sidebar = () => {
           }`}
         >
           <span className="text-xl">👀</span>
-          {!isCollapsed && <Link to="/orders-visualization">Visualización de pedidos</Link>}
+          {!isCollapsed && <Link to="/orders">Visualización de pedidos</Link>}
         </li>
         <li
           className={`flex items-center space-x-3 p-2 rounded hover:bg-purple-600 cursor-pointer ${

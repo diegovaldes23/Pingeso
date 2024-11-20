@@ -1,65 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrdersPage from './OrdersPage';
 
-const HomePage = () => {
-  // Estado para manejar el estado del filtro y la lista de pedidos
-  const [filterStatus, setFilterStatus] = useState('');
-  const [orders, setOrders] = useState([
-    {
-        id: 1,
-        customerName: 'Juan Pérez',
-        phone: '912345678',
-        commune: 'Santiago',
-        date: '2024-11-01',
-        customerType: 'Antiguo', // Tipo de cliente
-        purchaseSource: 'Facebook ads', // Cómo fue la compra
-        products: [
-          { name: 'Helado de Chocolate', price: 6000, quantity: 2 }, // Agregado cantidad
-          { name: 'Brownie', price: 5990, quantity: 1 },
-        ],
-        deliveryCost: 2990,
-        subtotal: 17980, // Subtotal calculado
-        total: 20970, // Total calculado (subtotal + deliveryCost)
-        initialPayment: 5000, // Abono inicial
-        status: 'Pendiente',
-      },
-      {
-        id: 2,
-        customerName: 'Ana García',
-        phone: '912345679',
-        commune: 'Providencia',
-        date: '2024-11-02',
-        customerType: 'Nuevo', // Tipo de cliente
-        purchaseSource: 'Orgánico', // Cómo fue la compra
-        products: [
-          { name: 'Tarta de Manzana', price: 7000, quantity: 1 },
-          { name: 'Pastel de Zanahoria', price: 8000, quantity: 1 },
-        ],
-        deliveryCost: 3990,
-        subtotal: 15000, // Subtotal calculado
-        total: 18990, // Total calculado (subtotal + deliveryCost)
-        initialPayment: 10000, // Abono inicial
-        status: 'Completada',
-      },
-      {
-        id: 3,
-        customerName: 'Carlos López',
-        phone: '912345680',
-        commune: 'Las Condes',
-        date: '2024-11-03',
-        customerType: 'Antiguo', // Tipo de cliente
-        purchaseSource: 'Facebook ads', // Cómo fue la compra
-        products: [
-          { name: 'Galletas de Chocolate', price: 4500, quantity: 3 },
-          { name: 'Trufas', price: 5000, quantity: 2 },
-        ],
-        deliveryCost: 2490,
-        subtotal: 23490, // Subtotal calculado
-        total: 25980, // Total calculado (subtotal + deliveryCost)
-        initialPayment: 15000, // Abono inicial
-        status: 'Cancelada',
-      },
-  ]);
+const HomePage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStatusChange, getStatusClass }) => {
 
   const [counts, setCounts] = useState({
     Cancelada: 0,
@@ -86,14 +28,6 @@ const HomePage = () => {
   // Función para manejar clic en los botones
   const handleFilterClick = (status) => {
     setFilterStatus(status);
-  };
-
-  // Función para manejar el cambio de estado de un pedido
-  const handleStatusChange = (id, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === id ? { ...order, status: newStatus } : order
-    );
-    setOrders(updatedOrders); // Actualizar la lista de pedidos
   };
 
   // Función para contar los pedidos por estado
@@ -153,8 +87,11 @@ const HomePage = () => {
       <div className="w-full max-w-6xl">
         <OrdersPage
           orders={filteredOrders}
+          setOrders={setOrders}
           filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
           handleStatusChange={handleStatusChange} // Pasar función para manejar el cambio de estado
+          getStatusClass={getStatusClass}
         />
       </div>
     </div>
