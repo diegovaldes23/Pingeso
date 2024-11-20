@@ -1,11 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OrdersList from './OrdersList';
+import OrderDetailsModal from './OrderDetailsModal';
 
 const OrdersPage = ({ orders, filterStatus, handleStatusChange }) => {
   // Filtrar las órdenes por el estado seleccionado
   const filteredOrders = filterStatus
     ? orders.filter((order) => order.status === filterStatus)
     : orders;
+
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewDetails = (orderId) => {
+    const order = orders.find((o) => o.id === orderId);
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
 
   // Definir la función para asignar clases CSS según el estado
   const getStatusClass = (status) => {
@@ -26,9 +41,15 @@ const OrdersPage = ({ orders, filterStatus, handleStatusChange }) => {
   return (
     <div>
       <OrdersList
-        orders={filteredOrders}
+        orders={orders}
         handleStatusChange={handleStatusChange}
-        getStatusClass={getStatusClass} // Pasar la función como prop
+        getStatusClass={getStatusClass}
+        handleViewDetails={handleViewDetails}
+      />
+      <OrderDetailsModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        order={selectedOrder}
       />
     </div>
   );

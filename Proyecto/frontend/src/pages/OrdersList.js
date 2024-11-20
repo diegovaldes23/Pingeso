@@ -1,6 +1,6 @@
 import React from 'react';
 
-const OrdersList = ({ orders = [], handleStatusChange, getStatusClass }) => {
+const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, handleViewDetails }) => {
   return (
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
       <thead className="bg-purple-800">
@@ -15,6 +15,7 @@ const OrdersList = ({ orders = [], handleStatusChange, getStatusClass }) => {
           <th className="py-2 px-4 border text-white">Valor despacho</th>
           <th className="py-2 px-4 border text-white">Valor total</th>
           <th className="py-2 px-4 border text-white">Estado</th>
+          <th className="py-2 px-4 border text-white">Acciones</th> {/* Nueva columna */}
         </tr>
       </thead>
       <tbody>
@@ -59,12 +60,20 @@ const OrdersList = ({ orders = [], handleStatusChange, getStatusClass }) => {
                     <option value="Cancelada">Cancelada</option>
                   </select>
                 </td>
+                <td className="py-2 px-4 border text-center"> {/* Nueva celda */}
+                  <button
+                    onClick={() => handleViewDetails(order.id)}
+                    className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                  >
+                    Ver detalle
+                  </button>
+                </td>
               </tr>
             );
           })
         ) : (
           <tr>
-            <td colSpan="10" className="text-center py-4">
+            <td colSpan="11" className="text-center py-4">
               No se encontraron órdenes.
             </td>
           </tr>

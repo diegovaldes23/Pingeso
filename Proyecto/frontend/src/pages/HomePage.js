@@ -6,47 +6,59 @@ const HomePage = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [orders, setOrders] = useState([
     {
-      id: 1,
-      customerName: 'Juan Pérez',
-      phone: '912345678',
-      commune: 'Santiago',
-      date: '2024-11-01',
-      category: 'Helados',
-      products: [
-        { name: 'Helado de Chocolate', price: 6000 },
-        { name: 'Brownie', price: 5990 },
-      ],
-      deliveryCost: 2990,
-      status: 'Pendiente',
-    },
-    {
-      id: 2,
-      customerName: 'Ana García',
-      phone: '912345679',
-      commune: 'Providencia',
-      date: '2024-11-02',
-      category: 'Pasteles',
-      products: [
-        { name: 'Tarta de Manzana', price: 7000 },
-        { name: 'Pastel de Zanahoria', price: 8000 },
-      ],
-      deliveryCost: 3990,
-      status: 'Completada',
-    },
-    {
-      id: 3,
-      customerName: 'Carlos López',
-      phone: '912345680',
-      commune: 'Las Condes',
-      date: '2024-11-03',
-      category: 'Dulces',
-      products: [
-        { name: 'Galletas de Chocolate', price: 4500 },
-        { name: 'Trufas', price: 5000 },
-      ],
-      deliveryCost: 2490,
-      status: 'Cancelada',
-    },
+        id: 1,
+        customerName: 'Juan Pérez',
+        phone: '912345678',
+        commune: 'Santiago',
+        date: '2024-11-01',
+        customerType: 'Antiguo', // Tipo de cliente
+        purchaseSource: 'Facebook ads', // Cómo fue la compra
+        products: [
+          { name: 'Helado de Chocolate', price: 6000, quantity: 2 }, // Agregado cantidad
+          { name: 'Brownie', price: 5990, quantity: 1 },
+        ],
+        deliveryCost: 2990,
+        subtotal: 17980, // Subtotal calculado
+        total: 20970, // Total calculado (subtotal + deliveryCost)
+        initialPayment: 5000, // Abono inicial
+        status: 'Pendiente',
+      },
+      {
+        id: 2,
+        customerName: 'Ana García',
+        phone: '912345679',
+        commune: 'Providencia',
+        date: '2024-11-02',
+        customerType: 'Nuevo', // Tipo de cliente
+        purchaseSource: 'Orgánico', // Cómo fue la compra
+        products: [
+          { name: 'Tarta de Manzana', price: 7000, quantity: 1 },
+          { name: 'Pastel de Zanahoria', price: 8000, quantity: 1 },
+        ],
+        deliveryCost: 3990,
+        subtotal: 15000, // Subtotal calculado
+        total: 18990, // Total calculado (subtotal + deliveryCost)
+        initialPayment: 10000, // Abono inicial
+        status: 'Completada',
+      },
+      {
+        id: 3,
+        customerName: 'Carlos López',
+        phone: '912345680',
+        commune: 'Las Condes',
+        date: '2024-11-03',
+        customerType: 'Antiguo', // Tipo de cliente
+        purchaseSource: 'Facebook ads', // Cómo fue la compra
+        products: [
+          { name: 'Galletas de Chocolate', price: 4500, quantity: 3 },
+          { name: 'Trufas', price: 5000, quantity: 2 },
+        ],
+        deliveryCost: 2490,
+        subtotal: 23490, // Subtotal calculado
+        total: 25980, // Total calculado (subtotal + deliveryCost)
+        initialPayment: 15000, // Abono inicial
+        status: 'Cancelada',
+      },
   ]);
 
   const [counts, setCounts] = useState({
@@ -55,6 +67,10 @@ const HomePage = () => {
     'En proceso': 0,
     Completada: 0,
   });
+
+  const filteredOrders = filterStatus
+  ? orders.filter((order) => order.status === filterStatus)
+  : orders; // Si no hay filtro, muestra todos los pedidos
 
   // Obtener inicio y fin de la semana actual
   const today = new Date();
@@ -136,7 +152,7 @@ const HomePage = () => {
       {/* Tabla de órdenes filtrada */}
       <div className="w-full max-w-6xl">
         <OrdersPage
-          orders={orders}
+          orders={filteredOrders}
           filterStatus={filterStatus}
           handleStatusChange={handleStatusChange} // Pasar función para manejar el cambio de estado
         />
