@@ -6,6 +6,7 @@ import MenuPage from "./pages/MenuPage";
 import CostsPage from "./pages/CostsPage";
 import StatisticsPage from "./pages/StatisticsPage";
 import HomePage from "./pages/HomePage";
+import AddOrderPage from "./pages/AddOrderPage";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/orders-visualization" element={<OrdersPage />} />
             <Route path="/costs" element={<CostsPage />} />
             <Route path="/statistics" element={<StatisticsPage />} />
+            <Route path="/add-order" element={<AddOrderPage />}/>
           </Routes>
         </div>
       </div>
