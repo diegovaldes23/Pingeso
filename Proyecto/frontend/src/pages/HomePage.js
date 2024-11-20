@@ -2,32 +2,9 @@ import React, { useState, useEffect } from 'react';
 import OrdersPage from './OrdersPage';
 
 const HomePage = () => {
-  // Estado para manejar el estado del filtro
+  // Estado para manejar el estado del filtro y la lista de pedidos
   const [filterStatus, setFilterStatus] = useState('');
-  const [counts, setCounts] = useState({
-    Cancelada: 0,
-    Pendiente: 0,
-    'En proceso': 0,
-    Completada: 0,
-  });
-
-  // Obtener inicio y fin de la semana actual
-  const today = new Date();
-  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
-  const lastDayOfWeek = new Date(today.setDate(firstDayOfWeek.getDate() + 6));
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  };
-
-  const weekRange = `${formatDate(firstDayOfWeek)} - ${formatDate(lastDayOfWeek)}`;
-
-  // Función para manejar clic en los botones
-  const handleFilterClick = (status) => {
-    setFilterStatus(status);
-  };
-
-  const orders = [
+  const [orders, setOrders] = useState([
     {
       id: 1,
       customerName: 'Juan Pérez',
@@ -70,8 +47,40 @@ const HomePage = () => {
       deliveryCost: 2490,
       status: 'Cancelada',
     },
-  ];
+  ]);
 
+  const [counts, setCounts] = useState({
+    Cancelada: 0,
+    Pendiente: 0,
+    'En proceso': 0,
+    Completada: 0,
+  });
+
+  // Obtener inicio y fin de la semana actual
+  const today = new Date();
+  const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + 1));
+  const lastDayOfWeek = new Date(today.setDate(firstDayOfWeek.getDate() + 6));
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+
+  const weekRange = `${formatDate(firstDayOfWeek)} - ${formatDate(lastDayOfWeek)}`;
+
+  // Función para manejar clic en los botones
+  const handleFilterClick = (status) => {
+    setFilterStatus(status);
+  };
+
+  // Función para manejar el cambio de estado de un pedido
+  const handleStatusChange = (id, newStatus) => {
+    const updatedOrders = orders.map((order) =>
+      order.id === id ? { ...order, status: newStatus } : order
+    );
+    setOrders(updatedOrders); // Actualizar la lista de pedidos
+  };
+
+  // Función para contar los pedidos por estado
   const countOrdersByStatus = () => {
     const counts = orders.reduce(
       (acc, order) => {
@@ -83,7 +92,7 @@ const HomePage = () => {
     setCounts(counts);
   };
 
-  // Calcular conteos al cargar o cuando los pedidos cambien
+  // Calcular conteos cada vez que los pedidos cambien
   useEffect(() => {
     countOrdersByStatus();
   }, [orders]);
@@ -126,7 +135,11 @@ const HomePage = () => {
 
       {/* Tabla de órdenes filtrada */}
       <div className="w-full max-w-6xl">
-        <OrdersPage filterStatus={filterStatus} />
+        <OrdersPage
+          orders={orders}
+          filterStatus={filterStatus}
+          handleStatusChange={handleStatusChange} // Pasar función para manejar el cambio de estado
+        />
       </div>
     </div>
   );
