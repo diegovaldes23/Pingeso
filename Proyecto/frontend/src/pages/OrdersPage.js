@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
+import { useGlobalContext } from '../utils/GlobalModelContext';
 
-const OrdersPage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStatusChange, getStatusClass }) => {
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const OrdersPage = () => {
+    const {
+        orders,
+        filterStatus,
+        handleStatusChange,
+        getStatusClass,
+        isModalOpen, // Usamos el estado global
+        setIsModalOpen, // Usamos el estado global
+        selectedOrder, // Usamos el estado global
+        setSelectedOrder, // Usamos el estado global
+      } = useGlobalContext();
 
   // Buscar cómo hacer variables globales
 

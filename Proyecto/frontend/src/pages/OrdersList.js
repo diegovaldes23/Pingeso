@@ -1,8 +1,19 @@
 import React from 'react';
-import handleViewDetails from '../utils/detalles';
+import { useGlobalContext } from '../utils/GlobalModelContext';
 
-const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, isModalOpen, selectedOrder}) => {
-    
+const OrdersList = ({ orders }) => {
+  const { getStatusClass, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
+
+  const handleViewDetails = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const handleStateChange = (orderId, newStatus) => {
+    handleStatusChange(orderId, newStatus); // Llamar la función del contexto para actualizar el estado
+  };
+
+
   return (
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
       <thead className="bg-purple-800">
@@ -44,13 +55,20 @@ const OrdersList = ({ orders = [], handleStatusChange, getStatusClass, isModalOp
                 {order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border text-center">
-                <span className={`p-2 rounded ${getStatusClass(order.status)}`}>
-                  {order.status}
-                </span>
+              <select
+                  value={order.status}
+                  onChange={(e) => handleStateChange(order.id, e.target.value)} // Actualizar estado al cambiar
+                  className={`p-2 rounded ${getStatusClass(order.status)}`}
+                >
+                  <option value="Pendiente">Pendiente</option>
+                  <option value="En proceso">En proceso</option>
+                  <option value="Completada">Completada</option>
+                  <option value="Cancelada">Cancelada</option>
+                </select>
               </td>
               <td className="py-2 px-4 border text-center">
                 <button
-                  onClick={() => handleViewDetails(order.id, orders, isModalOpen, selectedOrder)}
+                  onClick={() => handleViewDetails(order)}
                   className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                 >
                   Ver detalle

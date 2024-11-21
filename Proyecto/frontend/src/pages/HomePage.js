@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useGlobalContext } from '../utils/GlobalModelContext';
 import OrdersPage from './OrdersPage';
 
-const HomePage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStatusChange, getStatusClass }) => {
+const HomePage = () => {
+
+  const { orders, filterStatus, setFilterStatus } =
+    useGlobalContext();
+    
 
   const [counts, setCounts] = useState({
     Cancelada: 0,
@@ -44,7 +49,7 @@ const HomePage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStat
 
   // Calcular conteos cada vez que los pedidos cambien
   useEffect(() => {
-    countOrdersByStatus();
+    const counts = countOrdersByStatus(orders);
   }, [orders]);
 
   return (
@@ -87,11 +92,6 @@ const HomePage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStat
       <div className="w-full max-w-6xl">
         <OrdersPage
           orders={filteredOrders}
-          setOrders={setOrders}
-          filterStatus={filterStatus}
-          setFilterStatus={setFilterStatus}
-          handleStatusChange={handleStatusChange} // Pasar función para manejar el cambio de estado
-          getStatusClass={getStatusClass}
         />
       </div>
     </div>
