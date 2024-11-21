@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useGlobalContext } from '../utils/GlobalModelContext';
-import OrdersPage from './OrdersPage';
+import OrdersList from './OrdersList';
+import OrderDetailsModal from './OrderDetailsModal';
 
 const HomePage = () => {
 
-  const { orders, filterStatus, setFilterStatus } =
-    useGlobalContext();
-    
+    const {
+        orders,
+        filterStatus,
+        handleStatusChange,
+        getStatusClass,
+        isModalOpen, // Usamos el estado global
+        setIsModalOpen, // Usamos el estado global
+        selectedOrder, // Usamos el estado global
+        setSelectedOrder, // Usamos el estado global
+        setFilterStatus
+      } = useGlobalContext();
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
+
   const [counts, setCounts] = useState({
     Cancelada: 0,
     Pendiente: 0,
@@ -45,6 +60,8 @@ const HomePage = () => {
     );
     setCounts(counts);
   };
+
+  
 
   // Calcular conteos cada vez que los pedidos cambien
   useEffect(() => {
@@ -89,8 +106,17 @@ const HomePage = () => {
 
       {/* Tabla de órdenes filtrada */}
       <div className="w-full max-w-6xl">
-        <OrdersPage
+        <OrdersList
           orders={filteredOrders}
+          handleStatusChange={handleStatusChange}
+          getStatusClass={getStatusClass} // Pasa getStatusClass aquí
+          isModalOpen={isModalOpen}
+          selectedOrder={selectedOrder}
+        />
+        <OrderDetailsModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          order={selectedOrder}
         />
       </div>
     </div>

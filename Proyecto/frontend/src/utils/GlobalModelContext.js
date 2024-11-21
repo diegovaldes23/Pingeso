@@ -34,7 +34,7 @@ export const GlobalProvider = ({ children }) => {
         commune: 'Las Condes',
         date: '2024-11-01',
         customerType: 'Nuevo',
-        purchaseSource: 'Orgánico',
+        purchaseSource: 'WhatsApp',
         products: [
           { name: 'Tarta de frambuesa', price: 1000, quantity: 5 },
           { name: 'Cupcake', price: 2000, quantity: 2 },
@@ -53,7 +53,7 @@ export const GlobalProvider = ({ children }) => {
         commune: 'Providencia',
         date: '2024-11-02',
         customerType: 'Antiguo',
-        purchaseSource: 'Instagram',
+        purchaseSource: 'Tiendanube',
         products: [
           { name: 'Cheesecake', price: 8500, quantity: 1 },
           { name: 'Brownie de chocolate', price: 5000, quantity: 3 },
@@ -72,7 +72,7 @@ export const GlobalProvider = ({ children }) => {
         commune: 'Ñuñoa',
         date: '2024-11-03',
         customerType: 'Nuevo',
-        purchaseSource: 'Recomendación',
+        purchaseSource: 'Tiendanube',
         products: [
           { name: 'Macarons', price: 1500, quantity: 10 },
           { name: 'Tarta de limón', price: 12000, quantity: 1 },
@@ -91,7 +91,7 @@ export const GlobalProvider = ({ children }) => {
         commune: 'San Joaquín',
         date: '2024-11-04',
         customerType: 'Antiguo',
-        purchaseSource: 'Google Ads',
+        purchaseSource: 'Tiendanube',
         products: [
           { name: 'Brownie', price: 5000, quantity: 2 },
           { name: 'Trufas de chocolate', price: 3000, quantity: 5 },
@@ -110,7 +110,7 @@ export const GlobalProvider = ({ children }) => {
         commune: 'Coronel',
         date: '2024-11-05',
         customerType: 'Nuevo',
-        purchaseSource: 'Facebook Ads',
+        purchaseSource: 'Tiendanube',
         products: [
           { name: 'Tarta de manzana', price: 7000, quantity: 1 },
           { name: 'Galletas de avena', price: 3000, quantity: 6 },
