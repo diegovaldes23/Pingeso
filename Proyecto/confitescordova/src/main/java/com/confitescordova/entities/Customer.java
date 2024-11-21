@@ -38,3 +38,4 @@ public class Customer {
     private Boolean accepts_marketing; // Indica si el comprador aceptó recibir ofertas y novedades por correo electrónico. Campo de solo lectura en la API.
     private String accepts_marketing_updated_at; // Fecha en la que el comprador actualizó su preferencia respecto a recibir novedades por correo electrónico.
 }
+

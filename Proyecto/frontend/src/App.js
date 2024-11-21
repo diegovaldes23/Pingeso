@@ -28,7 +28,7 @@ const App = () => {
         </div>
       </Router>
     </GlobalProvider>
-  );
+
 };
 
 export default App;

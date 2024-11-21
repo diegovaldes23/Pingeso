@@ -9,34 +9,34 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class Order {
-    private long id;
-    private String token;
-    private String store_id;
-    private String contact_email;
-    private String contact_phone;
-    private String contact_identification;
-    private Integer number;
-    private String completed_at;
-    private List<String> attributes;
-    private Customer customer;
-    private List<Product> products;
-    private String note;
-    private String owner_note;
-    private List<Coupon> coupon;
-    private Double discount;
-    private Double subtotal;
-    private Double total;
-    private Double total_usd;
-    private String currency;
-    private String language;
-    private Long gateway;
-    private String gateway_id;
-    private String gateway_name;
-    private String shipping;
-    private String shipping_pickup_type;
-    private String shipping_store_branch_name;
-    private String gateway_link;
-    private String shipping_carrier_name;
+    private long id; // id del pedido
+    private String token; // ubicación del pedido
+    private String store_id; // id tienda del pedido
+    private String contact_email; // correo comprador
+    private String contact_phone; // telefono comprador
+    private String contact_identification; // id del comprador (CPF/CNPJ/DNI/CUIT)
+    private Integer number; // Número único que identifica un pedido que utilizan el dueño de la tienda y los clientes
+    private String completed_at; // información sobre la fecha en la que se creó el pedido
+    private List<String> attributes; // lista con los atributos personalizados para este pedido
+    private Customer customer; // Cliente que compró este pedido
+    private List<Product> products; // Listado de productos adquiridos por el customer
+    private String note; // Nota del cliente sobre el pedido
+    private String owner_note; // Nota del propietario de la tienda sobre el pedido
+    private List<Coupon> coupon; // Lista de cupones aplicados al pedido
+    private Double discount; // Valor total del descuento aplicado al precio del pedido
+    private Double subtotal; // Precio del pedido antes del envío
+    private Double total; // Precio total del pedido incluyendo envío y descuentos
+    private Double total_usd; // Precio total del pedido en dólares estadounidenses
+    private String currency; // Moneda del gasto total 
+    private String language; // Idioma del pedido utilizado por el cliente durante el proceso de pago
+    private Long gateway; // ID del proveedor de pagos que procesó la transacción de pago del pedido.
+    private String gateway_id; // [Solo lectura] ID de transacción externa utilizada por el proveedor de pagos.
+    private String gateway_name; // [Solo lectura] Nombre del proveedor de pago del pedido.
+    private String shipping; // El método de envío utilizado
+    private String shipping_pickup_type; // "enviar" si el pedido se va a enviar; "recoger" si se va a recoger en una sucursal de la tienda
+    private String shipping_store_branch_name; // Si se va a recoger el pedido, muestra el nombre de la sucursal de la tienda.
+    private String gateway_link; //	URL de la página de detalles de la transacción (nulo para método de pago personalizado)
+    private String shipping_carrier_name; // El nombre del transportista. Si el método de envío es personalizado, entonces es nulo.
     private String shipping_address;
     private String shipping_tracking_number;
     private Integer shipping_min_days;
@@ -85,5 +85,7 @@ public class Order {
     private String landing_url;
     private Map<String, Object> client_details;
     private String app_id;
+
+    
 
 }

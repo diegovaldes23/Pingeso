@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-function AddOrderPage({orders, setOrders}) {
+import axios from 'axios';
+
+function AddOrderPage() {
     const [customerName, setCustomerName] = useState('');
     const [phone, setPhone] = useState('');
     const [region, setRegion] = useState('');
@@ -31,6 +33,8 @@ function AddOrderPage({orders, setOrders}) {
         fetchProducts();
     }, []);
 
+    
+
     // Calcular el subtotal
     useEffect(() => {
         const newSubtotal = products.reduce((acc, product) => {
@@ -57,39 +61,53 @@ function AddOrderPage({orders, setOrders}) {
         setProducts([...products, { productId: '', quantity: '', price: 0 }]);
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        console.log({
-            customerName,
-            phone,
-            region,
-            commune,
-            date,
-            products,
-            deliveryCost,
-            status,
-            customerType,
-            purchaseSource,
-            initialPayment,
-            subtotal,
-        });
-        const newOrder = {
-            customerName,
-            phone,
-            region,
-            commune,
-            date,
-            products,
-            deliveryCost,
-            status,
-            customerType,
-            purchaseSource,
-            initialPayment,
-            subtotal,
+    const createOrder = async (orderData) => {
+        try {
+            const response = await axios.post('http://localhost:8080/orders', orderData);
+            console.log('Pedido creado:', response.data);
+            alert('Pedido creado con éxito');
+        } catch (error) {
+            console.error('Error al crear el pedido:', error);
+            alert('Hubo un error al crear el pedido');
         }
-        setOrders([...orders, newOrder]);
-        // Aquí puedes enviar los datos al backend
     };
+
+    const handleSubmit = async (event) => { // Cambiar a `async`
+        event.preventDefault();
+    
+        // Validación de los campos del formulario
+        if (!customerName || !phone || !region || !commune || products.length === 0) {
+            alert('Por favor, complete todos los campos requeridos');
+            return;
+        }
+    
+        // Preparar los datos para enviar al backend
+        const orderData = {
+            billing_name: customerName,
+            billing_phone: phone,
+            billing_address: `${commune}, ${region}`,
+            subtotal: subtotal,
+            total: total,
+            products: products.map(product => ({
+                id: product.productId,
+                quantity: parseInt(product.quantity, 10), // Asegurarse de enviar números enteros
+            })),
+            shipping_cost_customer: parseFloat(deliveryCost),
+            status: status,
+            billing_customer_type: customerType,
+            note: purchaseSource,
+            initialPayment: parseFloat(initialPayment),
+        };
+    
+        // Llamada al backend para crear el pedido
+        await createOrder(orderData);
+    
+        // Limpieza o redirección después de crear el pedido
+        console.log('Datos enviados al backend:', orderData);
+    };
+
+    
+    
 
     return (
         <div className="flex justify-center items-center bg-gray-50 min-h-screen">
