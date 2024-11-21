@@ -76,7 +76,7 @@ const Sidebar = () => {
           />
           {!isCollapsed && (
             <Link
-              to="/orders-visualization"
+              to="/orders"
               className="ml-3 transition-opacity duration-500 whitespace-nowrap"
             >
               Visualización de pedidos
@@ -84,27 +84,7 @@ const Sidebar = () => {
           )}
         </li>
 
-        {/* Costos asociados */}
-        <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
-            isCollapsed ? "justify-center" : ""
-          }`}
-        >
-<<<<<<< Updated upstream
-          <span className="text-xl">👀</span>
-          {!isCollapsed && <Link to="/orders">Visualización de pedidos</Link>}
-=======
-          <img src={CostsIcon} alt="Costos Icon" className="w-6 h-6" />
-          {!isCollapsed && (
-            <Link
-              to="/costs"
-              className="ml-3 transition-opacity duration-500 whitespace-nowrap"
-            >
-              Costos asociados
-            </Link>
-          )}
->>>>>>> Stashed changes
-        </li>
+       
 
         {/* Estadísticas varias */}
         <li
