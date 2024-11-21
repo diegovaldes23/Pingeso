@@ -1,5 +1,8 @@
 package com.confitescordova.entities;
 
+import lombok.Data;
+
+@Data
 public class Address {
     private String zipcode; // Código postal
     private String street; // Calle de la dirección
@@ -14,3 +17,4 @@ public class Address {
     private Country country; // País de la dirección
     private String verified_at; // Fecha de verificación en formato ISO 8601
 }
+
