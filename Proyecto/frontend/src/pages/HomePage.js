@@ -1,53 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrdersPage from './OrdersPage';
 
-const HomePage = () => {
-  // Estado para manejar el estado del filtro y la lista de pedidos
-  const [filterStatus, setFilterStatus] = useState('');
-  const [orders, setOrders] = useState([
-    {
-      id: 1,
-      customerName: 'Juan Pérez',
-      phone: '912345678',
-      commune: 'Santiago',
-      date: '2024-11-01',
-      category: 'Helados',
-      products: [
-        { name: 'Helado de Chocolate', price: 6000 },
-        { name: 'Brownie', price: 5990 },
-      ],
-      deliveryCost: 2990,
-      status: 'Pendiente',
-    },
-    {
-      id: 2,
-      customerName: 'Ana García',
-      phone: '912345679',
-      commune: 'Providencia',
-      date: '2024-11-02',
-      category: 'Pasteles',
-      products: [
-        { name: 'Tarta de Manzana', price: 7000 },
-        { name: 'Pastel de Zanahoria', price: 8000 },
-      ],
-      deliveryCost: 3990,
-      status: 'Completada',
-    },
-    {
-      id: 3,
-      customerName: 'Carlos López',
-      phone: '912345680',
-      commune: 'Las Condes',
-      date: '2024-11-03',
-      category: 'Dulces',
-      products: [
-        { name: 'Galletas de Chocolate', price: 4500 },
-        { name: 'Trufas', price: 5000 },
-      ],
-      deliveryCost: 2490,
-      status: 'Cancelada',
-    },
-  ]);
+const HomePage = ({ orders, setOrders, filterStatus, setFilterStatus, handleStatusChange, getStatusClass }) => {
 
   const [counts, setCounts] = useState({
     Cancelada: 0,
@@ -55,6 +9,10 @@ const HomePage = () => {
     'En proceso': 0,
     Completada: 0,
   });
+
+  const filteredOrders = filterStatus
+  ? orders.filter((order) => order.status === filterStatus)
+  : orders; // Si no hay filtro, muestra todos los pedidos
 
   // Obtener inicio y fin de la semana actual
   const today = new Date();
@@ -70,14 +28,6 @@ const HomePage = () => {
   // Función para manejar clic en los botones
   const handleFilterClick = (status) => {
     setFilterStatus(status);
-  };
-
-  // Función para manejar el cambio de estado de un pedido
-  const handleStatusChange = (id, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.id === id ? { ...order, status: newStatus } : order
-    );
-    setOrders(updatedOrders); // Actualizar la lista de pedidos
   };
 
   // Función para contar los pedidos por estado
@@ -136,9 +86,12 @@ const HomePage = () => {
       {/* Tabla de órdenes filtrada */}
       <div className="w-full max-w-6xl">
         <OrdersPage
-          orders={orders}
+          orders={filteredOrders}
+          setOrders={setOrders}
           filterStatus={filterStatus}
+          setFilterStatus={setFilterStatus}
           handleStatusChange={handleStatusChange} // Pasar función para manejar el cambio de estado
+          getStatusClass={getStatusClass}
         />
       </div>
     </div>
