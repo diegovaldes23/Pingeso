@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
 // Crear el contexto
 const GlobalContext = createContext();
@@ -11,6 +11,7 @@ export const GlobalProvider = ({ children }) => {
       id: 1,
       customerName: 'Juan Pérez',
       phone: '912345678',
+      region: 'Región Metropolitana de Santiago',
       commune: 'Santiago',
       date: '2024-11-01',
       customerType: 'Antiguo',
@@ -29,6 +30,7 @@ export const GlobalProvider = ({ children }) => {
         id: 2,
         customerName: 'Marcela Parra',
         phone: '956576234',
+        region: 'Región Metropolitana de Santiago',
         commune: 'Las Condes',
         date: '2024-11-01',
         customerType: 'Nuevo',
@@ -47,6 +49,7 @@ export const GlobalProvider = ({ children }) => {
         id: 3,
         customerName: 'Carlos López',
         phone: '923456789',
+        region: 'Región Metropolitana de Santiago',
         commune: 'Providencia',
         date: '2024-11-02',
         customerType: 'Antiguo',
@@ -65,6 +68,7 @@ export const GlobalProvider = ({ children }) => {
         id: 4,
         customerName: 'Lucía Fernández',
         phone: '987654321',
+        region: 'Región Metropolitana de Santiago',
         commune: 'Ñuñoa',
         date: '2024-11-03',
         customerType: 'Nuevo',
@@ -83,6 +87,7 @@ export const GlobalProvider = ({ children }) => {
         id: 5,
         customerName: 'Diego Castillo',
         phone: '923987654',
+        region: 'Región Metropolitana de Santiago',
         commune: 'San Joaquín',
         date: '2024-11-04',
         customerType: 'Antiguo',
@@ -101,7 +106,8 @@ export const GlobalProvider = ({ children }) => {
         id: 6,
         customerName: 'Ana Soto',
         phone: '912345111',
-        commune: 'La Florida',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
         date: '2024-11-05',
         customerType: 'Nuevo',
         purchaseSource: 'Facebook Ads',
@@ -189,9 +195,35 @@ export const GlobalProvider = ({ children }) => {
       },*/
 
   ]);
+  const [statistics, setStatistics] = useState({
+    totalOrders: 0,
+    statusCounts: {},
+    totalRevenue: 0,
+  });
+
   const [filterStatus, setFilterStatus] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false); // Global
   const [selectedOrder, setSelectedOrder] = useState(null); // Global
+
+  // Estados para dropdowns
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+
+  // Estados para los filtros
+  const [region, setRegion] = useState('');
+  const [commune, setCommune] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [customerType, setCustomerType] = useState('');
+  const [purchaseSource, setPurchaseSource] = useState('');
+  const [status, setStatus] = useState('');
+  const [productName, setProductName] = useState('');
+  const [year, setYear] = useState('');
+  const [month, setMonth] = useState('');
+
+  // Estado para el ordenamiento
+  const [sortBy, setSortBy] = useState(''); // "date" o "total"
+  const [sortOrder, setSortOrder] = useState(''); // "asc" o "desc"
 
   const handleStatusChange = (id, newStatus) => {
     const updatedOrders = orders.map((order) =>
@@ -199,6 +231,86 @@ export const GlobalProvider = ({ children }) => {
     );
     setOrders(updatedOrders);
   };
+
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [filters, setFilters] = useState({
+    region: '',
+    commune: '',
+    startDate: '',
+    endDate: '',
+    customerType: '',
+    purchaseSource: '',
+    status: '',
+    productName: '',
+    year: '',
+    month: '',
+    sortBy: '',
+    sortOrder: '',
+  });
+
+  const applyFilters = () => {
+    let filtered = [...orders];
+
+    // Filtros
+    if (region) filtered = filtered.filter(order => order.region === region);
+    if (commune) filtered = filtered.filter(order => order.commune === commune);
+    if (startDate) filtered = filtered.filter(order => new Date(order.date) >= new Date(startDate));
+    if (endDate) filtered = filtered.filter(order => new Date(order.date) <= new Date(endDate));
+    if (customerType) filtered = filtered.filter(order => order.customerType === customerType);
+    if (purchaseSource) filtered = filtered.filter(order => order.purchaseSource === purchaseSource);
+    if (status) filtered = filtered.filter(order => order.status === status);
+    if (productName) {
+      filtered = filtered.filter(order =>
+        order.products.some(product => product.name.toLowerCase().includes(productName.toLowerCase()))
+      );
+    }
+    if (year) filtered = filtered.filter(order => new Date(order.date).getFullYear() === parseInt(year, 10));
+    if (month) filtered = filtered.filter(order => new Date(order.date).getMonth() + 1 === parseInt(month, 10));
+
+    // Ordenamiento
+    if (sortBy) {
+      filtered.sort((a, b) => {
+        if (sortBy === 'date') {
+          return sortOrder === 'asc'
+            ? new Date(a.date) - new Date(b.date)
+            : new Date(b.date) - new Date(a.date);
+        }
+        if (sortBy === 'total') {
+          return sortOrder === 'asc' ? a.total - b.total : b.total - a.total;
+        }
+        return 0;
+      });
+    }
+
+    setFilteredOrders(filtered);
+
+    setShowFilterDropdown(false);
+    setShowSortDropdown(false);
+  };
+
+  // Función para restablecer filtros
+  const resetFilters = () => {
+    setFilters({
+      region: '',
+      commune: '',
+      startDate: '',
+      endDate: '',
+      customerType: '',
+      purchaseSource: '',
+      status: '',
+      productName: '',
+      year: '',
+      month: '',
+      sortBy: '',
+      sortOrder: '',
+    });
+    setFilteredOrders(orders); // Restablece a la vista original
+  };
+
+  // Aplicar filtros y ordenamiento cada vez que cambien los filtros o las órdenes
+  useEffect(() => {
+    applyFilters();
+  }, [filters, orders]);
 
   const getStatusClass = (status) => {
     switch (status) {
@@ -215,6 +327,7 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+
   return (
     <GlobalContext.Provider
     value={{
@@ -228,6 +341,15 @@ export const GlobalProvider = ({ children }) => {
         setSelectedOrder, // Exportamos las nuevas variables globales
         handleStatusChange,
         getStatusClass,
+        filteredOrders, 
+        setFilteredOrders,
+        filters,
+        setFilters,
+        showFilterDropdown,
+        setShowFilterDropdown,
+        showSortDropdown,
+        setShowSortDropdown,
+        applyFilters,
       }}
     >
       {children}

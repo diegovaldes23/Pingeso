@@ -7,7 +7,6 @@ const HomePage = () => {
   const { orders, filterStatus, setFilterStatus } =
     useGlobalContext();
     
-
   const [counts, setCounts] = useState({
     Cancelada: 0,
     Pendiente: 0,
@@ -53,7 +52,7 @@ const HomePage = () => {
   }, [orders]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-50">
+    <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-3xl font-bold mb-6">Semana: {weekRange}</h1>
       <div className="flex space-x-6 mb-8">
         <button

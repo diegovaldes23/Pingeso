@@ -6,8 +6,8 @@ import HomePage from "./pages/HomePage";
 import OrdersPage from "./pages/OrdersPage";
 import MenuPage from "./pages/MenuPage";
 import CostsPage from "./pages/CostsPage";
-import StatisticsPage from "./pages/StatisticsPage";
 import AddOrderPage from "./pages/AddOrderPage";
+import Dashboard from "./pages/Dashboard";
 
 const App = () => {
   return (
@@ -21,7 +21,7 @@ const App = () => {
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/costs" element={<CostsPage />} />
-              <Route path="/statistics" element={<StatisticsPage />} />
+              <Route path="/statistics" element={<Dashboard />} />
               <Route path="/add-order" element={<AddOrderPage />} />
             </Routes>
           </div>

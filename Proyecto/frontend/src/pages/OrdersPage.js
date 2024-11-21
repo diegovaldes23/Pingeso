@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useGlobalContext } from '../utils/GlobalModelContext';
+import FilterAndSort from './FilterAndSort';
 
 const OrdersPage = () => {
     const {
@@ -22,12 +23,11 @@ const OrdersPage = () => {
     setSelectedOrder(null);
   };
 
-  const filteredOrders = filterStatus
-    ? orders.filter((order) => order.status === filterStatus)
-    : orders;
+  const [filteredOrders, setFilteredOrders] = useState(orders);
 
   return (
     <div>
+      <FilterAndSort setFilteredOrders={setFilteredOrders} />
       <OrdersList
         orders={filteredOrders}
         handleStatusChange={handleStatusChange}
