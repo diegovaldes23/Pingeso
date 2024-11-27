@@ -1,4 +1,4 @@
-package com.confitescordova.controllers;
+package com.confitescordova.admin_controllers;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,38 +13,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.confitescordova.entities.Order_Adm;
-import com.confitescordova.entities.Products_Quantity;
-import com.confitescordova.services.Order_Service;
-import com.confitescordova.services.P_Quantities_Service;
 
+import com.confitescordova.admin_entities.Products;
+import com.confitescordova.admin_services.ProductsService;
 
 @RestController
-@RequestMapping("/admin/orders")
-public class Order_Controller {
+@RequestMapping("/admin/products")
+public class ProductsController {
     @Autowired
-    Order_Service order_Service;
+    ProductsService productsService;
 
-
-    @GetMapping("/get")
-    public List<Order_Adm> getAllProductsQuantities() {
-        return order_Service.getAllOrders();
+    @GetMapping
+    public List<Products> getAllProductsQuantities() {
+        return productsService.getAllProducts();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Order_Adm> getProductQuantityById(@PathVariable Long id) {
-        Optional<Order_Adm> productQuantity = order_Service.getOrderById(id);
+    public ResponseEntity<Products> getProductQuantityById(@PathVariable Long id) {
+        Optional<Products> productQuantity = productsService.getProductById(id);
         return productQuantity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Order_Adm createProductQuantity(@RequestBody Order_Adm productQuantity) {
-        return order_Service.saveOrder(productQuantity);
+    public Products createProductQuantity(@RequestBody Products productQuantity) {
+        return productsService.saveProduct(productQuantity);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductQuantity(@PathVariable Long id) {
-        order_Service.deleteOrder(id);
+        productsService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 }

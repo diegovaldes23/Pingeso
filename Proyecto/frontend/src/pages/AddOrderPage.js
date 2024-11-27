@@ -9,11 +9,11 @@ function AddOrderPage() {
     const [commune, setCommune] = useState('');
     const [date, setDate] = useState('');
     const [products, setProducts] = useState([{ productId: '', quantity: '', price: 0 }]);
-    const [deliveryCost, setDeliveryCost] = useState('');
+    const [deliveryCost, setDeliveryCost] = useState(0);
     const [status, setStatus] = useState('Pendiente');
     const [customerType, setCustomerType] = useState('');
     const [purchaseSource, setPurchaseSource] = useState('');
-    const [initialPayment, setInitialPayment] = useState('');
+    const [initialPayment, setInitialPayment] = useState(0);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
@@ -63,7 +63,9 @@ function AddOrderPage() {
 
     const createOrder = async (orderData) => {
         try {
-            const response = await axios.post('http://localhost:8080/orders', orderData);
+            const response = await axios.post('http://localhost:8080/admin/orderproduct/post', orderData, {
+                headers: { 'Content-Type': 'application/json' },
+            });
             console.log('Pedido creado:', response.data);
             alert('Pedido creado con éxito');
         } catch (error) {
@@ -71,41 +73,44 @@ function AddOrderPage() {
             alert('Hubo un error al crear el pedido');
         }
     };
+    
 
-    const handleSubmit = async (event) => { // Cambiar a `async`
+    const handleSubmit = async (event) => {
         event.preventDefault();
     
-        // Validación de los campos del formulario
         if (!customerName || !phone || !region || !commune || products.length === 0) {
             alert('Por favor, complete todos los campos requeridos');
             return;
         }
     
-        // Preparar los datos para enviar al backend
+        // Construir la fecha y hora en el formato ISO
+        const orderDateTime = `${date}T10:00:00`;
+    
+        // Preparar datos para enviar
         const orderData = {
-            billing_name: customerName,
-            billing_phone: phone,
-            billing_address: `${commune}, ${region}`,
-            subtotal: subtotal,
-            total: total,
-            products: products.map(product => ({
-                id: product.productId,
-                quantity: parseInt(product.quantity, 10), // Asegurarse de enviar números enteros
-            })),
-            shipping_cost_customer: parseFloat(deliveryCost),
+            name: customerName,
+            phone: phone,
+            order_date: orderDateTime,
+            dispatch: "Entrega a domicilio", // Puedes agregar un campo para seleccionar esto
+            city: `${region}, ${commune}`,
+            address: "Calle Falsa 123", // Agregar un campo para la dirección
+            subtotal: parseFloat(subtotal),
+            shipping_cost: parseFloat(deliveryCost),
+            initial_payment: parseFloat(initialPayment),
             status: status,
-            billing_customer_type: customerType,
-            note: purchaseSource,
-            initialPayment: parseFloat(initialPayment),
+            customer_type: customerType,
+            source: purchaseSource,
+            orders: products.map(product => ({
+                id_product: parseInt(product.productId, 10),
+                quantity: parseInt(product.quantity, 10),
+            })),
         };
     
-        // Llamada al backend para crear el pedido
-        await createOrder(orderData);
-    
-        // Limpieza o redirección después de crear el pedido
         console.log('Datos enviados al backend:', orderData);
+    
+        // Llamar a la función para enviar los datos
+        await createOrder(orderData);
     };
-
     
     
 
@@ -248,7 +253,7 @@ function AddOrderPage() {
                         <input
                             type="number"
                             value={deliveryCost}
-                            onChange={(e) => setDeliveryCost(e.target.value)}
+                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value) || 0)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                             placeholder="$ 2990"
                         />
@@ -283,7 +288,7 @@ function AddOrderPage() {
                     <input
                         type="number"
                         value={initialPayment}
-                        onChange={(e) => setInitialPayment(e.target.value)}
+                        onChange={(e) => setInitialPayment(parseFloat(e.target.value) || 0)}
                         className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         placeholder="$ 0"
                     />

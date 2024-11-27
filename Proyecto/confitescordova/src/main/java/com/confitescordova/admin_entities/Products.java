@@ -1,4 +1,4 @@
-package com.confitescordova.entities;
+package com.confitescordova.admin_entities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,16 +11,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "products_quantity")
+@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Products_Quantity {
+public class Products {
+    // Atributos de la entidad
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
-    private Long id_quantities; // atributo llave
+    @Column(name = "id_product", unique = true, nullable = false) // Asegúrate de definir el nombre explícito
+    private Long id_product;
 
-    private Long id_product; // id del producto pedido
-    private Integer quantity; // cantidad de producto pedido
+    private String name; // Nombre del cliente
+    private String description; // Descripción del producto
+    private Double cost; // Precio del producto
 }
