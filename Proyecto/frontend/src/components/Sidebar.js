@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <div
       className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 ${
-        isCollapsed ? "w-20" : "w-52"
+        isCollapsed ? "w-20" : "w-60"
       }`}
     >
       {/* Botón para colapsar/expandir */}
@@ -128,6 +128,27 @@ const Sidebar = () => {
             {!isCollapsed && (
               <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
                 Estadísticas
+              </span>
+            )}
+          </Link>
+        </li>
+        {/* Excel */}
+        <li
+          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+        >
+          <Link
+            to="/excel"
+            className="flex items-center w-full p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
+                <path fill="white" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zm1.8 18H14l-2-3.4l-2 3.4H8.2l2.9-4.5L8.2 11H10l2 3.4l2-3.4h1.8l-2.9 4.5zM13 9V3.5L18.5 9z"/>
+            </svg>
+
+            {!isCollapsed && (
+              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                Opciones excel
               </span>
             )}
           </Link>

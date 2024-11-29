@@ -25,6 +25,8 @@ export const GlobalProvider = ({ children }) => {
       total: 20970,
       initialPayment: 5000,
       status: 'Pendiente',
+      deliveryDate: '',
+      description: 'Se quieren todos rojos'
     },
     {
         id: 2,
@@ -44,6 +46,8 @@ export const GlobalProvider = ({ children }) => {
         total: 11990,
         initialPayment: 6000,
         status: 'Completada',
+        deliveryDate: '2024-11-11',
+        description: 'Se quieren todos rojos'
       },
       {
         id: 3,
@@ -63,6 +67,8 @@ export const GlobalProvider = ({ children }) => {
         total: 20990,
         initialPayment: 10000,
         status: 'En proceso',
+        deliveryDate: '',
+        description: 'Se quieren todos rojos'
       },
       {
         id: 4,
@@ -82,6 +88,8 @@ export const GlobalProvider = ({ children }) => {
         total: 30990,
         initialPayment: 15000,
         status: 'Pendiente',
+        deliveryDate: '',
+        description: 'Se quieren todos rojos'
       },
       {
         id: 5,
@@ -101,6 +109,8 @@ export const GlobalProvider = ({ children }) => {
         total: 27490,
         initialPayment: 20000,
         status: 'Cancelada',
+        deliveryDate: '',
+        description: 'Se quieren todos rojos'
       },
       {
         id: 6,
@@ -120,6 +130,8 @@ export const GlobalProvider = ({ children }) => {
         total: 27990,
         initialPayment: 15000,
         status: 'Pendiente',
+        deliveryDate: '',
+        description: 'Se quieren todos rojos'
       },
       /**{
         id: 7,

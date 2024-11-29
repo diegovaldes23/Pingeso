@@ -13,7 +13,6 @@ const OrdersList = ({ orders }) => {
     handleStatusChange(orderId, newStatus); // Llamar la función del contexto para actualizar el estado
   };
 
-
   return (
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
       <thead className="bg-purple-800">
@@ -28,6 +27,8 @@ const OrdersList = ({ orders }) => {
           <th className="py-2 px-4 border text-white">Valor despacho</th>
           <th className="py-2 px-4 border text-white">Valor total</th>
           <th className="py-2 px-4 border text-white">Estado</th>
+          <th className="py-2 px-4 border text-white">Fecha Entrega</th> {/* Nueva columna */}
+          <th className="py-2 px-4 border text-white">Descripción</th> {/* Nueva columna */}
           <th className="py-2 px-4 border text-white">Acciones</th>
         </tr>
       </thead>
@@ -55,7 +56,7 @@ const OrdersList = ({ orders }) => {
                 {order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border text-center">
-              <select
+                <select
                   value={order.status}
                   onChange={(e) => handleStateChange(order.id, e.target.value)} // Actualizar estado al cambiar
                   className={`p-2 rounded ${getStatusClass(order.status)}`}
@@ -66,6 +67,12 @@ const OrdersList = ({ orders }) => {
                   <option value="Cancelada">Cancelada</option>
                 </select>
               </td>
+              {/* Nueva columna: Fecha de entrega */}
+              <td className="py-2 px-4 border">
+                {order.deliveryDate ? order.deliveryDate : 'No asignada'}
+              </td>
+              {/* Nueva columna: Descripción */}
+              <td className="py-2 px-4 border">{order.description}</td>
               <td className="py-2 px-4 border text-center">
                 <button
                   onClick={() => handleViewDetails(order)}
@@ -78,7 +85,7 @@ const OrdersList = ({ orders }) => {
           ))
         ) : (
           <tr>
-            <td colSpan="11" className="text-center py-4">
+            <td colSpan="12" className="text-center py-4">
               No se encontraron órdenes.
             </td>
           </tr>
