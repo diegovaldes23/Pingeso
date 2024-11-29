@@ -21,7 +21,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <strong>Nombre del cliente:</strong>
-            <p>{order.customerName}</p>
+            <p>{order.name}</p>
           </div>
           <div>
             <strong>Teléfono:</strong>
@@ -32,16 +32,20 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
             <p>{order.commune}</p>
           </div>
           <div>
+            <strong>Dirección:</strong>
+            <p>{order.address}</p>
+          </div>
+          <div>
             <strong>Fecha de pedido:</strong>
-            <p>{order.date}</p>
+            <p>{order.order_date}</p>
           </div>
           <div>
             <strong>Tipo de cliente:</strong>
-            <p>{order.customerType}</p>
+            <p>{order.customer_type}</p>
           </div>
           <div>
             <strong>Cómo fue la compra:</strong>
-            <p>{order.purchaseSource}</p>
+            <p>{order.purchase_source}</p>
           </div>
         </div>
 
@@ -78,7 +82,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           </div>
           <div>
             <strong>Costo de envío:</strong>
-            <p>${order.deliveryCost.toLocaleString()}</p>
+            <p>${order.delivery_cost.toLocaleString()}</p>
           </div>
           <div>
             <strong>Total:</strong>
@@ -86,7 +90,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           </div>
           <div>
             <strong>Abono inicial:</strong>
-            <p>${order.initialPayment.toLocaleString()}</p>
+            <p>${order.initial_payment.toLocaleString()}</p>
           </div>
           <div>
             <strong>Estado:</strong>
@@ -95,7 +99,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           {/* Nuevas filas para fecha de entrega y descripción */}
           <div>
             <strong>Fecha de entrega:</strong>
-            <p>{order.deliveryDate ? order.deliveryDate : 'No asignada'}</p>
+            <p>{order.delivery_date ? order.delivery_date : 'No asignada'}</p>
           </div>
           <div>
             <strong>Descripción:</strong>

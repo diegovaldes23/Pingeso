@@ -9,129 +9,135 @@ export const GlobalProvider = ({ children }) => {
   const [orders, setOrders] = useState([
     {
       id: 1,
-      customerName: 'Juan Pérez',
+      name: 'Juan Pérez',
       phone: '912345678',
       region: 'Región Metropolitana de Santiago',
       commune: 'Santiago',
-      date: '2024-11-01',
-      customerType: 'Antiguo',
-      purchaseSource: 'Facebook ads',
+      order_date: '2024-11-01',
+      customer_type: 'Antiguo',
+      purchase_source: 'Facebook ads',
       products: [
         { name: 'Helado de Chocolate', price: 6000, quantity: 2 },
         { name: 'Brownie', price: 5990, quantity: 1 },
       ],
-      deliveryCost: 2990,
+      delivery_cost: 2990,
       subtotal: 17980,
       total: 20970,
-      initialPayment: 5000,
+      initial_payment: 5000,
       status: 'Pendiente',
-      deliveryDate: '',
-      description: 'Se quieren todos rojos'
+      delivery_date: '',
+      description: 'Se quieren todos rojos',
+      address: 'La moneda 1234'
     },
     {
         id: 2,
-        customerName: 'Marcela Parra',
+        name: 'Marcela Parra',
         phone: '956576234',
         region: 'Región Metropolitana de Santiago',
         commune: 'Las Condes',
-        date: '2024-11-01',
-        customerType: 'Nuevo',
-        purchaseSource: 'WhatsApp',
+        order_date: '2024-11-01',
+        customer_type: 'Nuevo',
+        purchase_source: 'WhatsApp',
         products: [
           { name: 'Tarta de frambuesa', price: 1000, quantity: 5 },
           { name: 'Cupcake', price: 2000, quantity: 2 },
         ],
-        deliveryCost: 2990,
+        delivery_cost: 2990,
         subtotal: 9000,
         total: 11990,
-        initialPayment: 6000,
+        initial_payment: 6000,
         status: 'Completada',
-        deliveryDate: '2024-11-11',
-        description: 'Se quieren todos rojos'
+        delivery_date: '2024-11-11',
+        description: 'Se quieren todos rojos',
+        address: 'La Dehesa 1234'
       },
       {
         id: 3,
-        customerName: 'Carlos López',
+        name: 'Carlos López',
         phone: '923456789',
         region: 'Región Metropolitana de Santiago',
         commune: 'Providencia',
-        date: '2024-11-02',
-        customerType: 'Antiguo',
-        purchaseSource: 'Tiendanube',
+        order_date: '2024-11-02',
+        customer_type: 'Antiguo',
+        purchase_source: 'Tiendanube',
         products: [
           { name: 'Cheesecake', price: 8500, quantity: 1 },
           { name: 'Brownie de chocolate', price: 5000, quantity: 3 },
         ],
-        deliveryCost: 2490,
+        delivery_cost: 2490,
         subtotal: 18500,
         total: 20990,
-        initialPayment: 10000,
+        initial_payment: 10000,
         status: 'En proceso',
-        deliveryDate: '',
-        description: 'Se quieren todos rojos'
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La provi 1234'
       },
       {
         id: 4,
-        customerName: 'Lucía Fernández',
+        name: 'Lucía Fernández',
         phone: '987654321',
         region: 'Región Metropolitana de Santiago',
         commune: 'Ñuñoa',
-        date: '2024-11-03',
-        customerType: 'Nuevo',
-        purchaseSource: 'Tiendanube',
+        order_date: '2024-11-03',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
         products: [
           { name: 'Macarons', price: 1500, quantity: 10 },
           { name: 'Tarta de limón', price: 12000, quantity: 1 },
         ],
-        deliveryCost: 3990,
+        delivery_cost: 3990,
         subtotal: 27000,
         total: 30990,
-        initialPayment: 15000,
+        initial_payment: 15000,
         status: 'Pendiente',
-        deliveryDate: '',
-        description: 'Se quieren todos rojos'
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La ñuñoina 1234'
       },
       {
         id: 5,
-        customerName: 'Diego Castillo',
+        name: 'Diego Castillo',
         phone: '923987654',
         region: 'Región Metropolitana de Santiago',
         commune: 'San Joaquín',
-        date: '2024-11-04',
-        customerType: 'Antiguo',
-        purchaseSource: 'Tiendanube',
+        order_date: '2024-11-04',
+        customer_type: 'Antiguo',
+        purchase_source: 'Tiendanube',
         products: [
           { name: 'Brownie', price: 5000, quantity: 2 },
           { name: 'Trufas de chocolate', price: 3000, quantity: 5 },
         ],
-        deliveryCost: 2490,
+        delivery_cost: 2490,
         subtotal: 25000,
         total: 27490,
-        initialPayment: 20000,
+        initial_payment: 20000,
         status: 'Cancelada',
-        deliveryDate: '',
-        description: 'Se quieren todos rojos'
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La joako 1234'
       },
       {
         id: 6,
-        customerName: 'Ana Soto',
+        name: 'Ana Soto',
         phone: '912345111',
         region: 'Región del Biobío',
         commune: 'Coronel',
-        date: '2024-11-05',
-        customerType: 'Nuevo',
-        purchaseSource: 'Tiendanube',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
         products: [
           { name: 'Tarta de manzana', price: 7000, quantity: 1 },
           { name: 'Galletas de avena', price: 3000, quantity: 6 },
         ],
-        deliveryCost: 2990,
+        delivery_cost: 2990,
         subtotal: 25000,
         total: 27990,
-        initialPayment: 15000,
+        initial_payment: 15000,
         status: 'Pendiente',
-        deliveryDate: '',
-        description: 'Se quieren todos rojos'
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
       },
       /**{
         id: 7,
@@ -239,7 +245,7 @@ export const GlobalProvider = ({ children }) => {
 
   const handleStatusChange = (id, newStatus) => {
     const updatedOrders = orders.map((order) =>
-      order.id === id ? { ...order, status: newStatus } : order
+      order.id_order === id ? { ...order, status: newStatus } : order
     );
     setOrders(updatedOrders);
   };
@@ -266,10 +272,10 @@ export const GlobalProvider = ({ children }) => {
     // Filtros
     if (region) filtered = filtered.filter(order => order.region === region);
     if (commune) filtered = filtered.filter(order => order.commune === commune);
-    if (startDate) filtered = filtered.filter(order => new Date(order.date) >= new Date(startDate));
-    if (endDate) filtered = filtered.filter(order => new Date(order.date) <= new Date(endDate));
-    if (customerType) filtered = filtered.filter(order => order.customerType === customerType);
-    if (purchaseSource) filtered = filtered.filter(order => order.purchaseSource === purchaseSource);
+    if (startDate) filtered = filtered.filter(order => new Date(order.order_date) >= new Date(startDate));
+    if (endDate) filtered = filtered.filter(order => new Date(order.order_date) <= new Date(endDate));
+    if (customerType) filtered = filtered.filter(order => order.customer_type === customerType);
+    if (purchaseSource) filtered = filtered.filter(order => order.purchase_source === purchaseSource);
     if (status) filtered = filtered.filter(order => order.status === status);
     if (productName) {
       filtered = filtered.filter(order =>

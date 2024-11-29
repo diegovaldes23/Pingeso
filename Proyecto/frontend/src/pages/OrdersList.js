@@ -21,6 +21,7 @@ const OrdersList = ({ orders }) => {
           <th className="py-2 px-4 border text-white">Cliente</th>
           <th className="py-2 px-4 border text-white">Teléfono</th>
           <th className="py-2 px-4 border text-white">Comuna</th>
+          <th className="py-2 px-4 border text-white">Dirección</th>
           <th className="py-2 px-4 border text-white">Fecha pedido</th>
           <th className="py-2 px-4 border text-white">Productos</th>
           <th className="py-2 px-4 border text-white">Subtotal productos</th>
@@ -36,11 +37,12 @@ const OrdersList = ({ orders }) => {
         {orders.length > 0 ? (
           orders.map((order) => (
             <tr key={order.id} className="hover:bg-gray-100">
-              <td className="py-2 px-4 border">{order.id}</td>
-              <td className="py-2 px-4 border">{order.customerName}</td>
+              <td className="py-2 px-4 border">{order.id_order}</td>
+              <td className="py-2 px-4 border">{order.name}</td>
               <td className="py-2 px-4 border">{order.phone}</td>
               <td className="py-2 px-4 border">{order.commune}</td>
-              <td className="py-2 px-4 border">{order.date}</td>
+              <td className="py-2 px-4 border">{order.address}</td>
+              <td className="py-2 px-4 border">{order.order_date}</td>
               <td className="py-2 px-4 border">
                 {order.products.map((product, index) => (
                   <div key={index}>{product.name}</div>
@@ -50,7 +52,7 @@ const OrdersList = ({ orders }) => {
                 {order.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border">
-                {order.deliveryCost.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+                {order.shipping_cost.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border font-bold">
                 {order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
@@ -58,7 +60,7 @@ const OrdersList = ({ orders }) => {
               <td className="py-2 px-4 border text-center">
                 <select
                   value={order.status}
-                  onChange={(e) => handleStateChange(order.id, e.target.value)} // Actualizar estado al cambiar
+                  onChange={(e) => handleStateChange(order.id_order, e.target.value)} // Actualizar estado al cambiar
                   className={`p-2 rounded ${getStatusClass(order.status)}`}
                 >
                   <option value="Pendiente">Pendiente</option>
@@ -69,7 +71,7 @@ const OrdersList = ({ orders }) => {
               </td>
               {/* Nueva columna: Fecha de entrega */}
               <td className="py-2 px-4 border">
-                {order.deliveryDate ? order.deliveryDate : 'No asignada'}
+                {order.delivery_date ? order.delivery_date : 'No asignada'}
               </td>
               {/* Nueva columna: Descripción */}
               <td className="py-2 px-4 border">{order.description}</td>

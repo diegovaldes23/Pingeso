@@ -22,35 +22,37 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_order; // atributo llave
+    private Long id_order; // Atributo llave
 
     private String name; // Nombre del cliente
-    private String phone; // Telefono
+    private String phone; // Teléfono
+    private String region; // Región
+    private String commune; // Comuna
+    private String address; // Dirección
+    private LocalDate order_date; // Fecha de orden
+    private LocalDate creation_date; // Fecha de creación de la orden
+    private Double subtotal; // Subtotal (costo de los productos)
+    private Double shipping_cost; // Costo de envío
+    private Double total; // Total (costo productos + costo de envío)
+    private String status; // Estado
+    private LocalDate delivery_date; // Fecha de entrega
+    private String purchase_source; // Fuente de la compra (Orgánico, Facebook Adds)
+    private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
+    private Double initial_payment; // Pago inicial
+    private String description; // Descripción
 
     /*
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderProduct> orderProducts = new ArrayList<>();
-
      */
 
 
 
 
 
-    private LocalDate order_date; // fecha de orden
-    private LocalDate creation_date; // fecha de creación de la orden
-    private String dispatch; // Despacho
 
-    private String address; // Dirección
-    private Double total; // Total (costo productos + costo de envio)
-    private Double subtotal; // Subtotal (costo de los productos)
-    private Double shipping_cost; // costo de envio
-    private Double initialPayment; // Pago inicial
-    private String status; // Estado
-    private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
-    private String source; // Fuente de la compra (Organico, Facebook Adds)
 
-    private LocalDate delivery_order; // orden de entrega
+
 
 
 
