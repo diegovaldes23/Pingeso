@@ -38,8 +38,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
     // Filtros
     if (region) filtered = filtered.filter(order => order.region === region);
     if (commune) filtered = filtered.filter(order => order.commune === commune);
-    if (startDate) filtered = filtered.filter(order => new Date(order.date) >= new Date(startDate));
-    if (endDate) filtered = filtered.filter(order => new Date(order.date) <= new Date(endDate));
+    if (startDate) filtered = filtered.filter(order => new Date(order.order_date) >= new Date(startDate));
+    if (endDate) filtered = filtered.filter(order => new Date(order.order_date) <= new Date(endDate));
     if (customerType) filtered = filtered.filter(order => order.customerType === customerType);
     if (purchaseSource) filtered = filtered.filter(order => order.purchaseSource === purchaseSource);
     if (status) filtered = filtered.filter(order => order.status === status);
@@ -48,16 +48,16 @@ const FilterAndSort = ({ setFilteredOrders }) => {
         order.products.some(product => product.name.toLowerCase().includes(productName.toLowerCase()))
       );
     }
-    if (year) filtered = filtered.filter(order => new Date(order.date).getFullYear() === parseInt(year, 10));
-    if (month) filtered = filtered.filter(order => new Date(order.date).getMonth() + 1 === parseInt(month, 10));
+    if (year) filtered = filtered.filter(order => new Date(order.order_date).getFullYear() === parseInt(year, 10));
+    if (month) filtered = filtered.filter(order => new Date(order.order_date).getMonth() + 1 === parseInt(month, 10));
 
     // Ordenamiento
     if (sortBy) {
       filtered.sort((a, b) => {
         if (sortBy === 'date') {
           return sortOrder === 'asc'
-            ? new Date(a.date) - new Date(b.date)
-            : new Date(b.date) - new Date(a.date);
+            ? new Date(a.order_date) - new Date(b.order_date)
+            : new Date(b.order_date) - new Date(a.order_date);
         }
         if (sortBy === 'total') {
           return sortOrder === 'asc' ? a.total - b.total : b.total - a.total;

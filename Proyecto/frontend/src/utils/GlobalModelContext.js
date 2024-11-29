@@ -282,8 +282,8 @@ export const GlobalProvider = ({ children }) => {
         order.products.some(product => product.name.toLowerCase().includes(productName.toLowerCase()))
       );
     }
-    if (year) filtered = filtered.filter(order => new Date(order.date).getFullYear() === parseInt(year, 10));
-    if (month) filtered = filtered.filter(order => new Date(order.date).getMonth() + 1 === parseInt(month, 10));
+    if (year) filtered = filtered.filter(order => new Date(order.order_date).getFullYear() === parseInt(year, 10));
+    if (month) filtered = filtered.filter(order => new Date(order.order_date).getMonth() + 1 === parseInt(month, 10));
 
     // Ordenamiento
     if (sortBy) {
