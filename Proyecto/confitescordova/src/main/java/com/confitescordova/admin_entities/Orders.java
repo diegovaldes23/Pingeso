@@ -38,8 +38,16 @@ public class Orders {
     private LocalDate delivery_date; // Fecha de entrega
     private String purchase_source; // Fuente de la compra (Orgánico, Facebook Adds)
     private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
-    private Double initial_payment; // Pago inicial
+
+    //Hay un conflicto con los initialPayment e initial_payment
+    //private Double initial_payment; // Pago inicial
+
     private String description; // Descripción
+
+    // Estas variables faltaba y estaban dando error
+    private String dispatch;
+    private Double initialPayment;
+    private String source;
 
     /*
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

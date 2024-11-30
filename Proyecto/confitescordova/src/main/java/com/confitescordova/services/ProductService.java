@@ -1,9 +1,14 @@
 package com.confitescordova.services;
 
+import com.confitescordova.admin_repositories.ProductsRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.confitescordova.entities.Product;
+import com.confitescordova.admin_entities.Products;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+
+import jakarta.annotation.PostConstruct;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +17,39 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService extends BaseService{
 
+    @Autowired
+    private ProductsRepository productsRepository;
+
     private static final String API_BASE_URL = "https://api.tiendanube.com/v1/{store_id}/products";
+    private String storeIdString = "5336632";
+    Long storeId = Long.parseLong(storeIdString);
+
+    @PostConstruct
+    public void init(){
+        saveProducts(getAllProducts(storeId));
+    }
 
     public List<Product> getAllProducts(Long storeID) {
         String url = API_BASE_URL.replace("{store_id}", storeID.toString());
         String responseBody = makeGetRequest(url);
         return Arrays.asList(parseResponse(responseBody, Product[].class));
+    }
+
+    public void saveProducts(List<Product> listaProductCom) {
+        List<Products> products = listaProductCom.stream()
+                                            .map(this::convertToEntity)
+                                            .collect(Collectors.toList());
+        productsRepository.saveAll(products);
+    }
+
+    public Products convertToEntity(Product productCompleto) {
+        Products products = new Products();
+        products.setId_product(productCompleto.getId());
+        String espName = productCompleto.getName().get("es");
+        products.setName(espName);
+        String espDescription = (productCompleto.getDescription().get("es"));
+        products.setDescription(espDescription);
+        return products;
     }
 
     public Product getProductById(Long storeId, Long productId) {
