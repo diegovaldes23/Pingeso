@@ -33,6 +33,15 @@ public class OrdersService {
         return orderRepository.findById(id);
     }
 
+    // Para obtener los productos mas vendidos
+    public List<CityOrderCountDTO> salesByCommune() {
+        return orderRepository.countOrdersByCity();
+    }
+
+    public List<SalesByChannelDTO> salesByChannel() {
+        return orderRepository.salesByChannel();
+    }
+
 
     /*
     public Orders createOrder(Orders order, List<OrderProduct> orderProducts) {

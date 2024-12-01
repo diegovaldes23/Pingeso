@@ -8,6 +8,10 @@ function AddOrderPage() {
     const [region, setRegion] = useState('');
     const [commune, setCommune] = useState('');
     const [date, setDate] = useState('');
+    const [address, setAddress] = useState(''); // Nueva variable para dirección
+    const [email, setEmail] = useState(''); // Nueva variable para email
+    const [comment, setComment] = useState(''); // Nueva variable para comentario
+    const [dispatch, setDispatch] = useState(''); // Nueva variable para dispatch
     const [products, setProducts] = useState([{ productId: '', quantity: '', price: 0 }]);
     const [deliveryCost, setDeliveryCost] = useState(0);
     const [status, setStatus] = useState('Pendiente');
@@ -91,9 +95,11 @@ function AddOrderPage() {
             name: customerName,
             phone: phone,
             order_date: orderDateTime,
-            dispatch: "Entrega a domicilio", // Puedes agregar un campo para seleccionar esto
+            dispatch, // Puedes agregar un campo para seleccionar esto
             city: `${region}, ${commune}`,
-            address: "Calle Falsa 123", // Agregar un campo para la dirección
+            address, // Agregar un campo para la dirección
+            email,
+            comment,
             subtotal: parseFloat(subtotal),
             shipping_cost: parseFloat(deliveryCost),
             initial_payment: parseFloat(initialPayment),
@@ -171,6 +177,19 @@ function AddOrderPage() {
                         </select>
                     </div>
                 </div>
+
+                {/* Dirección */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Dirección</label>
+                    <input
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        placeholder="Ej: Walker Martínez 3142"
+                    />
+                </div>
+                
 
                 {/* Fecha de pedido */}
                 <div className="mb-4">
@@ -309,6 +328,47 @@ function AddOrderPage() {
                     </select>
                 </div>
 
+                {/* Email y Comentario */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label className="block text-gray-700">Email (Opcional)</label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="Ej: cliente@correo.com"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Comentario (Opcional)</label>
+                        <input
+                            type="text"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="Añadir un comentario"
+                        />
+                    </div>
+                </div>
+
+                {/* Dispatch */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Método de Despacho</label>
+                    <select
+                        value={dispatch}
+                        onChange={(e) => setDispatch(e.target.value)}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                    >
+                        <option value="">Seleccione método de despacho</option>
+                        <option value="empresas 8k">Empresas 8k</option>
+                        <option value="bluexpress">Bluexpress</option>
+                        <option value="envio pymes">Envío Pymes</option>
+                        <option value="uber">Uber</option>
+                        <option value="retiro">Retiro</option>
+                    </select>
+                </div>
+
                 {/* Botones */}
                 <div className="flex justify-end space-x-4">
                     <button
@@ -325,6 +385,7 @@ function AddOrderPage() {
                         Crear pedido
                     </button>
                 </div>
+                
             </form>
         </div>
     );

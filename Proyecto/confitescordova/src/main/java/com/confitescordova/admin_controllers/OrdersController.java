@@ -6,6 +6,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.confitescordova.admin_entities.*;
+import com.confitescordova.admin_services.CityOrderCountDTO;
+import com.confitescordova.admin_services.SalesByChannelDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,7 @@ public class OrdersController {
     OrdersService orderService;
 
 
-    @GetMapping("/get")
+    @GetMapping()
     public List<Orders> getAllProductsQuantities() {
         return orderService.getAllOrders();
     }
@@ -38,6 +40,18 @@ public class OrdersController {
         Optional<Orders> productQuantity = orderService.getOrderById(id);
         return productQuantity.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/salesByCommune")
+    public List<CityOrderCountDTO> salesByCommune(){
+        return orderService.salesByCommune();
+    }
+
+    @GetMapping("/salesByChannel")
+    public List<SalesByChannelDTO> salesByChannel(){
+        return orderService.salesByChannel();
+    }
+
+
 
     /*
     @PostMapping("/post")

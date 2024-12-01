@@ -23,24 +23,12 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id_order; // atributo llave
-
     private String name; // Nombre del cliente
     private String phone; // Telefono
-
-    /*
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<OrderProduct> orderProducts = new ArrayList<>();
-
-     */
-
-
-
-
-
+    private String city;
     private LocalDate order_date; // fecha de orden
     private LocalDate creation_date; // fecha de creación de la orden
     private String dispatch; // Despacho
-
     private String address; // Dirección
     private Double total; // Total (costo productos + costo de envio)
     private Double subtotal; // Subtotal (costo de los productos)
@@ -49,10 +37,7 @@ public class Orders {
     private String status; // Estado
     private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
     private String source; // Fuente de la compra (Organico, Facebook Adds)
-
-    private LocalDate delivery_order; // orden de entrega
-
-
-
-
+    private LocalDate delivery_date; // orden de entrega
+    private String email;
+    private String comment;
 }

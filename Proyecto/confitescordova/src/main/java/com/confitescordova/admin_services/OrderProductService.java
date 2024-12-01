@@ -47,6 +47,9 @@ public class OrderProductService {
         Orders order = new Orders();
         String name = (String) orderJson.get("name"); order.setName(name);// Nombre del cliente
         String phone = (String) orderJson.get("phone"); order.setPhone(phone);// Telefono
+        String city = (String) orderJson.get("city"); order.setCity(city);// Ciudad
+        String comment = (String) orderJson.get("comment"); order.setComment(comment);
+        String email = (String) orderJson.get("email"); order.setEmail(email);
         //LocalDate order_date = (LocalDate) orderJson.get("order_date"); order.setOrder_date(order_date); // fecha de orden
 
         String orderDateString = (String) orderJson.get("order_date");
@@ -54,6 +57,7 @@ public class OrderProductService {
         order.setOrder_date(order_date);
 
         order.setCreation_date(LocalDate.now()); // la fecha de creación sería la actual
+
         String dispatch = (String) orderJson.get("dispatch"); order.setDispatch(dispatch);
         String address = (String) orderJson.get("address"); order.setAddress(address);
 
