@@ -63,7 +63,7 @@ public class OrderProductService {
         Double total = subtotal + shipping_cost; order.setTotal(total); // productos + costo de envío
 
         double initialPayment = Double.valueOf(orderJson.get("initial_payment").toString()); order.setInitialPayment(initialPayment); // Pago inicial
-        String status = (String) orderJson.get("status"); order.setStatus(status); // Estado
+        String status = (String) orderJson.get("status"); order.setStatus(status); // Estado3
         String customer_type = (String) orderJson.get("customer_type"); order.setCustomer_type(customer_type); // Tipo de cliente (cliente consumo, cliente negocio)
         String source = (String) orderJson.get("source"); order.setSource(source); // Fuente de la compra (Organico, Facebook Adds)
         Orders new_order = ordersRepository.save(order); // Guardo orden
