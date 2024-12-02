@@ -36,7 +36,7 @@ const OrdersList = ({ orders }) => {
       <tbody>
         {orders.length > 0 ? (
           orders.map((order) => (
-            <tr key={order.id} className="hover:bg-gray-100">
+            <tr key={order.id_order} className="hover:bg-gray-100">
               <td className="py-2 px-4 border">{order.id_order}</td>
               <td className="py-2 px-4 border">{order.name}</td>
               <td className="py-2 px-4 border">{order.phone}</td>

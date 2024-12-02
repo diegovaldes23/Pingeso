@@ -82,7 +82,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           </div>
           <div>
             <strong>Costo de envío:</strong>
-            <p>${order.delivery_cost.toLocaleString()}</p>
+            <p>${order.shipping_cost.toLocaleString()}</p>
           </div>
           <div>
             <strong>Total:</strong>

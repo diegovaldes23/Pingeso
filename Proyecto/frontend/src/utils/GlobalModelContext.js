@@ -8,7 +8,7 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([
     {
-      id: 1,
+      id_order: 1,
       name: 'Juan Pérez',
       phone: '912345678',
       region: 'Región Metropolitana de Santiago',
@@ -30,7 +30,7 @@ export const GlobalProvider = ({ children }) => {
       address: 'La moneda 1234'
     },
     {
-        id: 2,
+        id_order: 2,
         name: 'Marcela Parra',
         phone: '956576234',
         region: 'Región Metropolitana de Santiago',
@@ -52,7 +52,7 @@ export const GlobalProvider = ({ children }) => {
         address: 'La Dehesa 1234'
       },
       {
-        id: 3,
+        id_order: 3,
         name: 'Carlos López',
         phone: '923456789',
         region: 'Región Metropolitana de Santiago',
@@ -74,7 +74,7 @@ export const GlobalProvider = ({ children }) => {
         address: 'La provi 1234'
       },
       {
-        id: 4,
+        id_order: 4,
         name: 'Lucía Fernández',
         phone: '987654321',
         region: 'Región Metropolitana de Santiago',
@@ -96,7 +96,7 @@ export const GlobalProvider = ({ children }) => {
         address: 'La ñuñoina 1234'
       },
       {
-        id: 5,
+        id_order: 5,
         name: 'Diego Castillo',
         phone: '923987654',
         region: 'Región Metropolitana de Santiago',
@@ -118,7 +118,117 @@ export const GlobalProvider = ({ children }) => {
         address: 'La joako 1234'
       },
       {
-        id: 6,
+        id_order: 6,
+        name: 'Ana Soto',
+        phone: '912345111',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
+        products: [
+          { name: 'Tarta de manzana', price: 7000, quantity: 1 },
+          { name: 'Galletas de avena', price: 3000, quantity: 6 },
+        ],
+        shipping_cost: 2990,
+        subtotal: 25000,
+        total: 27990,
+        initial_payment: 15000,
+        status: 'Pendiente',
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
+      },
+      {
+        id_order: 7,
+        name: 'Ana Soto',
+        phone: '912345111',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
+        products: [
+          { name: 'Tarta de manzana', price: 7000, quantity: 1 },
+          { name: 'Galletas de avena', price: 3000, quantity: 6 },
+        ],
+        shipping_cost: 2990,
+        subtotal: 25000,
+        total: 27990,
+        initial_payment: 15000,
+        status: 'Pendiente',
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
+      },
+      {
+        id_order: 8,
+        name: 'Ana Soto',
+        phone: '912345111',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
+        products: [
+          { name: 'Tarta de manzana', price: 7000, quantity: 1 },
+          { name: 'Galletas de avena', price: 3000, quantity: 6 },
+        ],
+        shipping_cost: 2990,
+        subtotal: 25000,
+        total: 27990,
+        initial_payment: 15000,
+        status: 'Pendiente',
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
+      },
+      {
+        id_order: 9,
+        name: 'Ana Soto',
+        phone: '912345111',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
+        products: [
+          { name: 'Tarta de manzana', price: 7000, quantity: 1 },
+          { name: 'Galletas de avena', price: 3000, quantity: 6 },
+        ],
+        shipping_cost: 2990,
+        subtotal: 25000,
+        total: 27990,
+        initial_payment: 15000,
+        status: 'Pendiente',
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
+      },
+      {
+        id_order: 10,
+        name: 'Ana Soto',
+        phone: '912345111',
+        region: 'Región del Biobío',
+        commune: 'Coronel',
+        order_date: '2024-11-05',
+        customer_type: 'Nuevo',
+        purchase_source: 'Tiendanube',
+        products: [
+          { name: 'Tarta de manzana', price: 7000, quantity: 1 },
+          { name: 'Galletas de avena', price: 3000, quantity: 6 },
+        ],
+        shipping_cost: 2990,
+        subtotal: 25000,
+        total: 27990,
+        initial_payment: 15000,
+        status: 'Pendiente',
+        delivery_date: '',
+        description: 'Se quieren todos rojos',
+        address: 'La coronela 1234'
+      },
+      {
+        id_order: 11,
         name: 'Ana Soto',
         phone: '912345111',
         region: 'Región del Biobío',
@@ -140,7 +250,7 @@ export const GlobalProvider = ({ children }) => {
         address: 'La coronela 1234'
       },
       /**{
-        id: 7,
+        id_order: 7,
         customerName: 'Rodrigo Vargas',
         phone: '956123678',
         commune: 'Macul',
@@ -158,7 +268,7 @@ export const GlobalProvider = ({ children }) => {
         status: 'En proceso',
       },
       {
-        id: 8,
+        id_order: 8,
         customerName: 'Isabel Romero',
         phone: '943256789',
         commune: 'La Reina',
@@ -176,7 +286,7 @@ export const GlobalProvider = ({ children }) => {
         status: 'Pendiente',
       },
       {
-        id: 9,
+        id_order: 9,
         customerName: 'Fernando Alarcón',
         phone: '934567890',
         commune: 'Las Condes',
@@ -194,7 +304,7 @@ export const GlobalProvider = ({ children }) => {
         status: 'Completada',
       },
       {
-        id: 10,
+        id_order: 10,
         customerName: 'Andrea Muñoz',
         phone: '926789345',
         commune: 'Peñalolén',

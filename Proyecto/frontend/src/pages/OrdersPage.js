@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useGlobalContext } from '../utils/GlobalModelContext';
 import FilterAndSort from './FilterAndSort';
+import Pagination from "./Pagination";
 
 const OrdersPage = () => {
     const {
@@ -16,25 +17,42 @@ const OrdersPage = () => {
         setSelectedOrder, // Usamos el estado global
       } = useGlobalContext();
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [filteredOrders, setFilteredOrders] = useState(orders);
+    const ordersPerPage = 7;
+
+    const indexOfLastOrder = currentPage * ordersPerPage;
+    const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+    const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+    const totalPages = Math.ceil(orders.length / ordersPerPage);
+
   // Buscar cómo hacer variables globales
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedOrder(null);
-  };
+  }, []);
 
-  const [filteredOrders, setFilteredOrders] = useState(orders);
+  const paginatedOrders = filteredOrders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
 
   return (
-    <div>
+    <div className="orders-container">
       <FilterAndSort setFilteredOrders={setFilteredOrders} />
       <OrdersList
-        orders={filteredOrders}
+        orders={currentOrders}
         handleStatusChange={handleStatusChange}
         getStatusClass={getStatusClass} // Pasa getStatusClass aquí
         isModalOpen={isModalOpen}
         selectedOrder={selectedOrder}
       />
+      <Pagination 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+        />
       <OrderDetailsModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}

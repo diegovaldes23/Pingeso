@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <div
       className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 ${
-        isCollapsed ? "w-20" : "w-60"
+        isCollapsed ? "w-20" : "w-50"
       }`}
     >
       {/* Botón para colapsar/expandir */}
@@ -40,48 +40,6 @@ const Sidebar = () => {
           isCollapsed ? "items-center justify-center" : ""
         }`}
       >
-        {/* Opción Inicio */}
-        <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
-            isCollapsed ? "justify-center" : "justify-start"
-          }`}
-        >
-          <Link
-            to="/"
-            className="flex items-center w-full p-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
-              <path fill="white" d="M21 20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.49a1 1 0 0 1 .386-.79l8-6.223a1 1 0 0 1 1.228 0l8 6.223a1 1 0 0 1 .386.79z"/>
-            </svg>
-            {!isCollapsed && (
-              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
-                Inicio
-              </span>
-            )}
-          </Link>
-        </li>
-
-        {/* Agregar Pedido */}
-        <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
-            isCollapsed ? "justify-center" : "justify-start"
-          }`}
-        >
-          <Link
-            to="/add-order"
-            className="flex items-center w-full p-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 20 20">
-              <path fill="white" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20"/>
-            </svg>
-            {!isCollapsed && (
-              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
-                Agregar pedido
-              </span>
-            )}
-          </Link>
-        </li>
-
         {/* Visualización de pedidos */}
         <li
           className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
@@ -106,11 +64,34 @@ const Sidebar = () => {
             </svg>
             {!isCollapsed && (
               <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
-                Ver pedidos
+                Inicio
               </span>
             )}
           </Link>
         </li>
+        
+        {/* Agregar Pedido */}
+        <li
+          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+        >
+          <Link
+            to="/add-order"
+            className="flex items-center w-full p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 20 20">
+              <path fill="white" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20"/>
+            </svg>
+            {!isCollapsed && (
+              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                Agregar pedido
+              </span>
+            )}
+          </Link>
+        </li>
+
+        
 
         {/* Estadísticas */}
         <li

@@ -30,6 +30,14 @@ const FilterAndSort = ({ setFilteredOrders }) => {
   // Estado para el ordenamiento
   const [sortBy, setSortBy] = useState(''); // "date" o "total"
   const [sortOrder, setSortOrder] = useState(''); // "asc" o "desc"
+  const [orderStatus, setOrderStatus] = useState('');
+
+  const statusOptions = [
+    'Pendiente',
+    'En proceso',
+    'Completada',
+    'Cancelada'
+  ];
 
   // Función para filtrar los pedidos
   const applyFilters = () => {
@@ -42,7 +50,7 @@ const FilterAndSort = ({ setFilteredOrders }) => {
     if (endDate) filtered = filtered.filter(order => new Date(order.order_date) <= new Date(endDate));
     if (customerType) filtered = filtered.filter(order => order.customerType === customerType);
     if (purchaseSource) filtered = filtered.filter(order => order.purchaseSource === purchaseSource);
-    if (status) filtered = filtered.filter(order => order.status === status);
+    if (orderStatus) filtered = filtered.filter(order => order.status === orderStatus);
     if (productName) {
       filtered = filtered.filter(order =>
         order.products.some(product => product.name.toLowerCase().includes(productName.toLowerCase()))
@@ -237,6 +245,24 @@ const FilterAndSort = ({ setFilteredOrders }) => {
 
                 </div>
 
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 mt-4">
+                        Estado del pedido
+                    </label>
+                    <select
+                        value={orderStatus}
+                        onChange={(e) => setOrderStatus(e.target.value)}
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5 h-9 p-2"
+                    >
+                        <option value="">Todos los estados</option>
+                        {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                            {status}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
+
                   <button
                     onClick={applyFilters}
                     className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -294,6 +320,7 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                 </div>
               )}
             </div>
+
     
             {/* Botón Restablecer */}
             <button
