@@ -79,12 +79,16 @@ const HomePage = () => {
         >
           Todos
         </button>
+
         <button
           className="w-20 h-20 border-4 border-red-500 rounded-full flex items-center justify-center text-xl font-bold text-red-500"
           onClick={() => handleFilterClick('Cancelada')}
         >
           {counts.Cancelada}
+          
         </button>
+
+
         <button
           className="w-20 h-20 border-4 border-yellow-500 rounded-full flex items-center justify-center text-xl font-bold text-yellow-500"
           onClick={() => handleFilterClick('Pendiente')}

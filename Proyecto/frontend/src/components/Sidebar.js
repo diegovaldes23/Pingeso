@@ -16,7 +16,7 @@ const Sidebar = () => {
     >
       {/* Botón para colapsar/expandir */}
       <div
-        className={`p-4 cursor-pointer text-center hover:bg-purple-600 transition-all duration-300 ${
+        className={`p-6 cursor-pointer text-center hover:bg-purple-600 transition-all duration-300 ${
           isCollapsed ? "justify-center" : "justify-start"
         }`}
         onClick={toggleSidebar}
@@ -42,7 +42,7 @@ const Sidebar = () => {
       >
         {/* Visualización de pedidos */}
         <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >
@@ -72,7 +72,7 @@ const Sidebar = () => {
         
         {/* Agregar Pedido */}
         <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >
@@ -95,7 +95,7 @@ const Sidebar = () => {
 
         {/* Estadísticas */}
         <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >
@@ -115,7 +115,7 @@ const Sidebar = () => {
         </li>
         {/* Excel */}
         <li
-          className={`flex items-center p-2 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >
