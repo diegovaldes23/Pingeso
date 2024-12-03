@@ -14,7 +14,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    private String storeIdString = "5336632";
+    String storeIdString = "3806794";
     Long storeId = Long.parseLong(storeIdString);
 
     @GetMapping("/products")
@@ -79,10 +79,12 @@ public class ProductController {
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
+    /*
     @DeleteMapping("/products/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId) {
         productService.deleteProduct(storeId, productId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+    */
 
 }

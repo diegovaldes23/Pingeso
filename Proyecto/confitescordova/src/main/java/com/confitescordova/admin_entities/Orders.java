@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -44,11 +45,9 @@ public class Orders {
 
 
     ////
-    private String city;
     private String email;
 
     ////
     private LocalDate creation_date; // fecha de creación de la orden
-    private String dispatch; // Despacho
     private String comment;
 }

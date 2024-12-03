@@ -1,5 +1,6 @@
 package com.confitescordova.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -16,7 +17,8 @@ public class Order {
     private String contact_phone; // telefono comprador
     private String contact_identification; // id del comprador (CPF/CNPJ/DNI/CUIT)
     private Integer number; // Número único que identifica un pedido que utilizan el dueño de la tienda y los clientes
-    private String completed_at; // información sobre la fecha en la que se creó el pedido
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    private Object completed_at; // información sobre la fecha en la que se creó el pedido
     private List<String> attributes; // lista con los atributos personalizados para este pedido
     private Customer customer; // Cliente que compró este pedido
     private List<Product> products; // Listado de productos adquiridos por el customer
@@ -29,7 +31,7 @@ public class Order {
     private Double total_usd; // Precio total del pedido en dólares estadounidenses
     private String currency; // Moneda del gasto total 
     private String language; // Idioma del pedido utilizado por el cliente durante el proceso de pago
-    private Long gateway; // ID del proveedor de pagos que procesó la transacción de pago del pedido.
+    private String gateway; // ID del proveedor de pagos que procesó la transacción de pago del pedido.
     private String gateway_id; // [Solo lectura] ID de transacción externa utilizada por el proveedor de pagos.
     private String gateway_name; // [Solo lectura] Nombre del proveedor de pago del pedido.
     private String shipping; // El método de envío utilizado
@@ -37,7 +39,8 @@ public class Order {
     private String shipping_store_branch_name; // Si se va a recoger el pedido, muestra el nombre de la sucursal de la tienda.
     private String gateway_link; //	URL de la página de detalles de la transacción (nulo para método de pago personalizado)
     private String shipping_carrier_name; // El nombre del transportista. Si el método de envío es personalizado, entonces es nulo.
-    private String shipping_address;
+
+    private Address shipping_address;
     private String shipping_tracking_number;
     private Integer shipping_min_days;
     private Integer shipping_max_days;
@@ -46,7 +49,7 @@ public class Order {
     private String shipping_option;
     private String shipping_option_code;
     private String shipping_option_reference;
-    private String shipping_pickup_details;
+    private Object shipping_pickup_details;
     private String shipping_tracking_url;
     private String billing_name;
     private String billing_phone;
@@ -65,7 +68,7 @@ public class Order {
     private String billing_trade_name;
     private String billing_state_registration;
     private String billing_document_type;
-    private String shipping_suboption;
+    private Object shipping_suboption;
     private Map<String, Object> extra;
     private String storefront;
     private Double weight;
@@ -77,15 +80,18 @@ public class Order {
     private String shipping_status;
     private String next_action;
     private Map<String, Object> payment_details;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private String shipped_at;
     private String paid_at;
     private String cancel_reason;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private String created_at;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private String updated_at;
     private String landing_url;
     private Map<String, Object> client_details;
     private String app_id;
 
-    
+
 
 }

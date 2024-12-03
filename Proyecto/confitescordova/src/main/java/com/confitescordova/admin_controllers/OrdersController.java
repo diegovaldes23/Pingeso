@@ -8,11 +8,7 @@ import com.confitescordova.admin_services.CommuneOrderCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.confitescordova.admin_services.OrdersService;
 
@@ -109,5 +105,27 @@ public class OrdersController {
     public ResponseEntity<Void> deleteProductQuantity(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/store")
+    public ResponseEntity<String> handleStoreEvent(@RequestBody String payload) {
+        // Aquí procesas el payload de Tiendanube para los eventos de la tienda
+        System.out.println("Evento recibido en store: " + payload);
+        return ResponseEntity.ok("Evento procesado");
+    }
+
+    @PostMapping("/customers")
+    public ResponseEntity<String> handleCustomerEvent(@RequestBody String payload) {
+        // Aquí procesas el payload de Tiendanube para los eventos de los clientes
+        System.out.println("Evento recibido en customers: " + payload);
+        return ResponseEntity.ok("Evento procesado");
+    }
+
+    @PostMapping("/customers/data-request")
+    public ResponseEntity<String> handleCustomerDataRequest(@RequestBody String payload) {
+        // Aquí procesas el payload de Tiendanube para las solicitudes de datos del cliente
+        System.out.println("Solicitud de datos del cliente: " + payload);
+        // Devuelves los datos del cliente según lo solicitado
+        return ResponseEntity.ok("Datos del cliente enviados");
     }
 }

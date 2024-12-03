@@ -24,10 +24,15 @@ public class ProductsService {
     }
 
     public Products saveProduct(Products order) {
+        if (order.getDescription() != null && order.getDescription().length() > 255) {
+            order.setDescription(order.getDescription().substring(0, 255));  // Recorta a 255 caracteres
+        }
         return productsRepository.save(order);
     }
 
     public void deleteProduct(Long id) {
         productsRepository.deleteById(id);
     }
+
+
 }

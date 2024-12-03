@@ -1,11 +1,6 @@
 package com.confitescordova.admin_entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +18,8 @@ public class Products {
     private Long id_product;
 
     private String name; // Nombre del cliente
+
+    @Transient
     private String description; // Descripción del producto
     private Double cost; // Precio del producto
 }

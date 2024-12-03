@@ -21,12 +21,19 @@ public class ProductService extends BaseService{
     private ProductsRepository productsRepository;
 
     private static final String API_BASE_URL = "https://api.tiendanube.com/v1/{store_id}/products";
-    private String storeIdString = "5336632";
+    String storeIdString = "3806794";
     Long storeId = Long.parseLong(storeIdString);
 
     @PostConstruct
     public void init(){
-        saveProducts(getAllProducts(storeId));
+        try {
+            List<Product> products = getAllProducts(storeId);
+            saveProducts(products);
+        } catch (Exception e) {
+            // Loguea el error para obtener más detalles
+            System.err.println("Error durante la inicialización: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public List<Product> getAllProducts(Long storeID) {
@@ -45,7 +52,7 @@ public class ProductService extends BaseService{
     public Products convertToEntity(Product productCompleto) {
         Products products = new Products();
         products.setId_product(productCompleto.getId());
-        String espName = productCompleto.getName().get("es");
+        String espName = productCompleto.getName();
         products.setName(espName);
         String espDescription = (productCompleto.getDescription().get("es"));
         products.setDescription(espDescription);

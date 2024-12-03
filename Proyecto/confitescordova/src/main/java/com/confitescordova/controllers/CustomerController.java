@@ -15,7 +15,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    private String storeIdString = "5336632";
+    private String storeIdString = "3806794";
     Long storeId = Long.parseLong(storeIdString);
 
     @GetMapping("/customers")

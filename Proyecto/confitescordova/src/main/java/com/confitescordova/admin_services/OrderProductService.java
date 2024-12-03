@@ -67,13 +67,8 @@ public class OrderProductService {
         String description = (String) orderJson.get("description"); order.setDescription(description);
         String address = (String) orderJson.get("address"); order.setAddress(address);
 
-
-        // CREO Q YA NO VA CIUDAD
-        String city = (String) orderJson.get("city"); order.setCity(city);// Ciudad
-
         String email = (String) orderJson.get("email"); order.setEmail(email);
         order.setCreation_date(LocalDate.now()); // la fecha de creación sería la actual
-        String dispatch = (String) orderJson.get("dispatch"); order.setDispatch(dispatch);
         String comment = (String) orderJson.get("comment"); order.setComment(comment);
         Orders new_order = ordersRepository.save(order); // Guardo orden
 

@@ -12,7 +12,7 @@ public class BaseService {
     @Autowired
     protected RestTemplate restTemplate;
 
-    protected static final String ACCESS_TOKEN = "914c5d5d06c8c773a4078641a586893530b64298";
+    protected static final String ACCESS_TOKEN = "c37f1e0d618fc3dd6fb74c78f15975a89a55f022";
     protected static final String USER_AGENT = "MyApp (name@email.com)";
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
