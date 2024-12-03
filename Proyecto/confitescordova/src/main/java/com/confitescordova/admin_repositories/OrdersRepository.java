@@ -8,6 +8,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.confitescordova.admin_entities.Orders;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrdersRepository extends CrudRepository<Orders, Long>{
     @Query("SELECT new com.confitescordova.admin_services.CommuneOrderCountDTO(o.commune, COUNT(o), SUM(o.total)) " +
@@ -20,5 +21,6 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
             "GROUP BY o.purchase_source")
     List<SalesByChannelDTO> salesByChannel();
 
+    Optional<Orders> findById(Long id);
     //List<Orders> findAllByOrdersByTotalDesc();
 } 

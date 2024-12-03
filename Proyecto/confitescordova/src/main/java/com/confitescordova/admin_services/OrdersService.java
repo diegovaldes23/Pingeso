@@ -16,8 +16,6 @@ public class OrdersService {
     @Autowired
     private OrdersRepository orderRepository;
 
-
-
     public List<Orders> getAllOrders() {
         return (List<Orders>) orderRepository.findAll();
     }
@@ -35,26 +33,9 @@ public class OrdersService {
         return orderRepository.salesByChannel();
     }
 
-
-    /*
-    public Orders createOrder(Orders order, List<OrderProduct> orderProducts) {
-        for (OrderProduct op : orderProducts) {
-            op.setOrder(order); // Establecer la relación bidireccional
-        }
-        order.setOrderProducts(orderProducts);
+    public Orders save(Orders order){
         return orderRepository.save(order);
     }
-
-     */
-
-
-
-
-
-
-
-
-
 
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);

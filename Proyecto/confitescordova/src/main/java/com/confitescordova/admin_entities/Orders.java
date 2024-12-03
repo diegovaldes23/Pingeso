@@ -22,7 +22,7 @@ public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
-    private Long id_order; // atributo llave
+    private Long id; // atributo llave
     private String name; // Nombre del cliente
     private String phone; // Telefono
     private String region; // Región del cliente

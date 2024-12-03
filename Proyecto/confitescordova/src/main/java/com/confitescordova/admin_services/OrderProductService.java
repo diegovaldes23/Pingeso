@@ -88,7 +88,7 @@ public class OrderProductService {
                 Double cost_p = product.getCost(); // este costo es acorde al costo anterior del producto (si cambia no cambia este)
 
                 OrderProduct op = new OrderProduct();
-                op.setId_order(new_order.getId_order());
+                op.setId_order(new_order.getId());
                 op.setId_product(id_p);
                 op.setQuantity(quantity);
                 op.setCost(cost_p * quantity);
