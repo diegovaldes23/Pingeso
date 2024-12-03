@@ -1,7 +1,8 @@
 package com.confitescordova.services;
 
+import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_entities.Orders;
-import com.confitescordova.admin_repositories.OrdersRepository;
+import com.confitescordova.admin_services.CustomersService;
 import com.confitescordova.admin_services.OrdersService;
 import com.confitescordova.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class OrderSyncService implements CommandLineRunner {
 
     @Autowired
     private OrdersService ordersService;
+
+    @Autowired
+    private CustomersService customersService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -49,7 +53,17 @@ public class OrderSyncService implements CommandLineRunner {
     private Orders convertTiendanubeOrder(Order tnOrder) {
         Orders localOrder = new Orders();
         localOrder.setName(tnOrder.getCustomer().getName());
-        localOrder.setPhone(tnOrder.getCustomer().getPhone());
+        String formattedPhone = formatPhoneNumber(tnOrder.getCustomer().getPhone());
+        localOrder.setPhone(formattedPhone);
+
+        saveCustomerIfNotExists(tnOrder.getCustomer().getId(), tnOrder.getCustomer().getName(), formattedPhone);
+
+        if(customersService.existsCustomerById(tnOrder.getCustomer().getId())){
+            localOrder.setCustomer_type("Antiguo");
+        } else {
+            localOrder.setCustomer_type("Nuevo");
+        }
+
         localOrder.setRegion(tnOrder.getBilling_province());
         localOrder.setCommune(tnOrder.getCustomer().getBilling_city());
         localOrder.setInitial_payment(0.0);
@@ -64,14 +78,15 @@ public class OrderSyncService implements CommandLineRunner {
         // Establecer la fecha en la orden
         localOrder.setOrder_date(createdAt.toLocalDate()); // Solo la fecha
         localOrder.setShipping_cost(tnOrder.getShipping_cost_owner());
-        localOrder.setSubtotal(tnOrder.getSubtotal());
-        localOrder.setTotal(tnOrder.getTotal());
+        localOrder.setSubtotal(tnOrder.getTotal());
+        localOrder.setTotal(tnOrder.getTotal() + tnOrder.getShipping_cost_owner());
         localOrder.setStatus("Pendiente");
         localOrder.setPurchase_source("Tiendanube");
-        localOrder.setAddress(tnOrder.getShipping_address().getAddress());
+        localOrder.setAddress(tnOrder.getShipping_address().getAddress() + " " + tnOrder.getShipping_address().getNumber() + ", " + tnOrder.getShipping_address().getFloor());
         localOrder.setEmail(tnOrder.getCustomer().getEmail());
         localOrder.setCreation_date(LocalDate.now());
         localOrder.setDelivery_date(LocalDate.now());
+        localOrder.setDescription(tnOrder.getNote());
 
         return localOrder;
     }
@@ -93,6 +108,37 @@ public class OrderSyncService implements CommandLineRunner {
         if (!existingOrder.getStatus().equals(newOrder.getStatus())) {
             existingOrder.setStatus(newOrder.getStatus());
             ordersService.save(existingOrder);
+        }
+    }
+
+    private String formatPhoneNumber(String phone) {
+        // Eliminar cualquier espacio, guión u otros caracteres no numéricos
+        phone = phone.replaceAll("[^0-9]", "");
+
+        // Verificar si ya comienza con +569
+        if (phone.length() == 8) {
+            // Si empieza con 9 y tiene 8 dígitos, agregar +569
+            return "+569" + phone;
+        } else if (phone.startsWith("+569")) {
+            // Si ya empieza con +569, devolverlo tal cual
+            return phone;
+        } else if (phone.startsWith("569")) {
+            return "+" + phone;
+        } else if (phone.startsWith("9") && phone.length() == 9) {
+            return "+56" + phone;
+        } else {
+            // Si no empieza con +569, agregar +569 al principio
+            return "+569" + phone;
+        }
+    }
+
+    private void saveCustomerIfNotExists(Long customerId, String name, String phone){
+        if(!customersService.existsCustomerById(customerId)){
+            Customer newCustomer = new Customer();
+            newCustomer.setId(customerId);
+            newCustomer.setName(name);
+            newCustomer.setPhone(phone);
+            customersService.saveCustomer(newCustomer);
         }
     }
 }

@@ -69,7 +69,6 @@ public class OrderProductService {
 
         String email = (String) orderJson.get("email"); order.setEmail(email);
         order.setCreation_date(LocalDate.now()); // la fecha de creación sería la actual
-        String comment = (String) orderJson.get("comment"); order.setComment(comment);
         Orders new_order = ordersRepository.save(order); // Guardo orden
 
         ArrayList<Map<String, Object>> orders_cant = (ArrayList<Map<String, Object>>) orderJson.get("orders"); // obtengo detalle de orden

@@ -49,5 +49,4 @@ public class Orders {
 
     ////
     private LocalDate creation_date; // fecha de creación de la orden
-    private String comment;
 }
