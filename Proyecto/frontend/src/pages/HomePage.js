@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useGlobalContext } from '../utils/GlobalModelContext';
 import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
 
@@ -119,6 +120,15 @@ const HomePage = () => {
           order={selectedOrder}
         />
       </div>
+      {/* Botón para redirigir a la página de creación de pedido */}
+        <Link
+        to="/add-order"
+        className="fixed bottom-6 right-6 bg-purple-600 text-white p-4 rounded-full shadow-lg hover:bg-purple-700 transition-colors"
+        >
+        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 21 21">
+            <path fill="white" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20"/>
+        </svg>
+        </Link>
     </div>
   );
 };

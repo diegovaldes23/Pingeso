@@ -10,6 +10,7 @@ function AddOrderPage() {
     const [date, setDate] = useState('');
     const [address, setAddress] = useState(''); // Nueva variable para dirección
     const [email, setEmail] = useState(''); // Nueva variable para email
+    const [description, setDescription] = useState(''); // Nueva variable para descripcion
     const [comment, setComment] = useState(''); // Nueva variable para comentario
     const [dispatch, setDispatch] = useState(''); // Nueva variable para dispatch
     const [products, setProducts] = useState([{ productId: '', quantity: '', price: 0 }]);
@@ -93,19 +94,23 @@ function AddOrderPage() {
         // Preparar datos para enviar
         const orderData = {
             name: customerName,
-            phone: phone,
+            phone,
+            region,
+            commune,
             order_date: orderDateTime,
-            dispatch, // Puedes agregar un campo para seleccionar esto
-            city: `${region}, ${commune}`,
-            address, // Agregar un campo para la dirección
-            email,
-            comment,
-            subtotal: parseFloat(subtotal),
-            shipping_cost: parseFloat(deliveryCost),
-            initial_payment: parseFloat(initialPayment),
-            status: status,
             customer_type: customerType,
-            source: purchaseSource,
+            purchase_source: purchaseSource,
+            shipping_cost: parseFloat(deliveryCost),
+            subtotal: parseFloat(subtotal),
+            initial_payment: parseFloat(initialPayment),
+            status,
+
+            description,
+            address, // Agregar un campo para la dirección
+            city: `${region}, ${commune}`,
+            email,
+            dispatch, // Puedes agregar un campo para seleccionar esto
+            comment,
             orders: products.map(product => ({
                 id_product: parseInt(product.productId, 10),
                 quantity: parseInt(product.quantity, 10),
@@ -187,6 +192,18 @@ function AddOrderPage() {
                         onChange={(e) => setAddress(e.target.value)}
                         className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         placeholder="Ej: Walker Martínez 3142"
+                    />
+                </div>
+
+                {/* Descripción */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Descripción del pedido (Opcional)</label>
+                    <input
+                        type="text"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        placeholder="Ej: Pedido para San Valentín"
                     />
                 </div>
                 

@@ -8,6 +8,9 @@ import MenuPage from "./pages/MenuPage";
 import CostsPage from "./pages/CostsPage";
 import AddOrderPage from "./pages/AddOrderPage";
 import Dashboard from "./pages/Dashboard";
+import ExcelPage from "./pages/ExcelPage";
+
+import New_Statistics from "./pages/New_Statistics"
 
 const App = () => {
   return (
@@ -23,6 +26,8 @@ const App = () => {
               <Route path="/costs" element={<CostsPage />} />
               <Route path="/statistics" element={<Dashboard />} />
               <Route path="/add-order" element={<AddOrderPage />} />
+              <Route path="/excel" element={<ExcelPage />}/>
+              <Route path="/new_statistics" element={<New_Statistics />} />
             </Routes>
           </div>
         </div>

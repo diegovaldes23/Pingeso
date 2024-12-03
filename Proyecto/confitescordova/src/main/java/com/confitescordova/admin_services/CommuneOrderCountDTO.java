@@ -5,14 +5,14 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class CityOrderCountDTO {
+public class CommuneOrderCountDTO {
     // Getters y setters
-    private String city;
+    private String commune;
     private Long orderCount;
     private Double total;
 
-    public CityOrderCountDTO(String city, Long orderCount, Double total) {
-        this.city = city;
+    public CommuneOrderCountDTO(String commune, Long orderCount, Double total) {
+        this.commune = commune;
         this.orderCount = orderCount;
         this.total = total;
     }

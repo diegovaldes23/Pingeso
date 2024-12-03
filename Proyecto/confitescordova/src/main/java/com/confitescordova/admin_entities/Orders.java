@@ -25,19 +25,30 @@ public class Orders {
     private Long id_order; // atributo llave
     private String name; // Nombre del cliente
     private String phone; // Telefono
-    private String city;
+    private String region; // Región del cliente
+    private String commune; // Comuna del cliente
     private LocalDate order_date; // fecha de orden
+    private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
+    private String purchase_source; // Fuente de la compra (Organico, Facebook Adds)
+
+    // Products
+
+    private Double shipping_cost; // costo de envio
+    private Double subtotal; // Subtotal (costo de los productos)
+    private Double total; // Total (costo productos + costo de envio)
+    private Double initial_payment; // Pago inicial
+    private String status; // Estado
+    private LocalDate delivery_date; // fecha de entrega (cuando se completó el pedido)
+    private String description;
+    private String address; // Dirección
+
+
+    ////
+    private String city;
+    private String email;
+
+    ////
     private LocalDate creation_date; // fecha de creación de la orden
     private String dispatch; // Despacho
-    private String address; // Dirección
-    private Double total; // Total (costo productos + costo de envio)
-    private Double subtotal; // Subtotal (costo de los productos)
-    private Double shipping_cost; // costo de envio
-    private Double initialPayment; // Pago inicial
-    private String status; // Estado
-    private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
-    private String source; // Fuente de la compra (Organico, Facebook Adds)
-    private LocalDate delivery_date; // orden de entrega
-    private String email;
     private String comment;
 }

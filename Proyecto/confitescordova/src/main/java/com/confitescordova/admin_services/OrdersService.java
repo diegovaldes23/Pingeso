@@ -1,14 +1,7 @@
 package com.confitescordova.admin_services;
 
-import java.time.LocalDate;
 import java.util.*;
 
-import com.confitescordova.admin_entities.OrderProduct;
-import com.confitescordova.admin_repositories.ProductsRepository;
-import com.confitescordova.entities.Order;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +27,8 @@ public class OrdersService {
     }
 
     // Para obtener los productos mas vendidos
-    public List<CityOrderCountDTO> salesByCommune() {
-        return orderRepository.countOrdersByCity();
+    public List<CommuneOrderCountDTO> salesByCommune() {
+        return orderRepository.countOrdersByCommune();
     }
 
     public List<SalesByChannelDTO> salesByChannel() {
