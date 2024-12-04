@@ -38,23 +38,26 @@ const OrdersList = ({ orders }) => {
       <tbody>
         {ordersToDisplay.length > 0 ? (
           ordersToDisplay.map((order) => (
-            <tr key={order.id_order} className="hover:bg-gray-100">
+            <tr key={order.id_order} className="hover:bg-gray-100 h-12 border"> {/* Establecemos la altura de la fila */}
               <td className="py-2 px-4 border">{order.id}</td>
-              <td className="py-2 px-4 border">{order.name}</td>
+              <td className="py-2 px-4 border h-full max-w-26 line-clamp-2 overflow-hidden">
+                {order.name}
+              </td>
               <td className="py-2 px-4 border">{order.phone}</td>
               <td className="py-2 px-4 border">{order.commune}</td>
-              <td className="py-2 px-4 border">{order.address}</td>
-              <td className="py-2 px-4 border">{order.order_date ? order.order_date.toString() : 'Fecha no disponible'}</td>
               <td className="py-2 px-4 border">
-                {order.products.map((product, index) => (
-                  <div key={index}>{product.name}</div>
-                ))}
+                <div className="line-clamp-2">{order.address}</div> {/* Usamos line-clamp-2 para la descripción */}
+              </td>
+              <td className="py-2 px-4 border">{order.order_date ? order.order_date.toString() : 'Fecha no disponible'}</td>
+              <td className="py-2 px-4 h-full truncate max-w-12">
+                {/* Unir los productos con una coma y aplicar el overflow */}
+                {order.orderProducts.map((product, index) => product.name).join(', ')}
               </td>
               <td className="py-2 px-4 border font-bold">
                 {order.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border">
-              {(order.shipping_cost || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+                {(order.shipping_cost || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border font-bold">
                 {order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
@@ -76,7 +79,9 @@ const OrdersList = ({ orders }) => {
                 {order.delivery_date ? order.delivery_date : 'No asignada'}
               </td>
               {/* Nueva columna: Descripción */}
-              <td className="py-2 px-4 border">{order.description}</td>
+              <td className="py-2 px-4 border">
+                <div className="line-clamp-2">{order.description}</div> {/* Usamos line-clamp-2 para la descripción */}
+              </td>
               <td className="py-2 px-4 border text-center">
                 <button
                   onClick={() => handleViewDetails(order)}

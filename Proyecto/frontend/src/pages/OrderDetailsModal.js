@@ -15,7 +15,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
 
         <div className="border-b-2 border-dashed pb-4 mb-4">
           <h2 className="text-center font-bold mb-2">RESUMEN BOLETA</h2>
-          <p className="text-center text-sm">RUT: 13.111.111-1</p>
+          <p className="text-center text-sm">RUT: 77.130.395-1</p>
           <p className="text-center text-sm">N° {order.id}</p>
           <p className="text-center text-sm">CONFITES CÓRDOVA</p>
           <p className="text-center text-sm">FECHA EMISIÓN: {order.order_date}</p>
@@ -46,8 +46,8 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
             <span className="font-bold w-40">Tipo de compra:</span>
             <span>{order.purchase_source}</span>
           </div>
-          <div className="flex">
-            <span className="font-bold block w-40">Descripción:</span>
+          <div className="flex h-[100px] overflow-hidden">
+            <span className="font-bold block w-40 order-description whitespace-nowrap overflow-hidden text-ellipsis">Descripción:</span>
             <span>{order.description}</span>
           </div>
           <div className="flex ">
@@ -61,16 +61,16 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
             <thead>
               <tr className="border-b">
                 <th className="text-left w-20">CANTIDAD</th>
-                <th className="text-left">DESCRIPCION</th>
+                <th className="text-left">PRODUCTO</th>
                 <th className="text-right">VALOR</th>
               </tr>
             </thead>
             <tbody>
-              {order.products.map((product, index) => (
+              {order.orderProducts.map((product, index) => (
                 <tr key={index} className="border-b border-dashed">
                   <td className="py-1">{product.quantity}</td>
                   <td className="py-1">{product.name}</td>
-                  <td className="py-1 text-right">${product.price.toLocaleString()}</td>
+                  <td className="py-1 text-right">${product.unit_cost.toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

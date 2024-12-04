@@ -10,7 +10,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 overflow-y-auto ${
         isCollapsed ? "w-20" : "w-50"
       }`}
     >

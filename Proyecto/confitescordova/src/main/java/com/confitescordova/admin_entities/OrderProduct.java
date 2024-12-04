@@ -1,5 +1,7 @@
 package com.confitescordova.admin_entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,5 +32,6 @@ public class OrderProduct {
 
     @ManyToOne
     @JoinColumn(name = "id_order", referencedColumnName = "id", updatable = false)
+    @JsonBackReference  // No serializa esta propiedad
     private Orders order;
 }
