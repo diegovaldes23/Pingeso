@@ -9,6 +9,8 @@ const OrdersList = ({ orders }) => {
     setIsModalOpen(true);
   };
 
+  const ordersToDisplay = orders.slice(0, 10);
+
   const handleStateChange = (orderId, newStatus) => {
     handleStatusChange(orderId, newStatus); // Llamar la función del contexto para actualizar el estado
   };
@@ -34,15 +36,15 @@ const OrdersList = ({ orders }) => {
         </tr>
       </thead>
       <tbody>
-        {orders.length > 0 ? (
-          orders.map((order) => (
+        {ordersToDisplay.length > 0 ? (
+          ordersToDisplay.map((order) => (
             <tr key={order.id_order} className="hover:bg-gray-100">
-              <td className="py-2 px-4 border">{order.id_order}</td>
+              <td className="py-2 px-4 border">{order.id}</td>
               <td className="py-2 px-4 border">{order.name}</td>
               <td className="py-2 px-4 border">{order.phone}</td>
               <td className="py-2 px-4 border">{order.commune}</td>
               <td className="py-2 px-4 border">{order.address}</td>
-              <td className="py-2 px-4 border">{order.order_date}</td>
+              <td className="py-2 px-4 border">{order.order_date ? order.order_date.toString() : 'Fecha no disponible'}</td>
               <td className="py-2 px-4 border">
                 {order.products.map((product, index) => (
                   <div key={index}>{product.name}</div>
@@ -52,7 +54,7 @@ const OrdersList = ({ orders }) => {
                 {order.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border">
-                {order.shipping_cost.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
+              {(order.shipping_cost || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}
               </td>
               <td className="py-2 px-4 border font-bold">
                 {order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}

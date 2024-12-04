@@ -43,7 +43,8 @@ public class Orders {
     private String description;
     private String address; // Dirección
 
-
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderProduct> orderProducts;
     ////
     private String email;
 

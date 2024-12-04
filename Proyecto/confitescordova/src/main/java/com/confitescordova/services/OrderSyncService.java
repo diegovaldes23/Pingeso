@@ -1,10 +1,13 @@
 package com.confitescordova.services;
 
 import com.confitescordova.admin_entities.Customer;
+import com.confitescordova.admin_entities.OrderProduct;
 import com.confitescordova.admin_entities.Orders;
 import com.confitescordova.admin_services.CustomersService;
+import com.confitescordova.admin_services.OrderProductService;
 import com.confitescordova.admin_services.OrdersService;
 import com.confitescordova.entities.Order;
+import com.confitescordova.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +30,9 @@ public class OrderSyncService implements CommandLineRunner {
 
     @Autowired
     private CustomersService customersService;
+
+    @Autowired
+    private OrderProductService orderProductService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -52,6 +59,8 @@ public class OrderSyncService implements CommandLineRunner {
 
     private Orders convertTiendanubeOrder(Order tnOrder) {
         Orders localOrder = new Orders();
+        ArrayList<OrderProduct> orderProducts = new ArrayList<>();
+
         localOrder.setName(tnOrder.getCustomer().getName());
         String formattedPhone = formatPhoneNumber(tnOrder.getCustomer().getPhone());
         localOrder.setPhone(formattedPhone);
@@ -88,20 +97,48 @@ public class OrderSyncService implements CommandLineRunner {
         localOrder.setDelivery_date(LocalDate.now());
         localOrder.setDescription(tnOrder.getNote());
 
+        for (Product product : tnOrder.getProducts()) {
+            OrderProduct orderProduct = new OrderProduct();
+            orderProduct.setId_product(product.getId());
+            orderProduct.setName(product.getName());
+            orderProduct.setDescription("No disponible");
+            orderProduct.setQuantity(product.getQuantity());
+
+            double discount = tnOrder.getDiscount() / tnOrder.getSubtotal();
+            orderProduct.setUnit_cost(product.getPrice() * (1 - discount));
+            orderProduct.setCost(orderProduct.getUnit_cost() * product.getQuantity());
+            orderProduct.setOrder(localOrder);
+
+            orderProducts.add(orderProduct);
+        }
+
+        localOrder.setOrderProducts(orderProducts);
+
         return localOrder;
     }
 
     private void saveOrderIfNotExists(Orders order, Long externalOrderId) {
+        // Verificar si ya existe la orden
         Optional<Orders> existingOrderOpt = ordersService.getOrderById(externalOrderId);
         if (existingOrderOpt.isPresent()) {
-            // Si ya existe, puedes actualizar la orden si es necesario
+            // Si la orden ya existe, actualízala si es necesario
             Orders existingOrder = existingOrderOpt.get();
             updateOrderIfNeeded(existingOrder, order);
         } else {
-            ordersService.getOrderById(externalOrderId);
-            ordersService.save(order);
+            // Si la orden no existe, guárdala
+            Orders savedOrder = ordersService.save(order);
+
+            // Asegúrate de que la lista de productos no sea null o vacía antes de guardarlos
+            if (order.getOrderProducts() != null && !order.getOrderProducts().isEmpty()) {
+                // Asocia el Order a los productos antes de persistirlos
+                for (OrderProduct product : order.getOrderProducts()) {
+                    product.setOrder(savedOrder);  // Establecer la relación
+                }
+                saveOrderProducts(savedOrder, order.getOrderProducts());
+            }
         }
     }
+
 
     private void updateOrderIfNeeded(Orders existingOrder, Orders newOrder) {
         // Compara y actualiza los campos necesarios
@@ -141,4 +178,13 @@ public class OrderSyncService implements CommandLineRunner {
             customersService.saveCustomer(newCustomer);
         }
     }
+
+    private void saveOrderProducts(Orders order, List<OrderProduct> products) {
+        for (OrderProduct product : products) {
+
+            product.setOrder(order);  // Establece la relación con la orden
+            orderProductService.save(product);  // Guarda cada producto
+        }
+    }
+
 }

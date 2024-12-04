@@ -82,7 +82,6 @@ public class OrderProductService {
                 Double cost_p = product.getCost(); // este costo es acorde al costo anterior del producto (si cambia no cambia este)
 
                 OrderProduct op = new OrderProduct();
-                op.setId_order(new_order.getId());
                 op.setId_product(id_p);
                 op.setQuantity(quantity);
                 op.setCost(cost_p * quantity);
@@ -107,5 +106,9 @@ public class OrderProductService {
     // Para obtener los productos mas vendidos
     public List<ProductSalesDTO> getProductSales() {
         return orderProductRepository.findProductSales();
+    }
+
+    public void save(OrderProduct orderProduct) {
+        orderProductRepository.save(orderProduct);
     }
 }

@@ -18,12 +18,17 @@ public class OrderProduct {
 
     private long id_product; // id del producto pedido
 
-    private long id_order; // id de la orden
+    private String name;
 
     private Integer quantity; // Cantidad del producto en la orden
 
     private String description; // descripción del pedido
 
+    private Double unit_cost;
+
     private Double cost; // costo del pedido de producto (costo producto x cantidad)
 
+    @ManyToOne
+    @JoinColumn(name = "id_order", referencedColumnName = "id", updatable = false)
+    private Orders order;
 }

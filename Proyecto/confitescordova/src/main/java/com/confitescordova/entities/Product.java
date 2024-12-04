@@ -32,4 +32,6 @@ public class Product {
     private List<Variant> variants; // Variantes del producto
     private String tags; // Etiquetas del producto
     private List<Image> images; // Imágenes del producto
+    private Integer quantity;
+    private Double price;
 }

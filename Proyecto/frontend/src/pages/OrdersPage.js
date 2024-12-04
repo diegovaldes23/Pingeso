@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useGlobalContext } from '../utils/GlobalModelContext';
@@ -17,6 +17,11 @@ const OrdersPage = () => {
         setSelectedOrder, // Usamos el estado global
       } = useGlobalContext();
 
+    // Aquí puedes realizar alguna lógica adicional si lo necesitas
+    useEffect(() => {
+        // Este useEffect se podría usar si necesitas hacer algo después de cargar las órdenes
+        console.log(orders);
+    }, [orders]);
     const [currentPage, setCurrentPage] = useState(1);
     const [filteredOrders, setFilteredOrders] = useState(orders);
     const ordersPerPage = 7;
