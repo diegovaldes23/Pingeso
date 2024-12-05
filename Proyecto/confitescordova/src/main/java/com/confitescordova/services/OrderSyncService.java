@@ -40,18 +40,28 @@ public class OrderSyncService implements CommandLineRunner {
         syncOrders();
     }
 
-    @Scheduled(fixedRate = 900000) // Ejecutar cada 15 minutos
+    @Scheduled(fixedRate = 9000) // Ejecutar cada 15 minutos
     public void syncOrders() {
         Long storeID = 3806794L;
+        int page = 1;
+        int pageSize = 50; // O el tamaño de página que corresponda a la API
 
         try {
-            List<Order> tiendanubeOrders = orderService.getAllOrders(storeID);
-            for (Order tnOrder : tiendanubeOrders) {
-                Orders localOrder = convertTiendanubeOrder(tnOrder);
-                saveOrderIfNotExists(localOrder, Long.valueOf(tnOrder.getId()));
+            while (true) {
+                List<Order> tiendanubeOrders = orderService.getOrders(storeID, page, pageSize);
+
+                if (tiendanubeOrders.isEmpty()) {
+                    break; // Si no hay más órdenes, se detiene la paginación
+                }
+
+                for (Order tnOrder : tiendanubeOrders) {
+                    Orders localOrder = convertTiendanubeOrder(tnOrder);
+                    saveOrderIfNotExists(localOrder, Long.valueOf(tnOrder.getId()));
+                }
+
+                page++; // Avanza a la siguiente página
             }
         } catch (Exception e) {
-            // Manejo de errores
             System.err.println("Error sincronizando pedidos: " + e.getMessage());
             e.printStackTrace();
         }
@@ -95,7 +105,14 @@ public class OrderSyncService implements CommandLineRunner {
         localOrder.setEmail(tnOrder.getCustomer().getEmail());
         localOrder.setCreation_date(LocalDate.now());
         localOrder.setDelivery_date(LocalDate.now());
-        localOrder.setDescription(tnOrder.getNote());
+        localOrder.setExternalOrderId(tnOrder.getId());
+
+        // Verificar si 'note' es null antes de usarlo
+        if (tnOrder.getNote() != null) {
+            localOrder.setDescription(tnOrder.getNote().length() > 255 ? tnOrder.getNote().substring(0, 255) : tnOrder.getNote());
+        } else {
+            localOrder.setDescription("Sin descripción");  // O puedes asignar un valor predeterminado
+        }
 
         for (Product product : tnOrder.getProducts()) {
             OrderProduct orderProduct = new OrderProduct();
@@ -118,12 +135,13 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     private void saveOrderIfNotExists(Orders order, Long externalOrderId) {
-        // Verificar si ya existe la orden
-        Optional<Orders> existingOrderOpt = ordersService.getOrderById(externalOrderId);
+        // Verificar si ya existe la orden por ID de pedido externo
+        Optional<Orders> existingOrderOpt = ordersService.getOrderByExternalId(externalOrderId); // Cambié la búsqueda a buscar por externalOrderId
+
         if (existingOrderOpt.isPresent()) {
             // Si la orden ya existe, actualízala si es necesario
             Orders existingOrder = existingOrderOpt.get();
-            updateOrderIfNeeded(existingOrder, order);
+            updateOrderIfNeeded(existingOrder, order); // Si hay diferencias, se actualiza el pedido
         } else {
             // Si la orden no existe, guárdala
             Orders savedOrder = ordersService.save(order);
@@ -170,7 +188,15 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     private void saveCustomerIfNotExists(Long customerId, String name, String phone){
-        if(!customersService.existsCustomerById(customerId)){
+        Optional<Customer> existingCustomer = customersService.getCustomerById(customerId);
+        if(existingCustomer.isPresent()){
+            // Si el cliente ya existe, puedes actualizar la información si es necesario
+            Customer customer = existingCustomer.get();
+            customer.setName(name);
+            customer.setPhone(phone);
+            customersService.saveCustomer(customer);
+        } else {
+            // Si no existe, lo insertas
             Customer newCustomer = new Customer();
             newCustomer.setId(customerId);
             newCustomer.setName(name);
@@ -178,6 +204,7 @@ public class OrderSyncService implements CommandLineRunner {
             customersService.saveCustomer(newCustomer);
         }
     }
+
 
     private void saveOrderProducts(Orders order, List<OrderProduct> products) {
         for (OrderProduct product : products) {

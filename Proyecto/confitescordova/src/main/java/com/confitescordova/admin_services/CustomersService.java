@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomersService {
@@ -27,4 +28,9 @@ public class CustomersService {
     public boolean existsCustomerById(Long customerId) {
         return customerRepository.existsById(customerId);
     }
+
+    public Optional<Customer> getCustomerById(Long customerId) {
+        return customerRepository.findById(customerId);
+    }
+
 }

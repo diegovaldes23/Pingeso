@@ -23,4 +23,6 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
 
     Optional<Orders> findById(Long id);
     //List<Orders> findAllByOrdersByTotalDesc();
+
+    Optional<Orders> findByExternalOrderId(Long externalOrderId);
 } 

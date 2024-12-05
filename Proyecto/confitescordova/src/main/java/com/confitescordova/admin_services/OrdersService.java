@@ -37,6 +37,12 @@ public class OrdersService {
         return orderRepository.save(order);
     }
 
+    public Optional<Orders> getOrderByExternalId(Long externalOrderId) {
+        // Supongamos que tienes un campo 'externalOrderId' en tu entidad Orders para almacenar este ID único.
+        return orderRepository.findByExternalOrderId(externalOrderId);
+    }
+
+
     public void deleteOrder(Long id) {
         orderRepository.deleteById(id);
     }
