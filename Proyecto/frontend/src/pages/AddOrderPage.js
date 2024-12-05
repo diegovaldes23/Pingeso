@@ -314,9 +314,9 @@ function AddOrderPage() {
                         <input
                             type="number"
                             value={deliveryCost}
-                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value) || 0)}
+                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value)) || 0}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="$ 2990"
+                            placeholder="$ 0"
                         />
                     </div>
 
