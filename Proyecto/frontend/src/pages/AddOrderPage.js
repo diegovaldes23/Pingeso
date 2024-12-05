@@ -13,7 +13,7 @@ function AddOrderPage() {
     const [description, setDescription] = useState(''); // Nueva variable para descripcion
     const [comment, setComment] = useState(''); // Nueva variable para comentario
     const [dispatch, setDispatch] = useState(''); // Nueva variable para dispatch
-    const [products, setProducts] = useState([{ productId: '', quantity: '', price: 0 }]);
+    const [products, setProducts] = useState([{ name: '', quantity: '', cost: 0.0}]);
     const [deliveryCost, setDeliveryCost] = useState(0);
     const [status, setStatus] = useState('Pendiente');
     const [customerType, setCustomerType] = useState('');
@@ -26,44 +26,72 @@ function AddOrderPage() {
     // Simular llamada al backend para obtener los productos
     useEffect(() => {
         const fetchProducts = async () => {
-            const mockProducts = [
-                { id: '1', name: 'Helado de Chocolate', price: 6000 },
-                { id: '2', name: 'Tarta de Manzana', price: 7000 },
-                { id: '3', name: 'Brownie de Nueces', price: 5000 },
-                { id: '4', name: 'Galletas de Chocolate', price: 4500 },
-            ];
-            setAvailableProducts(mockProducts);
-        };
-
-        fetchProducts();
-    }, []);
-
+            try {
+                // Realizar la solicitud GET para obtener los productos
+                const response = await axios.get('http://localhost:8080/admin/products', {
+                    headers: { 'Content-Type': 'application/json' },
+                });
     
-
-    // Calcular el subtotal
-    useEffect(() => {
-        const newSubtotal = products.reduce((acc, product) => {
-            const productInfo = availableProducts.find((p) => p.id === product.productId);
-            if (productInfo && product.quantity) {
-                return acc + productInfo.price * product.quantity;
+                // Asignar los productos obtenidos al estado
+                setAvailableProducts(response.data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+            } catch (error) {
+                console.error('Error al obtener los productos:', error);
+                alert('Hubo un error al obtener los productos');
             }
-            return acc;
-        }, 0);
-        setSubtotal(newSubtotal);
-    }, [products, availableProducts]);
-
-    useEffect(() => {
-        setTotal(subtotal + Number(deliveryCost));
-    }, [subtotal, deliveryCost]);
+        };
+    
+        fetchProducts(); // Llamar a la función para obtener los productos
+    }, []); // El arreglo vacío asegura que esta función se ejecute solo una vez al montar el componente
+    
 
     const handleProductChange = (index, field, value) => {
         const updatedProducts = [...products];
         updatedProducts[index][field] = value;
+    
+        // Si se está cambiando el `productId`, actualiza también el `cost`
+        if (field === 'name') {
+            const selectedProduct = availableProducts.find(p => p.name === value);
+            if (selectedProduct) {
+                updatedProducts[index].cost = selectedProduct.cost; // Asigna el costo correspondiente
+            } else {
+                updatedProducts[index].cost = 0; // Si no se encuentra el producto, establece el costo en 0
+            }
+        }
+    
+        // Asegurarse de convertir quantity a número (aunque lo estés haciendo en el useEffect)
+        if (field === 'quantity') {
+            const quantity = parseInt(value, 10);
+            updatedProducts[index].quantity = (quantity > 0 ) ? quantity : ''; // Se asegura de que la cantidad sea un número
+
+        }
+    
         setProducts(updatedProducts);
     };
 
+    useEffect(() => {
+        const newTotal = subtotal + deliveryCost; // Total = Subtotal + Envío - Abono inicial
+        setTotal(newTotal);
+    }, [subtotal, deliveryCost]);
+        
+    
+    // Calcular el subtotal
+    useEffect(() => {
+        console.log("Available Products:", availableProducts);
+        const newSubtotal = products.reduce((acc, product) => {
+            const productInfo = availableProducts.find((p) => p.name === product.name);
+            console.log(availableProducts.find((p) => p.name === product.name));
+            if (productInfo && product.quantity) {
+                return acc + product.cost * product.quantity; // Usa el cost del producto encontrado
+            }
+            return acc;
+
+        }, 0);
+        console.log("Products:", products);
+        setSubtotal(newSubtotal);
+    }, [products, availableProducts]); // Se recalcula el subtotal cada vez que cambian los productos o los productos disponibles
+
     const addProductField = () => {
-        setProducts([...products, { productId: '', quantity: '', price: 0 }]);
+        setProducts([...products, { name: '', quantity: ''}]);
     };
 
     const createOrder = async (orderData) => {
@@ -104,15 +132,13 @@ function AddOrderPage() {
             subtotal: parseFloat(subtotal),
             initial_payment: parseFloat(initialPayment),
             status,
-
             description,
             address, // Agregar un campo para la dirección
-            city: `${region}, ${commune}`,
             email,
             dispatch, // Puedes agregar un campo para seleccionar esto
             comment,
             orders: products.map(product => ({
-                id_product: parseInt(product.productId, 10),
+                name: parseInt(product.name, 10),
                 quantity: parseInt(product.quantity, 10),
             })),
         };
@@ -121,9 +147,7 @@ function AddOrderPage() {
     
         // Llamar a la función para enviar los datos
         await createOrder(orderData);
-    };
-    
-    
+    };    
 
     return (
         <div className="flex justify-center items-center bg-gray-50 min-h-screen">
@@ -225,14 +249,14 @@ function AddOrderPage() {
                     {products.map((product, index) => (
                         <div key={index} className="grid grid-cols-2 gap-4 mt-2">
                             <select
-                                value={product.productId}
-                                onChange={(e) => handleProductChange(index, 'productId', e.target.value)}
+                                value={product.name}
+                                onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                                 className="w-full border border-gray-300 rounded-md p-2"
                             >
                                 <option value="">Seleccione producto</option>
                                 {availableProducts.map((prod) => (
                                     <option key={prod.id} value={prod.id}>
-                                        {prod.name}
+                                        {prod.name} {/* Aquí mostramos el nombre en español */}
                                     </option>
                                 ))}
                             </select>
@@ -245,6 +269,7 @@ function AddOrderPage() {
                             />
                         </div>
                     ))}
+
                     <button
                         type="button"
                         onClick={addProductField}

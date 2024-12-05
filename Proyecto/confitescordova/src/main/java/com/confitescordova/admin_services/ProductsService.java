@@ -16,7 +16,7 @@ public class ProductsService {
     ProductsRepository productsRepository;
 
     public List<Products> getAllProducts() {
-        return (List<Products>) productsRepository.findAll();
+        return productsRepository.findAll();
     }
 
     public Optional<Products> getProductById(Long id) {
@@ -32,6 +32,10 @@ public class ProductsService {
 
     public void deleteProduct(Long id) {
         productsRepository.deleteById(id);
+    }
+
+    public Optional<Products> getProductByName(String name) {
+        return productsRepository.findByName(name);
     }
 
 

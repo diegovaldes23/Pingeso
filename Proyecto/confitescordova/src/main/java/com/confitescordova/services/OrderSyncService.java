@@ -3,9 +3,11 @@ package com.confitescordova.services;
 import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_entities.OrderProduct;
 import com.confitescordova.admin_entities.Orders;
+import com.confitescordova.admin_entities.Products;
 import com.confitescordova.admin_services.CustomersService;
 import com.confitescordova.admin_services.OrderProductService;
 import com.confitescordova.admin_services.OrdersService;
+import com.confitescordova.admin_services.ProductsService;
 import com.confitescordova.entities.Order;
 import com.confitescordova.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,12 @@ public class OrderSyncService implements CommandLineRunner {
 
     @Autowired
     private OrderProductService orderProductService;
+
+    @Autowired
+    private ProductsService productsService;
+
+    @Autowired
+    private ProductService productService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -121,6 +129,8 @@ public class OrderSyncService implements CommandLineRunner {
             orderProduct.setDescription("No disponible");
             orderProduct.setQuantity(product.getQuantity());
 
+            saveProductIfNotExists(product.getName(), product.getPrice());
+
             double discount = tnOrder.getDiscount() / tnOrder.getSubtotal();
             orderProduct.setUnit_cost(product.getPrice() * (1 - discount));
             orderProduct.setCost(orderProduct.getUnit_cost() * product.getQuantity());
@@ -205,7 +215,6 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
-
     private void saveOrderProducts(Orders order, List<OrderProduct> products) {
         for (OrderProduct product : products) {
 
@@ -214,4 +223,16 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
+    private void saveProductIfNotExists(String name, Double cost){
+        Optional<Products> existingProduct = productsService.getProductByName(name);
+        if(existingProduct.isPresent()){
+            // Hola
+        } else {
+            // Si no existe, lo insertas
+            Products newProducts = new Products();
+            newProducts.setName(name);
+            newProducts.setCost(cost);
+            productsService.saveProduct(newProducts);
+        }
+    }
 }
