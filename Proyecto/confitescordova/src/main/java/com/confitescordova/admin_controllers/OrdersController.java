@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.confitescordova.admin_entities.*;
 import com.confitescordova.admin_services.CommuneOrderCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
+import com.confitescordova.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import com.confitescordova.admin_services.OrdersService;
 
 
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/admin/orders")
 public class OrdersController {
@@ -128,4 +130,24 @@ public class OrdersController {
         // Devuelves los datos del cliente según lo solicitado
         return ResponseEntity.ok("Datos del cliente enviados");
     }
+
+    @PutMapping("/delivery-date")
+    public ResponseEntity<Orders> changeDeliveryDate(@RequestBody OrdersRequest order) {
+
+        Long orderId = order.getId_order();
+        String delivery_date = order.getDelivery_date();
+        Orders newOrder = orderService.changeDeliveryDate(orderId, delivery_date);
+
+        return ResponseEntity.ok(newOrder);
+    }
+
+    @PutMapping("/status")
+    public ResponseEntity<Orders> changeStatus(@RequestBody OrderStatus order) {
+        Long orderId = order.getId_order();
+        String status = order.getStatus();
+
+        Orders updatedOrder = orderService.changeStatus(orderId, status);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
 }

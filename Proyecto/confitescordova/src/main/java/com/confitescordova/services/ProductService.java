@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,8 +56,17 @@ public class ProductService extends BaseService{
         products.setId_product(productCompleto.getId());
         String espName = productCompleto.getName();
         products.setName(espName);
-        String espDescription = (productCompleto.getDescription().get("es"));
-        products.setDescription(espDescription);
+        if(productCompleto.getDescription() != null){
+            String espDescription = (productCompleto.getDescription().get("es"));
+            products.setDescription(espDescription);
+        }else{
+            String str = "No hay descripción";
+            Map<String, String> map = new HashMap<>();
+            map.put("description", str);
+            productCompleto.setDescription(map);
+        }
+
+
         return products;
     }
 

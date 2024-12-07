@@ -21,6 +21,15 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  const updateOrderDeliveryDate = (updatedOrder) => {
+    setOrders((prevOrders) =>
+      prevOrders.map(order =>
+        order.id === updatedOrder.id ? { ...order, delivery_date: updatedOrder.delivery_date } : order
+      )
+    );
+  };
+
+
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -56,10 +65,11 @@ export const GlobalProvider = ({ children }) => {
   const [sortOrder, setSortOrder] = useState(''); // "asc" o "desc"
 
   const handleStatusChange = (id, newStatus) => {
-    const updatedOrders = orders.map((order) =>
-      order.id_order === id ? { ...order, status: newStatus } : order
-    );
-    setOrders(updatedOrders);
+    setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === id ? { ...order, status: newStatus } : order
+        )
+      );
   };
 
   const [filteredOrders, setFilteredOrders] = useState([]);
@@ -180,6 +190,7 @@ export const GlobalProvider = ({ children }) => {
         showSortDropdown,
         setShowSortDropdown,
         applyFilters,
+        updateOrderDeliveryDate
       }}
     >
       {children}

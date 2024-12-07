@@ -15,56 +15,51 @@ const OrdersPage = () => {
         setIsModalOpen, // Usamos el estado global
         selectedOrder, // Usamos el estado global
         setSelectedOrder, // Usamos el estado global
-      } = useGlobalContext();
+    } = useGlobalContext();
 
-    // Aquí puedes realizar alguna lógica adicional si lo necesitas
-    useEffect(() => {
-        // Este useEffect se podría usar si necesitas hacer algo después de cargar las órdenes
-        console.log(orders);
-    }, [orders]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [filteredOrders, setFilteredOrders] = useState(orders);
+    const [filteredOrders, setFilteredOrders] = useState(orders); // Asegúrate de que `filteredOrders` se usa para la paginación
     const ordersPerPage = 7;
 
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
     const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-    const totalPages = Math.ceil(orders.length / ordersPerPage);
+    const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
-  // Buscar cómo hacer variables globales
+    // Asegúrate de que `filteredOrders` se actualiza cuando cambian las órdenes o los filtros
+    useEffect(() => {
+        setFilteredOrders(orders); // Si las órdenes cambian, actualiza el estado de `filteredOrders`
+    }, [orders]);
 
-  const handleCloseModal = useCallback(() => {
-    setIsModalOpen(false);
-    setSelectedOrder(null);
-  }, []);
+    // Para actualizar la página cuando se cambia de página
+    const handlePageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
+    };
 
-  const paginatedOrders = filteredOrders.slice(
-    (currentPage - 1) * ordersPerPage,
-    currentPage * ordersPerPage
-  );
-
-  return (
-    <div className="orders-container">
-      <FilterAndSort setFilteredOrders={setFilteredOrders} />
-      <OrdersList
-        orders={currentOrders}
-        handleStatusChange={handleStatusChange}
-        getStatusClass={getStatusClass} // Pasa getStatusClass aquí
-        isModalOpen={isModalOpen}
-        selectedOrder={selectedOrder}
-      />
-      <Pagination 
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-        />
-      <OrderDetailsModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        order={selectedOrder}
-      />
-    </div>
-  );
+    return (
+        <div className="orders-container">
+            <FilterAndSort setFilteredOrders={setFilteredOrders} />
+            <OrdersList
+                orders={currentOrders}
+                handleStatusChange={handleStatusChange}
+                getStatusClass={getStatusClass}
+                isModalOpen={isModalOpen}
+                selectedOrder={selectedOrder}
+            />
+            <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange} // Asegúrate de que la función `onPageChange` esté pasando la nueva página
+            />
+            <OrderDetailsModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                order={selectedOrder}
+            />
+        </div>
+    );
 };
 
 export default OrdersPage;

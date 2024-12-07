@@ -249,9 +249,6 @@ public class OrderSyncService implements CommandLineRunner {
         // Paso 3: Convertir la fecha a LocalDate (sin la hora)
         LocalDate localDate = createdAt.toLocalDate();
 
-        // Imprimir la fecha formateada (solo para ver cómo se ve)
-        System.out.println("Fecha formateada: " + formattedDate);
-
         return localDate;
     }
 }
