@@ -12,11 +12,14 @@ import com.confitescordova.entities.Order;
 import com.confitescordova.entities.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +79,9 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     private Orders convertTiendanubeOrder(Order tnOrder) {
+        // Inicialización de nueva orden en base de datos local
         Orders localOrder = new Orders();
+        // Inicialización de lista de productos de la orden
         ArrayList<OrderProduct> orderProducts = new ArrayList<>();
 
         localOrder.setName(tnOrder.getCustomer().getName());
@@ -97,13 +102,10 @@ public class OrderSyncService implements CommandLineRunner {
 
         // Usar un formato adecuado para la fecha con zona horaria
         String createdAtString = tnOrder.getCreated_at();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-
-        // Convertir la fecha usando el formateador
-        OffsetDateTime createdAt = OffsetDateTime.parse(createdAtString, formatter);
+        LocalDate orderDateFormatted = convertToLocalDate(createdAtString);
 
         // Establecer la fecha en la orden
-        localOrder.setOrder_date(createdAt.toLocalDate()); // Solo la fecha
+        localOrder.setOrder_date(orderDateFormatted); // Solo la fecha
         localOrder.setShipping_cost(tnOrder.getShipping_cost_owner());
         localOrder.setSubtotal(tnOrder.getTotal());
         localOrder.setTotal(tnOrder.getTotal() + tnOrder.getShipping_cost_owner());
@@ -112,7 +114,6 @@ public class OrderSyncService implements CommandLineRunner {
         localOrder.setAddress(tnOrder.getShipping_address().getAddress() + " " + tnOrder.getShipping_address().getNumber() + ", " + tnOrder.getShipping_address().getFloor());
         localOrder.setEmail(tnOrder.getCustomer().getEmail());
         localOrder.setCreation_date(LocalDate.now());
-        localOrder.setDelivery_date(LocalDate.now());
         localOrder.setExternalOrderId(tnOrder.getId());
 
         // Verificar si 'note' es null antes de usarlo
@@ -234,5 +235,23 @@ public class OrderSyncService implements CommandLineRunner {
             newProducts.setCost(cost);
             productsService.saveProduct(newProducts);
         }
+    }
+
+    private LocalDate convertToLocalDate(String createdAtString) {
+        // Paso 1: Parsear la fecha con el formato original
+        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+        ZonedDateTime createdAt = ZonedDateTime.parse(createdAtString, originalFormatter);
+
+        // Paso 2: Convertir la fecha a formato "dd-MM-yyyy'T'HH:mm:ssZ" (esto es solo para mostrar el formato)
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ssZ");
+        String formattedDate = createdAt.format(newFormatter);
+
+        // Paso 3: Convertir la fecha a LocalDate (sin la hora)
+        LocalDate localDate = createdAt.toLocalDate();
+
+        // Imprimir la fecha formateada (solo para ver cómo se ve)
+        System.out.println("Fecha formateada: " + formattedDate);
+
+        return localDate;
     }
 }

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.module.css";
 
 import axios from 'axios';
 
@@ -22,6 +24,17 @@ function AddOrderPage() {
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
+
+    // Función para formatear la fecha
+    const formatDate = (date) => {
+        const [year, month, day] = date.split('-');
+        return `${day}-${month}-${year}`;
+    };
+
+    // Función para manejar cambios en el input de fecha
+    const handleDateChange = (date) => {
+        setDate(date);
+    };
 
     // Simular llamada al backend para obtener los productos
     useEffect(() => {
@@ -235,10 +248,10 @@ function AddOrderPage() {
                 {/* Fecha de pedido */}
                 <div className="mb-4">
                     <label className="block text-gray-700">Fecha de pedido</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                    <DatePicker
+                        selected={date}
+                        onChange={handleDateChange}
+                        dateFormat="dd-MM-yyyy"
                         className="mt-1 w-full border border-gray-300 rounded-md p-2"
                     />
                 </div>

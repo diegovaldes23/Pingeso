@@ -15,6 +15,17 @@ const OrdersList = ({ orders }) => {
     handleStatusChange(orderId, newStatus); // Llamar la función del contexto para actualizar el estado
   };
 
+  // Función para formatear la fecha
+    const formatDate = (dateString) => {
+        const date = new Date(dateString); // Convertimos la cadena en un objeto Date
+        return date.toLocaleDateString('es-CL', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+    };
+  
+
   return (
     <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
       <thead className="bg-purple-800">
@@ -48,7 +59,7 @@ const OrdersList = ({ orders }) => {
               <td className="py-2 px-4 border">
                 <div className="line-clamp-2">{order.address}</div> {/* Usamos line-clamp-2 para la descripción */}
               </td>
-              <td className="py-2 px-4 border">{order.order_date ? order.order_date.toString() : 'Fecha no disponible'}</td>
+              <td className="py-2 px-4 border">{order.order_date ? formatDate(order.order_date) : 'Fecha no disponible'}</td>
               <td className="py-2 px-4 h-full truncate max-w-12">
                 {/* Unir los productos con una coma y aplicar el overflow */}
                 {order.orderProducts.map((product, index) => product.name).join(', ')}
