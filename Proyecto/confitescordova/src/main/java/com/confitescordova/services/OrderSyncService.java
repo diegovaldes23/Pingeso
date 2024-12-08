@@ -106,9 +106,7 @@ public class OrderSyncService implements CommandLineRunner {
 
         // Establecer la fecha en la orden
         localOrder.setOrder_date(orderDateFormatted); // Solo la fecha
-        localOrder.setShipping_cost(tnOrder.getShipping_cost_owner());
-        localOrder.setSubtotal(tnOrder.getTotal());
-        localOrder.setTotal(tnOrder.getTotal() + tnOrder.getShipping_cost_owner());
+
         localOrder.setStatus("Pendiente");
         localOrder.setPurchase_source("Tiendanube");
         localOrder.setAddress(tnOrder.getShipping_address().getAddress() + " " + tnOrder.getShipping_address().getNumber() + ", " + tnOrder.getShipping_address().getFloor());
@@ -123,10 +121,16 @@ public class OrderSyncService implements CommandLineRunner {
             localOrder.setDescription("Sin descripción");  // O puedes asignar un valor predeterminado
         }
 
+        Double subtotal = 0.0;
+
         for (Product product : tnOrder.getProducts()) {
             OrderProduct orderProduct = new OrderProduct();
             orderProduct.setId_product(product.getId());
-            orderProduct.setName(product.getName());
+
+            if(!product.getName().equals("Nombre desconocido")){
+                orderProduct.setName(product.getName());
+            }
+
             orderProduct.setDescription("No disponible");
             orderProduct.setQuantity(product.getQuantity());
 
@@ -137,10 +141,23 @@ public class OrderSyncService implements CommandLineRunner {
             orderProduct.setCost(orderProduct.getUnit_cost() * product.getQuantity());
             orderProduct.setOrder(localOrder);
 
+            subtotal = subtotal + orderProduct.getCost();
             orderProducts.add(orderProduct);
         }
 
+        if(tnOrder.getBilling_province().equals("Metropolitana de Santiago")){
+            localOrder.setSubtotal(subtotal - 5000);
+            localOrder.setShipping_cost(5000.0);
+        } else {
+            localOrder.setSubtotal(subtotal);
+            localOrder.setShipping_cost(tnOrder.getShipping_cost_owner());
+        }
+
+        localOrder.setTotal(localOrder.getSubtotal() + localOrder.getShipping_cost());
+
         localOrder.setOrderProducts(orderProducts);
+
+        deleteNullProducts();
 
         return localOrder;
     }
@@ -173,7 +190,6 @@ public class OrderSyncService implements CommandLineRunner {
         // Compara y actualiza los campos necesarios
         if (!existingOrder.getStatus().equals(newOrder.getStatus())) {
             existingOrder.setStatus(newOrder.getStatus());
-            ordersService.save(existingOrder);
         }
     }
 
@@ -199,7 +215,7 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     private void saveCustomerIfNotExists(Long customerId, String name, String phone){
-        Optional<Customer> existingCustomer = customersService.getCustomerById(customerId);
+        Optional<Customer> existingCustomer = customersService.getCustomerByPhoneAndName(phone, name);
         if(existingCustomer.isPresent()){
             // Si el cliente ya existe, puedes actualizar la información si es necesario
             Customer customer = existingCustomer.get();
@@ -225,12 +241,18 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     private void saveProductIfNotExists(String name, Double cost){
+        // Validar que el nombre no esté vacío ni sea "Nombre desconocido"
+        if (name == null || name.trim().isEmpty() || "Nombre desconocido".equals(name)) {
+            return; // No guardes el producto si el nombre es inválido
+        }
+
         Optional<Products> existingProduct = productsService.getProductByName(name);
         if(existingProduct.isPresent()){
-            // Hola
+
         } else {
             // Si no existe, lo insertas
             Products newProducts = new Products();
+            System.out.println(name);
             newProducts.setName(name);
             newProducts.setCost(cost);
             productsService.saveProduct(newProducts);
@@ -250,5 +272,18 @@ public class OrderSyncService implements CommandLineRunner {
         LocalDate localDate = createdAt.toLocalDate();
 
         return localDate;
+    }
+
+    private void deleteNullProduct(Products products) {
+        if (products.getName() == null || products.getName().trim().isEmpty() || "Nombre desconocido".equals(products.getName())) {
+            productsService.deleteProduct(products.getId_product());
+        }
+    }
+
+    private void deleteNullProducts(){
+        List<Products> products = productsService.getAllProducts();
+        for (Products product : products) {
+            deleteNullProduct(product);
+        }
     }
 }

@@ -45,33 +45,4 @@ public class OrderController {
         }
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
-
-    @PostMapping("/orders")
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
-        Order createdOrder = orderService.createOrder(storeId, order);
-        if(createdOrder == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/orders/{orderId}")
-    public ResponseEntity<Order> updateOrder(@RequestBody Order order, @PathVariable("orderId") Long orderId) {
-        Order updatedOrder = orderService.updateOrder(storeId, orderId, order);
-        if(updatedOrder == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(updatedOrder, HttpStatus.OK);
-    }
-
-    /*
-    @DeleteMapping("/orders/{orderId}")
-
-    public ResponseEntity<Void> deleteOrder(@PathVariable("orderId") Long orderId) {
-        orderService.deleteOrder(storeId, orderId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    */
 }

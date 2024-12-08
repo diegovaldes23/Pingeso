@@ -3,7 +3,6 @@ import OrdersList from './OrdersList';
 import OrderDetailsModal from './OrderDetailsModal';
 import { useGlobalContext } from '../utils/GlobalModelContext';
 import FilterAndSort from './FilterAndSort';
-import Pagination from "./Pagination";
 
 const OrdersPage = () => {
     const {
@@ -19,7 +18,7 @@ const OrdersPage = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [filteredOrders, setFilteredOrders] = useState(orders); // Asegúrate de que `filteredOrders` se usa para la paginación
-    const ordersPerPage = 7;
+    const ordersPerPage = 15;
 
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
@@ -30,6 +29,11 @@ const OrdersPage = () => {
     useEffect(() => {
         setFilteredOrders(orders); // Si las órdenes cambian, actualiza el estado de `filteredOrders`
     }, [orders]);
+
+    useEffect(() => {
+        setCurrentPage(1); // Cuando cambian los filtros, restablecemos la página a la primera
+    }, [filteredOrders]);
+
 
     // Para actualizar la página cuando se cambia de página
     const handlePageChange = (newPage) => {
@@ -47,11 +51,6 @@ const OrdersPage = () => {
                 getStatusClass={getStatusClass}
                 isModalOpen={isModalOpen}
                 selectedOrder={selectedOrder}
-            />
-            <Pagination 
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange} // Asegúrate de que la función `onPageChange` esté pasando la nueva página
             />
             <OrderDetailsModal
                 isOpen={isModalOpen}

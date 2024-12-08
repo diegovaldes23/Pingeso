@@ -100,6 +100,10 @@ const FilterAndSort = ({ setFilteredOrders }) => {
     setFilteredOrders(orders); // Restablece a la vista original
   };
 
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
   // Cerrar dropdowns si se hace clic fuera
   useEffect(() => {
     const handleClickOutside = (event) => {

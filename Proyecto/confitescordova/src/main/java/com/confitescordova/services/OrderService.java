@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -18,7 +19,14 @@ public class OrderService extends BaseService{
     public List<Order> getOrders(Long storeID, int page, int pageSize) {
         String url = API_BASE_URL.replace("{store_id}", storeID.toString()) + "?page=" + page + "&limit=" + pageSize;
         String responseBody = makeGetRequest(url);
-        return Arrays.asList(parseResponse(responseBody, Order[].class));
+        Order[] orders = parseResponse(responseBody, Order[].class);
+
+        // Filtrar las órdenes para obtener solo aquellas cuyo payment_status sea "paid"
+        // Filtrar las órdenes para obtener solo aquellas cuyo payment_status sea "paid" y el nombre del cliente no sea "Sebastian Cordova" ni "Cliente anónimo"
+        return Arrays.stream(orders)
+                .filter(order -> "paid".equals(order.getPayment_status()))  // Filtro por estado de pago
+                .filter(order -> !("Sebastian Cordova".equals(order.getCustomer().getName()) || "Cliente anónimo".equals(order.getCustomer().getName())))  // Filtro por nombre del cliente
+                .collect(Collectors.toList());
     }
 
     // En el método getAllOrders

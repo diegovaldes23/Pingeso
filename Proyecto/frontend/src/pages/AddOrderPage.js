@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.module.css";
+import regionsAndCommunes from './RegionesYComunas';
 
 import axios from 'axios';
 
@@ -14,7 +15,6 @@ function AddOrderPage() {
     const [email, setEmail] = useState(''); // Nueva variable para email
     const [description, setDescription] = useState(''); // Nueva variable para descripcion
     const [comment, setComment] = useState(''); // Nueva variable para comentario
-    const [dispatch, setDispatch] = useState(''); // Nueva variable para dispatch
     const [products, setProducts] = useState([{ name: '', quantity: '', cost: 0.0}]);
     const [deliveryCost, setDeliveryCost] = useState(0);
     const [status, setStatus] = useState('Pendiente');
@@ -30,6 +30,11 @@ function AddOrderPage() {
         const [year, month, day] = date.split('-');
         return `${day}-${month}-${year}`;
     };
+
+    // Filtramos las comunas basadas en la región seleccionada
+    const selectedRegion = regionsAndCommunes.find(r => r.NombreRegion === region);
+    const communes = selectedRegion ? selectedRegion.comunas : [];
+
 
     // Función para manejar cambios en el input de fecha
     const handleDateChange = (date) => {
@@ -148,8 +153,6 @@ function AddOrderPage() {
             description,
             address, // Agregar un campo para la dirección
             email,
-            dispatch, // Puedes agregar un campo para seleccionar esto
-            comment,
             orders: products.map(product => ({
                 name: parseInt(product.name, 10),
                 quantity: parseInt(product.quantity, 10),
@@ -197,12 +200,18 @@ function AddOrderPage() {
                         <label className="block text-gray-700">Región</label>
                         <select
                             value={region}
-                            onChange={(e) => setRegion(e.target.value)}
+                            onChange={(e) => {
+                                setRegion(e.target.value);
+                                setCommune(""); // Limpiamos la comuna cuando cambiamos la región
+                            }}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         >
                             <option value="">Seleccione región</option>
-                            <option value="Región Metropolitana">Región Metropolitana</option>
-                            <option value="Valparaíso">Valparaíso</option>
+                            {regionsAndCommunes.map((r) => (
+                                <option key={r.NombreRegion} value={r.NombreRegion}>
+                                    {r.NombreRegion}
+                                </option>
+                            ))}
                         </select>
                     </div>
                     <div>
@@ -211,11 +220,14 @@ function AddOrderPage() {
                             value={commune}
                             onChange={(e) => setCommune(e.target.value)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            disabled={!region}
+                            disabled={!region} // Desactiva el select de comuna si no hay región seleccionada
                         >
                             <option value="">Seleccione comuna</option>
-                            <option value="Santiago">Santiago</option>
-                            <option value="Providencia">Providencia</option>
+                            {communes.map((commune) => (
+                                <option key={commune} value={commune}>
+                                    {commune}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
@@ -356,32 +368,18 @@ function AddOrderPage() {
                         />
                     </div>
 
-                {/* Abono inicial */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Abono inicial</label>
-                    <input
-                        type="number"
-                        value={initialPayment}
-                        onChange={(e) => setInitialPayment(parseFloat(e.target.value) || 0)}
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                        placeholder="$ 0"
-                    />
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Abono inicial</label>
+                        <input
+                            type="number"
+                            value={initialPayment}
+                            onChange={(e) => setInitialPayment(parseFloat(e.target.value)) || 0}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="$ 0"
+                        />
+                    </div>
+                
 
-                {/* Estado */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Estado</label>
-                    <select
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                    >
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="En proceso">En proceso</option>
-                        <option value="Completada">Completada</option>
-                        <option value="Cancelada">Cancelada</option>
-                    </select>
-                </div>
 
                 {/* Email y Comentario */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -405,23 +403,6 @@ function AddOrderPage() {
                             placeholder="Añadir un comentario"
                         />
                     </div>
-                </div>
-
-                {/* Dispatch */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Método de Despacho</label>
-                    <select
-                        value={dispatch}
-                        onChange={(e) => setDispatch(e.target.value)}
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                    >
-                        <option value="">Seleccione método de despacho</option>
-                        <option value="empresas 8k">Empresas 8k</option>
-                        <option value="bluexpress">Bluexpress</option>
-                        <option value="envio pymes">Envío Pymes</option>
-                        <option value="uber">Uber</option>
-                        <option value="retiro">Retiro</option>
-                    </select>
                 </div>
 
                 {/* Botones */}

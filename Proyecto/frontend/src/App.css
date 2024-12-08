@@ -45,4 +45,14 @@ html, body {
       margin-bottom: 10px;
     }
   }
+
+  .table-text {
+    font-size: 0.875rem; /* 14px */
+    padding: 0.5rem 1rem; /* Menos padding */
+  }
+  
+  .table-header {
+    font-size: 0.875rem; /* 14px */
+    padding: 0.5rem 1rem; /* Menos padding */
+  }
   

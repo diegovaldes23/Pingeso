@@ -2,6 +2,16 @@ import React from 'react';
 
 const OrderDetailsModal = ({ isOpen, onClose, order }) => {
   if (!isOpen || !order) return null;
+  
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+    return date.toLocaleDateString('es-CL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -18,7 +28,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           <p className="text-center text-sm">RUT: 77.130.395-1</p>
           <p className="text-center text-sm">N° {order.id}</p>
           <p className="text-center text-sm">CONFITES CÓRDOVA</p>
-          <p className="text-center text-sm">FECHA EMISIÓN: {order.order_date}</p>
+          <p className="text-center text-sm">FECHA EMISIÓN: {formatDate(order.order_date)}</p>
         </div>
 
         <div className="space-y-2 border-b-2 border-dashed pb-4 mb-4">
@@ -52,7 +62,7 @@ const OrderDetailsModal = ({ isOpen, onClose, order }) => {
           </div>
           <div className="flex ">
             <span className="font-bold block w-40">Fecha de entrega:</span>
-            <span>{order.delivery_date || 'No asignada'}</span>
+            <span>{formatDate(order.delivery_date) || 'No asignada'}</span>
           </div>
         </div>
 

@@ -27,29 +27,4 @@ public class CustomerController {
 
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
-
-    @PostMapping("/customers")
-    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
-        Customer createdCostumer = customerService.createCustomer(storeId, customer);
-        if (createdCostumer == null) {
-            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-
-        return new ResponseEntity<>(createdCostumer, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/customers/{customerId}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable("customerId") Long customerId, @RequestBody Customer customer) {
-        Customer updatedCostumer = customerService.updateCustomer(storeId, customerId, customer);
-        if (updatedCostumer == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(updatedCostumer, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/customers/{customerId}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable("customerId") Long customerId) {
-        customerService.deleteCustomer(storeId, customerId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
 }

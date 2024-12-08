@@ -33,4 +33,8 @@ public class CustomersService {
         return customerRepository.findById(customerId);
     }
 
+    public Optional<Customer> getCustomerByPhoneAndName(String phone, String name) {
+        return customerRepository.findByPhoneAndName(phone, name);
+    }
+
 }
