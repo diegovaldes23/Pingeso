@@ -21,10 +21,8 @@ const OrdersList = () => {
   // Función para cambiar de página
   const getPageNumbers = () => {
     const pageNumbers = [];
-    const range = 2; // Rango de páginas a mostrar antes y después de la página actual
 
     // Siempre mostrar la primera página
-
     if (currentPage > 1) {
         pageNumbers.push(1);
     }

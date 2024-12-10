@@ -7,6 +7,16 @@ const GlobalContext = createContext();
 export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
+  const [region, setRegion] = useState('');
+    const [commune, setCommune] = useState('');
+    const [year, setYear] = useState('');
+    const [month, setMonth] = useState('');
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    const [orderStatus, setOrderStatus] = useState('');
+    const [sortBy, setSortBy] = useState('');
+    const [sortOrder, setSortOrder] = useState('');
+
 
   const URL = 'http://localhost:8080'
 
@@ -16,6 +26,7 @@ export const GlobalProvider = ({ children }) => {
         const response = await fetch(URL + '/admin/orders');
         const data = await response.json();
         setOrders(data);
+        setFilteredOrders(data);
     } catch (error) {
         console.error('Error al obtener las órdenes: ', error);
     }
@@ -48,22 +59,6 @@ export const GlobalProvider = ({ children }) => {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  // Estados para los filtros
-  const [region, setRegion] = useState('');
-  const [commune, setCommune] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [customerType, setCustomerType] = useState('');
-  const [purchaseSource, setPurchaseSource] = useState('');
-  const [status, setStatus] = useState('');
-  const [productName, setProductName] = useState('');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-
-  // Estado para el ordenamiento
-  const [sortBy, setSortBy] = useState(''); // "date" o "total"
-  const [sortOrder, setSortOrder] = useState(''); // "asc" o "desc"
-
   const handleStatusChange = (id, newStatus) => {
     setOrders((prevOrders) =>
         prevOrders.map((order) =>
@@ -91,6 +86,22 @@ export const GlobalProvider = ({ children }) => {
   const applyFilters = () => {
     let filtered = [...orders];
 
+    // Aplica filtros
+    const {
+        region,
+        commune,
+        startDate,
+        endDate,
+        customerType,
+        purchaseSource,
+        status,
+        productName,
+        year,
+        month,
+        sortBy,
+        sortOrder,
+      } = filters;
+
     // Filtros
     if (region) filtered = filtered.filter(order => order.region === region);
     if (commune) filtered = filtered.filter(order => order.commune === commune);
@@ -110,11 +121,18 @@ export const GlobalProvider = ({ children }) => {
     // Ordenamiento
     if (sortBy) {
       filtered.sort((a, b) => {
-        if (sortBy === 'date') {
+        if (sortBy === 'orderDate') {
           return sortOrder === 'asc'
-            ? new Date(a.date) - new Date(b.date)
-            : new Date(b.date) - new Date(a.date);
+            ? new Date(a.order_date) - new Date(b.order_date)
+            : new Date(b.order_date) - new Date(a.order_date);
         }
+
+        if (sortBy === 'deliveryDate') {
+            return sortOrder === 'asc'
+             ? new Date(a.deliveryDate) - new Date(b.deliveryDate)
+             : new Date(b.deliveryDate) - new Date(a.deliveryDate);
+        }
+
         if (sortBy === 'total') {
           return sortOrder === 'asc' ? a.total - b.total : b.total - a.total;
         }
@@ -190,7 +208,8 @@ export const GlobalProvider = ({ children }) => {
         showSortDropdown,
         setShowSortDropdown,
         applyFilters,
-        updateOrderDeliveryDate
+        updateOrderDeliveryDate,
+        resetFilters
       }}
     >
       {children}

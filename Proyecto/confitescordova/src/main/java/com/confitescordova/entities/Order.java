@@ -1,6 +1,7 @@
 package com.confitescordova.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -19,7 +20,9 @@ public class Order {
     private Integer number; // Número único que identifica un pedido que utilizan el dueño de la tienda y los clientes
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private Object completed_at; // información sobre la fecha en la que se creó el pedido
-    private List<String> attributes; // lista con los atributos personalizados para este pedido
+    @JsonIgnore
+    private Map<String, Object> attributes;
+
     private Customer customer; // Cliente que compró este pedido
     private List<Product> products; // Listado de productos adquiridos por el customer
     private String note; // Nota del cliente sobre el pedido

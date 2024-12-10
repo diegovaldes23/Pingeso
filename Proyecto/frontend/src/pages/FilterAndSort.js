@@ -4,8 +4,14 @@ import regionsAndCommunes from './RegionesYComunas';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const FilterAndSort = ({ setFilteredOrders }) => {
-  const { orders, filters, setFilters, applyFiltersAndSorting } = useGlobalContext();
+const FilterAndSort = ( ) => {
+  const { filters, setFilters, applyFilters } = useGlobalContext();
+
+  const [localFilters, setLocalFilters] = useState(filters);
+
+  const handleLocalFilterChange = (key, value) => {
+    setLocalFilters(prev => ({ ...prev, [key]: value}));
+  };
 
   // Refs para los dropdowns, para poder detectar clics fuera de ellos
   const filterDropdownRef = useRef(null);
@@ -15,22 +21,18 @@ const FilterAndSort = ({ setFilteredOrders }) => {
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
   const [showSortDropdown, setShowSortDropdown] = useState(false);
 
-  // Estados para los filtros
-  const [region, setRegion] = useState('');
-  const [commune, setCommune] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [customerType, setCustomerType] = useState('');
-  const [purchaseSource, setPurchaseSource] = useState('');
-  const [status, setStatus] = useState('');
-  const [productName, setProductName] = useState('');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
+  const availableCommunes = filters.region
+    ? regionsAndCommunes.find(r => r.NombreRegion === filters.region)?.comunas || []
+    : [];
 
-  // Estado para el ordenamiento
-  const [sortBy, setSortBy] = useState(''); // "date" o "total"
-  const [sortOrder, setSortOrder] = useState(''); // "asc" o "desc"
-  const [orderStatus, setOrderStatus] = useState('');
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleApplyFilters = () => {
+    setFilters(localFilters);
+    applyFilters();
+  };
 
   const statusOptions = [
     'Pendiente',
@@ -39,49 +41,6 @@ const FilterAndSort = ({ setFilteredOrders }) => {
     'Cancelada'
   ];
 
-  // Función para filtrar los pedidos
-  const applyFilters = () => {
-    let filtered = [...orders];
-
-    // Filtros
-    if (region) filtered = filtered.filter(order => order.region === region);
-    if (commune) filtered = filtered.filter(order => order.commune === commune);
-    if (startDate) filtered = filtered.filter(order => new Date(order.order_date) >= new Date(startDate));
-    if (endDate) filtered = filtered.filter(order => new Date(order.order_date) <= new Date(endDate));
-    if (customerType) filtered = filtered.filter(order => order.customerType === customerType);
-    if (purchaseSource) filtered = filtered.filter(order => order.purchaseSource === purchaseSource);
-    if (orderStatus) filtered = filtered.filter(order => order.status === orderStatus);
-    if (productName) {
-      filtered = filtered.filter(order =>
-        order.products.some(product => product.name.toLowerCase().includes(productName.toLowerCase()))
-      );
-    }
-    if (year) filtered = filtered.filter(order => new Date(order.order_date).getFullYear() === parseInt(year, 10));
-    if (month) filtered = filtered.filter(order => new Date(order.order_date).getMonth() + 1 === parseInt(month, 10));
-
-    // Ordenamiento
-    if (sortBy) {
-      filtered.sort((a, b) => {
-        if (sortBy === 'date') {
-          return sortOrder === 'asc'
-            ? new Date(a.order_date) - new Date(b.order_date)
-            : new Date(b.order_date) - new Date(a.order_date);
-        }
-        if (sortBy === 'total') {
-          return sortOrder === 'asc' ? a.total - b.total : b.total - a.total;
-        }
-        return 0;
-      });
-    }
-
-    setFilteredOrders(filtered);
-
-    setShowFilterDropdown(false);
-    setShowSortDropdown(false);
-
-  };
-
-  // Función para restablecer filtros
   const resetFilters = () => {
     setFilters({
       region: '',
@@ -97,12 +56,13 @@ const FilterAndSort = ({ setFilteredOrders }) => {
       sortBy: '',
       sortOrder: '',
     });
-    setFilteredOrders(orders); // Restablece a la vista original
   };
 
-  const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-  };
+  // Restaura los filtros locales desde los globales al abrir el modal
+  useEffect(() => {
+    setLocalFilters(filters);
+  }, [filters]);
+
 
   // Cerrar dropdowns si se hace clic fuera
   useEffect(() => {
@@ -124,12 +84,6 @@ const FilterAndSort = ({ setFilteredOrders }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
-
-  // Manejo de comunas dinámicas según región seleccionada
-  const availableCommunes = region
-    ? regionsAndCommunes.find(r => r.NombreRegion === region)?.comunas || []
-    : [];
 
     return (
         <div className="relative">
@@ -153,14 +107,13 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     <div>
                         <label className="block text-gray-700">Región</label>
                         <select
-                        value={region}
+                        value={localFilters.region}
                         onChange={(e) => {
-                            setRegion(e.target.value);
-                            setCommune(''); // Reinicia la comuna cuando cambia la región
+                            handleLocalFilterChange('region', e.target.value)
                         }}
                         className="w-full p-2 border border-gray-300 rounded-md"
                         >
-                        <option value="">Todas</option>
+                        <option value="">Todas las regiones</option>
                         {regionsAndCommunes.map((r) => (
                             <option key={r.NombreRegion} value={r.NombreRegion}>
                             {r.NombreRegion}
@@ -173,8 +126,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     <div>
                         <label className="block text-gray-700">Comuna</label>
                         <select
-                        value={commune}
-                        onChange={(e) => setCommune(e.target.value)}
+                        value={localFilters.commune}
+                        onChange={(e) => handleLocalFilterChange('commune', e.target.value)}
                         className="w-full p-2 border border-gray-300 rounded-md"
                         >
                         <option value="">Todas</option>
@@ -189,8 +142,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     <div className="mb-4">
                         <label className="block text-gray-700">Año</label>
                         <select
-                            value={year}
-                            onChange={(e) => setYear(e.target.value)}
+                            value={localFilters.year}
+                            onChange={(e) => handleLocalFilterChange('year', e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-md"
                         >
                             <option value="">Todos</option>
@@ -203,8 +156,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                         <div className="mb-4">
                         <label className="block text-gray-700">Mes</label>
                         <select
-                            value={month}
-                            onChange={(e) => setMonth(e.target.value)}
+                            value={localFilters.month}
+                            onChange={(e) => handleLocalFilterChange('month', e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-md"
                         >
                             <option value="">Todos</option>
@@ -227,8 +180,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     <div>
                         <label className="block text-gray-700">Fecha de Inicio</label>
                         <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        selected={localFilters.startDate}
+                        onChange={(date) => handleLocalFilterChange('startDate', date)}
                         dateFormat="dd/MM/yyyy"
                         className="w-full p-2 border border-gray-300 rounded-md"
                         placeholderText="Selecciona una fecha"
@@ -239,8 +192,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     <div>
                         <label className="block text-gray-700">Fecha de Término</label>
                         <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date)}
+                        selected={localFilters.endDate}
+                        onChange={(date) => handleLocalFilterChange('endDate', date)}
                         dateFormat="dd/MM/yyyy"
                         className="w-full p-2 border border-gray-300 rounded-md"
                         placeholderText="Selecciona una fecha"
@@ -254,8 +207,8 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                         Estado del pedido
                     </label>
                     <select
-                        value={orderStatus}
-                        onChange={(e) => setOrderStatus(e.target.value)}
+                        value={localFilters.orderStatus}
+                        onChange={(e) => handleLocalFilterChange('orderStatus', e.target.value)}
                         className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5 h-9 p-2"
                     >
                         <option value="">Todos los estados</option>
@@ -268,7 +221,7 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     </div>
 
                   <button
-                    onClick={applyFilters}
+                    onClick={handleApplyFilters}
                     className="w-full px-4 py-2 mt-4 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                   >
                     Aplicar
@@ -294,20 +247,21 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                   <div className="mb-4">
                     <label className="block text-gray-700">Criterio</label>
                     <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
+                      value={localFilters.sortBy}
+                      onChange={(e) => handleLocalFilterChange('sortBy', e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
                       <option value="">Ninguno</option>
-                      <option value="date">Fecha</option>
-                      <option value="total">Valor Total</option>
+                      <option value="orderDate">Fecha</option>
+                      <option value="deliveryDate">Fecha de entrega</option>
+                      <option value="total">Valor total</option>
                     </select>
                   </div>
                   <div className="mb-4">
                     <label className="block text-gray-700">Orden</label>
                     <select
-                      value={sortOrder}
-                      onChange={(e) => setSortOrder(e.target.value)}
+                      value={localFilters.sortOrder}
+                      onChange={(e) => handleLocalFilterChange('sortOrder', e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md"
                     >
                       <option value="">Ninguno</option>
@@ -316,7 +270,7 @@ const FilterAndSort = ({ setFilteredOrders }) => {
                     </select>
                   </div>
                   <button
-                    onClick={applyFilters}
+                    onClick={handleApplyFilters}
                     className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
                   >
                     Aplicar
