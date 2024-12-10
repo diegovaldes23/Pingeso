@@ -8,6 +8,7 @@ const FilterAndSort = ( ) => {
   const { filters, setFilters, applyFilters } = useGlobalContext();
 
   const [localFilters, setLocalFilters] = useState(filters);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleLocalFilterChange = (key, value) => {
     setLocalFilters(prev => ({ ...prev, [key]: value}));
@@ -28,6 +29,12 @@ const FilterAndSort = ( ) => {
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+    setFilters(prev => ({ ...prev, searchTerm: e.target.value }));
+    applyFilters();
+  }
 
   const handleApplyFilters = () => {
     setFilters(localFilters);
@@ -55,7 +62,9 @@ const FilterAndSort = ( ) => {
       month: '',
       sortBy: '',
       sortOrder: '',
+      searchTerm: ''
     });
+    setSearchTerm('');
   };
 
   // Restaura los filtros locales desde los globales al abrir el modal
@@ -87,7 +96,15 @@ const FilterAndSort = ( ) => {
 
     return (
         <div className="relative">
-          <div className="flex justify-end mb-4 space-x-4">
+          <div className="flex justify-center mb-4 space-x-4">
+            {/* Barra de búsqueda */}
+            <input
+            type="text"
+            placeholder="Buscar por ID, cliente, fecha (dd-MM-aaaa), productos..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
             {/* Botón Filtro */}
             <div className="relative" ref={filterDropdownRef}>
               <button

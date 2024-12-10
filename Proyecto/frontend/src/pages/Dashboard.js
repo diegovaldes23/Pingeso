@@ -7,7 +7,7 @@ const Dashboard = () => {
   const { filteredOrders } = useGlobalContext();
 
   return (
-    <div className="container mx-auto">
+    <div className="mx-auto">
       {/* Estadísticas */}
       <Statistics filteredOrders={filteredOrders} />
     </div>

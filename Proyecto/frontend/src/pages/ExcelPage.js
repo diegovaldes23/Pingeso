@@ -45,7 +45,7 @@ const ExcelPage = () => {
   return (
     <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
       <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
-        Importar y exportar órdenes
+        Exportar órdenes
       </h1>
       
       <div className="flex justify-center mb-6">

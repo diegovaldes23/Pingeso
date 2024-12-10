@@ -7,15 +7,6 @@ const GlobalContext = createContext();
 export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
-  const [region, setRegion] = useState('');
-    const [commune, setCommune] = useState('');
-    const [year, setYear] = useState('');
-    const [month, setMonth] = useState('');
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
-    const [orderStatus, setOrderStatus] = useState('');
-    const [sortBy, setSortBy] = useState('');
-    const [sortOrder, setSortOrder] = useState('');
 
 
   const URL = 'http://localhost:8080'
@@ -81,6 +72,7 @@ export const GlobalProvider = ({ children }) => {
     month: '',
     sortBy: '',
     sortOrder: '',
+    searchTerm: '',
   });
 
   const applyFilters = () => {
@@ -100,6 +92,7 @@ export const GlobalProvider = ({ children }) => {
         month,
         sortBy,
         sortOrder,
+        searchTerm
       } = filters;
 
     // Filtros
@@ -140,6 +133,41 @@ export const GlobalProvider = ({ children }) => {
       });
     }
 
+    // Filtrado por término de búsqueda
+    if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+
+        // Detecta si el término de búsqueda parece ser una fecha (dd-MM o dd-MM-yyyy)
+        const dateRegex = /^\d{1,2}-\d{1,2}(-\d{4})?$/;
+
+        if (dateRegex.test(searchLower)) {
+        // Normaliza el término de búsqueda a formato yyyy-MM-dd
+        const [day, month, year] = searchLower.split('-');
+        const actualYear = new Date().getFullYear();
+        const searchDate = new Date(
+            year ? `${year}-${month}-${day}` : `${actualYear}-${month}-${day}` // Agrega un año predeterminado si no está presente
+        );
+
+        filtered = filtered.filter(order => {
+            const orderDate = new Date(order.order_date); // Convierte la fecha de la orden
+            return (
+            orderDate.getDate() === searchDate.getDate() &&
+            orderDate.getMonth() === searchDate.getMonth() &&
+            (year ? orderDate.getFullYear() === searchDate.getFullYear() : true)
+            );
+        });
+        } else {
+        // Si no es una fecha, busca en otros campos
+        filtered = filtered.filter(order => 
+            order.id.toString().includes(searchLower) || // Busca por ID
+            order.name?.toLowerCase().includes(searchLower) || // Busca por cliente
+            order.orderProducts?.some(product => 
+            product.name.toLowerCase().includes(searchLower) // Busca en productos
+            )
+        );
+        }
+    }
+
     setFilteredOrders(filtered);
 
     setShowFilterDropdown(false);
@@ -161,6 +189,7 @@ export const GlobalProvider = ({ children }) => {
       month: '',
       sortBy: '',
       sortOrder: '',
+      searchTerm: '',
     });
     setFilteredOrders(orders); // Restablece a la vista original
   };

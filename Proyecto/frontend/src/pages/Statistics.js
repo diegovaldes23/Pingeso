@@ -24,9 +24,8 @@ const Statistics = () => {
     switch (activeTab) {
         case 'summaryAndCharts':
             return (
-                <div className="p-6 bg-gray-50 min-h-screen">
-                  <div className="bg-white rounded-lg shadow p-6">
-                    <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+                <div className="p-6 min-h-screen">
+                    <h2 className="text-2xl font-bold mb-6">Resumen</h2>
                     
                     <div className="grid grid-cols-2 gap-4 mb-8">
                       <div className="bg-gray-50 p-4 rounded-lg">
@@ -99,7 +98,6 @@ const Statistics = () => {
                         </table>
                       </div>
                     </div>
-                </div>
             </div>
             );
         case 'top-customers':
