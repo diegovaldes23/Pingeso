@@ -1,6 +1,7 @@
 package com.confitescordova.admin_controllers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.confitescordova.admin_entities.*;
@@ -150,4 +151,9 @@ public class OrdersController {
         return ResponseEntity.ok(updatedOrder);
     }
 
+    @GetMapping("/top-customers")
+    public ResponseEntity<List<Map<String, Object>>> getTopTenCustomers(){
+        List<Map<String, Object>> topCustomers = orderService.getTopTenCustomers();
+        return ResponseEntity.ok(topCustomers);
+    }
 }

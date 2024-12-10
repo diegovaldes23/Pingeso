@@ -3,9 +3,12 @@ package com.confitescordova.admin_services;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.entities.Order;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.confitescordova.admin_entities.Orders;
@@ -29,7 +32,8 @@ public class OrdersService {
 
     // Para obtener los productos mas vendidos
     public List<CommuneOrderCountDTO> salesByCommune() {
-        return orderRepository.countOrdersByCommune();
+        Pageable top10 = PageRequest.of(0, 10); // Limita los resultados a los 10 primeros
+        return orderRepository.countOrdersByCommune(top10);
     }
 
     public List<SalesByChannelDTO> salesByChannel() {
@@ -83,5 +87,21 @@ public class OrdersService {
 
         // Usar save() para actualizar la orden existente
         return orderRepository.save(order); // Esto actualiza la orden con el mismo ID
+    }
+
+    public List<Map<String, Object>> getTopTenCustomers() {
+        Pageable top10 = PageRequest.of(0, 10); // Limita los resultados a los 10 primeros
+        List<Object[]> results = orderRepository.findTopCustomers(top10);
+
+        // Transforma los resultados en una lista de mapas o un DTO
+        List<Map<String, Object>> topCustomers = new ArrayList<>();
+        for (Object[] row : results) {
+            Map<String, Object> customerData = new HashMap<>();
+            customerData.put("name", row[0]);
+            customerData.put("phone", row[1]);
+            customerData.put("totalSpent", row[2]);
+            topCustomers.add(customerData);
+        }
+        return topCustomers;
     }
 }

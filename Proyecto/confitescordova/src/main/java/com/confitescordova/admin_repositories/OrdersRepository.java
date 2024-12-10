@@ -1,7 +1,9 @@
 package com.confitescordova.admin_repositories;
 
+import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_services.CommuneOrderCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -14,7 +16,7 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
     @Query("SELECT new com.confitescordova.admin_services.CommuneOrderCountDTO(o.commune, COUNT(o), SUM(o.total)) " +
             "FROM Orders o " +
             "GROUP BY o.commune")
-    List<CommuneOrderCountDTO> countOrdersByCommune();
+    List<CommuneOrderCountDTO> countOrdersByCommune(Pageable pageable);
 
     @Query("SELECT new com.confitescordova.admin_services.SalesByChannelDTO(o.purchase_source, COUNT(o), SUM(o.total)) " +
             "FROM Orders o " +
@@ -25,4 +27,10 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
     //List<Orders> findAllByOrdersByTotalDesc();
 
     Optional<Orders> findByExternalOrderId(Long externalOrderId);
+
+    @Query("SELECT o.name AS name, o.phone AS phone, SUM(o.total) AS totalSpent " +
+            "FROM Orders o " +
+            "GROUP BY o.name, o.phone " +
+            "ORDER BY SUM(o.total) DESC")
+    List<Object[]> findTopCustomers(Pageable pageable);
 } 

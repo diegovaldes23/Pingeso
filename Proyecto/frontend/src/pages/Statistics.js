@@ -5,6 +5,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 const Statistics = () => {
+  const [activeTab, setActiveTab] = useState('summaryAndCharts');
   const [selectedView, setSelectedView] = useState('commune');
   const [sortOrder, setSortOrder] = useState('desc');
   const [stats, setStats] = useState({
@@ -16,6 +17,120 @@ const Statistics = () => {
     salesByChannel: {},
     productRevenue: {},
   });
+
+  const [topCustomers, setTopCustomers] = useState([]);
+
+  const renderContent = () => {
+    switch (activeTab) {
+        case 'summaryAndCharts':
+            return (
+                <div className="p-6 bg-gray-50 min-h-screen">
+                  <div className="bg-white rounded-lg shadow p-6">
+                    <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
+                    
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600">Total de ingresos</p>
+                        <p className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600">Total de órdenes</p>
+                        <p className="text-2xl font-bold">{stats.totalOrders}</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600">Comuna más popular</p>
+                        <p className="text-2xl font-bold">{stats.popularCommune}</p>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600">Ingresos del último mes</p>
+                        <p className="text-2xl font-bold">${stats.lastMonthRevenue.toLocaleString()}</p>
+                      </div>
+                    </div>
+            
+                    <div className="grid grid-cols-2 gap-6">
+                      <div className="bg-white p-4 rounded-lg">
+                        <div className="mb-4">
+                          <select 
+                            value={selectedView}
+                            onChange={(e) => setSelectedView(e.target.value)}
+                            className="border border-gray-300 rounded px-3 py-1"
+                          >
+                            <option value="commune">Ventas por comuna</option>
+                            <option value="channel">Pedidos por canal</option>
+                            <option value="products">Ingresos por producto</option>
+                          </select>
+                        </div>
+                        <div className="h-[400px]">
+                          {selectedView === 'products' ? (
+                            <Bar data={getChartData()} options={chartOptions} />
+                          ) : (
+                            <Pie data={getChartData()} options={chartOptions} />
+                          )}
+                        </div>
+                      </div>
+            
+                      <div className="bg-white p-4 rounded-lg">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="font-bold">Detalles</h3>
+                          <button 
+                            onClick={toggleSort}
+                            className="text-gray-600 hover:text-gray-800"
+                          >
+                            Ordenar {sortOrder === 'asc' ? '↑' : '↓'}
+                          </button>
+                        </div>
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b">
+                              <th className="text-left py-2">Métrica</th>
+                              <th className="text-right py-2">Valor</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {getSortedData().map(([key, value]) => (
+                              <tr key={key} className="border-b">
+                                <td className="py-2">{key}</td>
+                                <td className="text-right">
+                                  {selectedView === 'products' ? `$${value.toLocaleString()}` : value}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            );
+        case 'top-customers':
+            return (
+                <div className="bg-white p-4 rounded-lg">
+                  <h3 className="text-lg font-bold mb-4">Top 10 Clientes</h3>
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b">
+                        <th className="py-2 text-left">Cliente</th>
+                        <th className="py-2 text-left">Teléfono</th>
+                        <th className="py-2 text-right">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {topCustomers.map((customer, index) => (
+                        <tr key={index} className="border-b">
+                          <td className="py-2">{customer.name}</td>
+                          <td className="py-2">{customer.phone}</td>
+                          <td className="py-2 text-right">${customer.totalSpent.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+        default: 
+            return null;
+
+    }
+  }
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -31,6 +146,9 @@ const Statistics = () => {
 
         const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales");
         const productSalesData = await productSalesRes.json();
+
+        const topCustomerRes = await fetch("http://localhost:8080/admin/orders/top-customers");
+        const topCustomersData = await topCustomerRes.json();
 
         let totalRevenue = 0;
         let totalOrders = ordersData.length;
@@ -67,6 +185,7 @@ const Statistics = () => {
             return acc;
           }, {}),
         });
+        setTopCustomers(topCustomersData);
       } catch (error) {
         console.error("Error al obtener las estadísticas:", error);
       }
@@ -192,79 +311,24 @@ const Statistics = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
         
-        <div className="grid grid-cols-2 gap-4 mb-8">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600">Total de ingresos</p>
-            <p className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600">Total de órdenes</p>
-            <p className="text-2xl font-bold">{stats.totalOrders}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600">Comuna más popular</p>
-            <p className="text-2xl font-bold">{stats.popularCommune}</p>
-          </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <p className="text-sm text-gray-600">Ingresos del último mes</p>
-            <p className="text-2xl font-bold">${stats.lastMonthRevenue.toLocaleString()}</p>
-          </div>
+        <div className="flex space-x-4 mb-6">
+          <button 
+            className={`px-4 py-2 rounded ${activeTab === 'summaryAndCharts' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setActiveTab('summaryAndCharts')}
+          >
+            Resumen general
+          </button>
+          <button 
+            className={`px-4 py-2 rounded ${activeTab === 'top-customers' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setActiveTab('top-customers')}
+          >
+            Top clientes
+          </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white p-4 rounded-lg">
-            <div className="mb-4">
-              <select 
-                value={selectedView}
-                onChange={(e) => setSelectedView(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-1"
-              >
-                <option value="commune">Ventas por comuna</option>
-                <option value="channel">Pedidos por canal</option>
-                <option value="products">Ingresos por producto</option>
-              </select>
-            </div>
-            <div className="h-[400px]">
-              {selectedView === 'products' ? (
-                <Bar data={getChartData()} options={chartOptions} />
-              ) : (
-                <Pie data={getChartData()} options={chartOptions} />
-              )}
-            </div>
-          </div>
-
-          <div className="bg-white p-4 rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold">Detalles</h3>
-              <button 
-                onClick={toggleSort}
-                className="text-gray-600 hover:text-gray-800"
-              >
-                Ordenar {sortOrder === 'asc' ? '↑' : '↓'}
-              </button>
-            </div>
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2">Métrica</th>
-                  <th className="text-right py-2">Valor</th>
-                </tr>
-              </thead>
-              <tbody>
-                {getSortedData().map(([key, value]) => (
-                  <tr key={key} className="border-b">
-                    <td className="py-2">{key}</td>
-                    <td className="text-right">
-                      {selectedView === 'products' ? `$${value.toLocaleString()}` : value}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {renderContent()}
+        
       </div>
     </div>
   );
