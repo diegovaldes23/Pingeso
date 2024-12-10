@@ -8,6 +8,7 @@ const Statistics = () => {
   const [activeTab, setActiveTab] = useState('summaryAndCharts');
   const [selectedView, setSelectedView] = useState('commune');
   const [sortOrder, setSortOrder] = useState('desc');
+  const [isLoading, setIsLoading] = useState(true);
   const [stats, setStats] = useState({
     totalRevenue: 0,
     totalOrders: 0,
@@ -17,6 +18,8 @@ const Statistics = () => {
     salesByChannel: {},
     productRevenue: {},
   });
+
+  
 
   const [topCustomers, setTopCustomers] = useState([]);
 
@@ -132,6 +135,7 @@ const Statistics = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
+      setIsLoading(true);
       try {
         const ordersRes = await fetch("http://localhost:8080/admin/orders");
         const ordersData = await ordersRes.json();
@@ -186,11 +190,22 @@ const Statistics = () => {
         setTopCustomers(topCustomersData);
       } catch (error) {
         console.error("Error al obtener las estadísticas:", error);
+      } finally {
+        setTimeout(() => setIsLoading(false), 500);
       }
     };
 
     fetchStats();
   }, []);
+
+  if (isLoading) {
+    return (
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+            
+          <p className="text-xl font-bold text-gray-700">Cargando estadísticas...</p>
+        </div>
+      );
+  }
 
   // Función para obtener colores (ampliar la paleta de colores pastel si es necesario)
   const pastelColors = [

@@ -11,7 +11,7 @@ const Sidebar = () => {
   return (
     <div
       className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 overflow-y-auto ${
-        isCollapsed ? "w-20" : "w-50"
+        isCollapsed ? "w-20" : "w-60"
       }`}
     >
       {/* Botón para colapsar/expandir */}
@@ -42,7 +42,7 @@ const Sidebar = () => {
       >
         {/* Visualización de pedidos */}
         <li
-          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
         >
