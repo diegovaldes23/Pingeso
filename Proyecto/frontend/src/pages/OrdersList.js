@@ -234,16 +234,22 @@ useEffect(() => {
 
       const handleSaveOrderChange = async () => {
         try {
-            const updatedOrder = {
-                ...editOrder,
-                orderProducts: products.map((product) => ({
-                    name: product.name,
-                    quantity: product.quantity,
-                    cost: product.cost,
-                })),
-                subtotal: subtotal,
-                total: total,
-            };
+            // Convierte las fechas al formato ISO-8601 o "yyyy-MM-dd"
+        const formattedOrderDate = editOrder.order_date
+        ? new Date(editOrder.order_date).toISOString().split('T')[0]
+        : null; // Convierte a "yyyy-MM-dd" si es necesario
+    const formattedDeliveryDate = editOrder.deliveryDate
+        ? new Date(editOrder.deliveryDate).toISOString().split('T')[0]
+        : null;
+
+        const updatedOrder = {
+            ...editOrder,
+            order_date: formattedOrderDate, // Usa el formato correcto
+            deliveryDate: formattedDeliveryDate,
+            orderProducts: products, // Incluye los productos actualizados
+            subtotal: subtotal,
+            total: total,
+        };
 
             console.log(updatedOrder.orderProducts);
           const response = await fetch(`http://localhost:8080/admin/orders/${editOrder.id}`, {

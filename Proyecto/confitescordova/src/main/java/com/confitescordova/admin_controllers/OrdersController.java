@@ -164,4 +164,10 @@ public class OrdersController {
         return ResponseEntity.ok(updatedOrder);
 
     }
+
+    @PostMapping("/post")
+    public ResponseEntity<Orders> postOrder(@RequestBody Orders order) {
+        Orders orders = orderService.saveLocal(order);
+        return ResponseEntity.ok(orders);
+    }
 }

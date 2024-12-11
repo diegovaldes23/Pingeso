@@ -146,4 +146,9 @@ public class OrdersService {
         // Usar save() para actualizar la orden existente
         return orderRepository.save(order); // Esto actualiza la orden con el mismo ID
     }
+
+    public Orders saveLocal(Orders order) {
+        order.setCreation_date(LocalDate.now());
+        return orderRepository.save(order);
+    }
 }

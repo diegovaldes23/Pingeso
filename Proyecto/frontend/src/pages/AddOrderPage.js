@@ -25,11 +25,24 @@ function AddOrderPage() {
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
 
-    // Función para formatear la fecha
-    const formatDate = (date) => {
-        const [year, month, day] = date.split('-');
-        return `${day}-${month}-${year}`;
-    };
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+        return date.toLocaleDateString('es-CL', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+        });
+      };
+
+      function formatDateToDDMMYYYY(dateString) {
+        const date = new Date(dateString); // Convierte la cadena a un objeto Date
+        const day = String(date.getDate()).padStart(2, '0'); // Extrae y asegura que el día tenga 2 dígitos
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Extrae el mes (agregando 1 porque los meses comienzan desde 0)
+        const year = date.getFullYear(); // Extrae el año
+    
+        return `${day}/${month}/${year}`; // Formatea como dd-MM-yyyy
+    }
 
     // Filtramos las comunas basadas en la región seleccionada
     const selectedRegion = regionsAndCommunes.find(r => r.NombreRegion === region);
@@ -114,7 +127,7 @@ function AddOrderPage() {
 
     const createOrder = async (orderData) => {
         try {
-            const response = await axios.post('http://localhost:8080/admin/orderproduct/post', orderData, {
+            const response = await axios.post('http://localhost:8080/admin/orders/post', orderData, {
                 headers: { 'Content-Type': 'application/json' },
             });
             console.log('Pedido creado:', response.data);
@@ -136,25 +149,28 @@ function AddOrderPage() {
     
         // Construir la fecha y hora en el formato ISO
         const orderDateTime = `${date}T10:00:00`;
-    
+
+        const formattedDate = date ? formatDateToDDMMYYYY(date) : null;
+
         // Preparar datos para enviar
         const orderData = {
             name: customerName,
             phone,
             region,
             commune,
-            order_date: orderDateTime,
+            order_date: formattedDate,
             customer_type: customerType,
             purchase_source: purchaseSource,
             shipping_cost: parseFloat(deliveryCost),
             subtotal: parseFloat(subtotal),
+            total: parseFloat(total),
             initial_payment: parseFloat(initialPayment),
             status,
             description,
             address, // Agregar un campo para la dirección
             email,
-            orders: products.map(product => ({
-                name: parseInt(product.name, 10),
+            orderProducts: products.map(product => ({
+                name: product.name,
                 quantity: parseInt(product.quantity, 10),
             })),
         };

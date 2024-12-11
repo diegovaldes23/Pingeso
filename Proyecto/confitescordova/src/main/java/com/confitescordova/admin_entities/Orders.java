@@ -29,6 +29,8 @@ public class Orders {
     private String phone; // Telefono
     private String region; // Región del cliente
     private String commune; // Comuna del cliente
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate order_date; // fecha de orden
     private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
     private String purchase_source; // Fuente de la compra (Organico, Facebook Adds)
@@ -40,6 +42,8 @@ public class Orders {
     private Double total; // Total (costo productos + costo de envio)
     private Double initial_payment; // Pago inicial
     private String status; // Estado
+
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate delivery_date; // fecha de entrega (cuando se completó el pedido)
     private String description;
     private String address; // Dirección
