@@ -16,7 +16,7 @@ const App = () => {
   return (
     <GlobalProvider>
       <Router>
-        <div className="flex">
+        <div className="flex max-h-max">
           <Sidebar />
           <div className="flex-1 p-6">
             <Routes>

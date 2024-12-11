@@ -1,18 +1,22 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Importar React Router
+import { Link, useLocation } from "react-router-dom"; // Importar React Router
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const location = useLocation(); // Obtener la ubicación actual
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  // Verificar si estamos en la ruta de ExcelPage
+  const isFull = location.pathname === "/excel" || location.pathname === "/orders";
+
   return (
     <div
-      className={`h-screen bg-purple-800 text-white flex flex-col transition-all duration-300 overflow-y-auto ${
+      className={`bg-purple-800 text-white flex flex-col transition-all duration-300 overflow-y-auto ${
         isCollapsed ? "w-20" : "w-60"
-      }`}
+    } ${isFull ? "h-screen" : "min-h-full"}`}
     >
       {/* Botón para colapsar/expandir */}
       <div

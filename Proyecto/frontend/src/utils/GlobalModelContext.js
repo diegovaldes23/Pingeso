@@ -161,6 +161,7 @@ export const GlobalProvider = ({ children }) => {
         filtered = filtered.filter(order => 
             order.id.toString().includes(searchLower) || // Busca por ID
             order.name?.toLowerCase().includes(searchLower) || // Busca por cliente
+            order.address.toLowerCase().includes(searchLower) ||
             order.orderProducts?.some(product => 
             product.name.toLowerCase().includes(searchLower) // Busca en productos
             )

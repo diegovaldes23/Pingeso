@@ -166,7 +166,7 @@ function AddOrderPage() {
     };    
 
     return (
-        <div className="flex justify-center items-center bg-gray-50 min-h-screen">
+        <div className="flex justify-center items-center min-h-screen">
             <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
                 <h2 className="text-2xl font-semibold mb-6">Crear Pedido</h2>
 

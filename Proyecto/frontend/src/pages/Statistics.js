@@ -198,15 +198,6 @@ const Statistics = () => {
     fetchStats();
   }, []);
 
-  if (isLoading) {
-    return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-50">
-            
-          <p className="text-xl font-bold text-gray-700">Cargando estadísticas...</p>
-        </div>
-      );
-  }
-
   // Función para obtener colores (ampliar la paleta de colores pastel si es necesario)
   const pastelColors = [
   '#FFB3BA', // Light Red
@@ -323,6 +314,29 @@ const Statistics = () => {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      {isLoading ? (
+      <div className="flex justify-center items-center">
+        <svg
+          width="48"
+          height="48"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          className="animate-spin align-middle justify-center"
+        >
+          <style>
+            {`
+              .spinner { transform-origin: center; animation: rotate 0.75s infinite linear; }
+              @keyframes rotate { 100% { transform: rotate(360deg); } }
+            `}
+          </style>
+          <path
+            d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
+            className="spinner"
+            fill="#4A90E2"
+          />
+        </svg>
+      </div>
+    ) : (
       <div className="bg-white rounded-lg shadow p-6">
         
         <div className="flex space-x-4 mb-6">
@@ -343,6 +357,7 @@ const Statistics = () => {
         {renderContent()}
         
       </div>
+    )}
     </div>
   );
 };

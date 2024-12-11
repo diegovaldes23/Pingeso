@@ -88,7 +88,7 @@ const OrdersList = () => {
       } catch (error) {
         console.error('Error al actualizar el estado:', error);
         alert('Error al actualizar el estado');
-      }
+      } 
   };
   
   const handleEditClick = (orderId, currentDeliveryDate) => {
