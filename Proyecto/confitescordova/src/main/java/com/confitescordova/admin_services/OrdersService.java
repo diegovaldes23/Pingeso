@@ -104,4 +104,34 @@ public class OrdersService {
         }
         return topCustomers;
     }
+
+    public Orders updateOrder(Orders order) {
+        // Verificar si la orden existe
+        Optional<Orders> optionalOrder = orderRepository.findById(order.getId());
+
+        // Si no existe la orden, lanzar una excepción o manejar el error
+        if (optionalOrder.isEmpty()) {
+            throw new EntityNotFoundException("La orden con ID " + order.getId() + " no fue encontrada.");
+        }
+
+        // Obtener la orden
+        Orders newOrder = optionalOrder.get();
+
+        // Actualizar solo el estado de la orden
+        newOrder.setOrder_date(order.getOrder_date());
+        newOrder.setPhone(order.getPhone());
+        newOrder.setShipping_cost(order.getShipping_cost());
+        newOrder.setShipping_cost(order.getShipping_cost());
+        newOrder.setStatus(order.getStatus());
+        newOrder.setDelivery_date(order.getDelivery_date());
+        newOrder.setDescription(order.getDescription());
+        newOrder.setAddress(order.getAddress());
+        newOrder.setEmail(order.getEmail());
+        newOrder.setPhone(order.getPhone());
+        newOrder.setCommune(order.getCommune());
+        newOrder.setRegion(order.getRegion());
+
+        // Usar save() para actualizar la orden existente
+        return orderRepository.save(order); // Esto actualiza la orden con el mismo ID
+    }
 }

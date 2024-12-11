@@ -156,4 +156,12 @@ public class OrdersController {
         List<Map<String, Object>> topCustomers = orderService.getTopTenCustomers();
         return ResponseEntity.ok(topCustomers);
     }
+
+    @PutMapping("/{orderId}")
+    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody Orders order) {
+        Orders updatedOrder = orderService.updateOrder(order);
+        System.out.println("Pasó la prueba de fuego");
+        return ResponseEntity.ok(updatedOrder);
+
+    }
 }

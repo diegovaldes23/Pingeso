@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useGlobalContext } from '../utils/GlobalModelContext';
 import DatePicker from 'react-datepicker';
+import regionsAndCommunes from './RegionesYComunas';
+import axios from 'axios';
+
 
 const OrdersList = () => {
-  const { orders, filteredOrders, getStatusClass, updateOrderDeliveryDate, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
+  const { orders, setOrders, filteredOrders, getStatusClass, updateOrderDeliveryDate, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
 
   const [isEditing, setIsEditing] = useState(false);
   const [deliveryDate, setDeliveryDate] = useState('');
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [editOrder, setEditOrder] = useState(null);
+  const [products, setProducts] = useState([{ name: '', quantity: '', cost: 0.0}]);
+  const [subtotal, setSubtotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [availableProducts, setAvailableProducts] = useState([]);
+
+  const [region, setRegion] = useState(null);
+
+  const selectedRegion = regionsAndCommunes.find(r => r.NombreRegion === region);
+  const communes = selectedRegion ? selectedRegion.comunas : [];
 
   // Paginación
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +30,10 @@ const OrdersList = () => {
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
+
+  const addProductField = () => {
+    setProducts([...products, { name: '', quantity: ''}]);
+};
 
   // Función para cambiar de página
   const getPageNumbers = () => {
@@ -91,10 +108,13 @@ const OrdersList = () => {
       } 
   };
   
-  const handleEditClick = (orderId, currentDeliveryDate) => {
+  const handleEditClick = (orderId, currentDeliveryDate, order) => {
     setSelectedOrderId(orderId);
+    setEditOrder(order);
     console.log(currentDeliveryDate);
     console.log(selectedOrderId);
+
+    setProducts(order.orderProducts || []);
     
     // Si currentDeliveryDate es una cadena, convertirla a un objeto Date
     const date = currentDeliveryDate ? new Date(currentDeliveryDate) : null;
@@ -113,44 +133,71 @@ const OrdersList = () => {
     } 
   };
 
-  const handleSaveDateChange = async () => {
-    if (!deliveryDate) {
-      alert('Por favor, selecciona una fecha.');
-      return;
-    }
-  
-    const formattedDate = deliveryDate.toISOString().split('T')[0]; // Convierte a formato yyyy-MM-dd
+ 
+  const handleProductChange = (index, field, value) => {
+    const updatedProducts = [...products];
+    updatedProducts[index][field] = value;
 
-    const orderData = {
-        id_order: selectedOrderId,
-        delivery_date: formattedDate,
+    // Si se está cambiando el `productId`, actualiza también el `cost`
+    if (field === 'name') {
+        const selectedProduct = availableProducts.find(p => p.name === value);
+        if (selectedProduct) {
+            updatedProducts[index].cost = selectedProduct.cost; // Asigna el costo correspondiente
+        } else {
+            updatedProducts[index].cost = 0; // Si no se encuentra el producto, establece el costo en 0
+        }
+    }
+
+    // Asegurarse de convertir quantity a número (aunque lo estés haciendo en el useEffect)
+    if (field === 'quantity') {
+        const quantity = parseInt(value, 10);
+        updatedProducts[index].quantity = (quantity > 0 ) ? quantity : ''; // Se asegura de que la cantidad sea un número
+
+    }
+
+    setProducts(updatedProducts);
+};
+
+// Calcular el subtotal
+useEffect(() => {
+    const newSubtotal = products.reduce((acc, product) => {
+      if (product.quantity && product.cost) {
+        return acc + product.quantity * product.cost;
+      }
+      return acc;
+    }, 0);
+  
+    setSubtotal(newSubtotal);
+  }, [products]); // Se recalcula el subtotal cuando cambian los productos
+   // Se recalcula el subtotal cada vez que cambian los productos o los productos disponibles
+
+   useEffect(() => {
+    const shippingCost = parseFloat(editOrder?.shipping_cost) || 0;
+    setTotal(subtotal + shippingCost);
+  }, [subtotal, editOrder?.shipping_cost]); // Se recalcula el total cuando cambian el subtotal o el costo de envío
+  
+  
+// Simular llamada al backend para obtener los productos
+useEffect(() => {
+    const fetchProducts = async () => {
+        try {
+            // Realizar la solicitud GET para obtener los productos
+            const response = await axios.get('http://localhost:8080/admin/products', {
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            // Asignar los productos obtenidos al estado
+            setAvailableProducts(response.data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+        } catch (error) {
+            console.error('Error al obtener los productos:', error);
+            alert('Hubo un error al obtener los productos');
+        }
     };
 
-    // Aquí podrías hacer la llamada a la API para guardar el cambio en el backend
-    try {
-      const response = await fetch('http://localhost:8080/admin/orders/delivery-date', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-  
-      if (response.ok) {
-        // Actualiza la orden en el estado global o local
+    fetchProducts(); // Llamar a la función para obtener los productos
+}, []); // El arreglo vacío asegura que esta función se ejecute solo una vez al montar el componente
 
-        updateOrderDeliveryDate({id: selectedOrderId, delivery_date: formattedDate});
 
-        alert('Fecha de entrega actualizada correctamente');
-        setIsEditing(false); // Cerrar el modal
-      } else {
-        alert('Hubo un error al actualizar la fecha de entrega');
-      }
-    } catch (error) {
-      console.error(error);
-      alert('Error al actualizar la fecha de entrega');
-    }
-};
 
     const formatDate2 = (date) => {
         if (!(date instanceof Date) || isNaN(date)) return "";
@@ -178,6 +225,41 @@ const OrdersList = () => {
   
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
+      };
+
+      const handleSaveOrderChange = async () => {
+        try {
+            const updatedOrder = {
+                ...editOrder,
+                orderProducts: products, // Incluir productos actualizados
+                subtotal: subtotal,
+                total: total,
+              };
+              console.log(updatedOrder.orderProducts);
+          const response = await fetch(`http://localhost:8080/admin/orders/${updatedOrder.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updatedOrder),
+          });
+      
+          if (response.ok) {
+            alert('Pedido actualizado correctamente');
+            // Actualiza el estado global (llama una función del contexto para actualizar las órdenes)
+            const updatedOrders = orders.map((order) =>
+              order.id === editOrder.id ? editOrder : order
+            );
+            setOrders(updatedOrders);
+      
+            setIsEditing(false); // Cierra el modal
+          } else {
+            alert('Error al actualizar el pedido');
+          }
+        } catch (error) {
+          console.error('Error al guardar los cambios:', error);
+          alert('Error al guardar los cambios');
+        }
       };
 
     return (
@@ -248,7 +330,7 @@ const OrdersList = () => {
                                 </svg>
                             </button>
                             <button
-                                onClick={() => handleEditClick(order.id, order.delivery_date)}
+                                onClick={() => handleEditClick(order.id, order.delivery_date, order)}
                                 className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -305,16 +387,179 @@ const OrdersList = () => {
           {/* Modal de edición de la fecha de entrega */}
           {isEditing && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-              <div className="bg-white p-6 rounded-md shadow-lg">
-                <h3 className="text-lg font-semibold mb-4">Editar fecha de entrega</h3>
+                <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={handleDateChange}>
+                <h2 className="text-2xl font-semibold mb-6">Editar pedido</h2>
+
+                {/* Nombre del cliente y Teléfono */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label className="block text-gray-700">Nombre del cliente</label>
+                        <input
+                            type="text"
+                            value={editOrder.name}
+                            onChange={(e) => setEditOrder({ ...editOrder, name: e.target.value })}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="Ej: Juan Pérez"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Teléfono</label>
+                        <input
+                            type="text"
+                            value={editOrder.phone}
+                            onChange={(e) => setEditOrder({ ...editOrder, phone: e.target.value })}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="Ej: 912345678"
+                        />
+                    </div>
+                </div>
+
+                {/* Descripción */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Descripción del pedido (Opcional)</label>
+                    <input
+                        type="text"
+                        value={editOrder.description}
+                        onChange={(e) => setEditOrder({ ...editOrder, description: e.target.value })}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        placeholder="Ej: Pedido para San Valentín"
+                    />
+                </div>
+                
+
+                {/* Fecha de pedido */}
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                    <label className="block text-sm font-medium text-gray-700">Fecha de pedido</label>
+                    <DatePicker 
+                            placeholderText={`${editOrder.order_date}`}
+                            selected={editOrder.order_date}
+                            onChange={handleDateChange}
+                            dateFormat="dd-MM-yyyy"
+                            className="p-2 border rounded-md"
+                            value={editOrder.order_date ? formatDate2(editOrder.order_date): ""}
+                        />
+                    </div>
+                    
+                    <div>
+                    <label className="block text-sm font-medium text-gray-700">Fecha de entrega</label>
                 <DatePicker 
-                  placeholderText="dd-MM-yyyy"
-                  selected={deliveryDate}
-                  onChange={handleDateChange}
-                  dateFormat="dd-MM-yyyy"
-                  className="p-2 border rounded-md"
-                  value={deliveryDate ? formatDate2(deliveryDate): ""}
-                />
+                        placeholderText="dd-MM-yyyy"
+                        selected={editOrder.deliveryDate}
+                        onChange={handleDateChange}
+                        dateFormat="dd-MM-yyyy"
+                        className="p-2 border rounded-md"
+                        value={editOrder.deliveryDate ? formatDate2(editOrder.deliveryDate): ""}
+                    />
+                    </div>
+                </div>
+
+                {/* Productos */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Productos</label>
+                    {products.map((product, index) => (
+                        <div key={index} className="grid grid-cols-2 gap-4 mt-2">
+                        {/* Selector de productos */}
+                        <select
+                            value={product.name}
+                            onChange={(e) => handleProductChange(index, 'name', e.target.value)}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                        >
+                            <option value="origin">{product.name}</option>
+                            <option value="">Seleccione un producto</option>
+                            {availableProducts.map((prod) => (
+                            <option key={prod.id} value={prod.name}>
+                                {prod.name}
+                            </option>
+                            ))}
+                        </select>
+
+                        {/* Cantidad */}
+                        <input
+                            type="number"
+                            placeholder="Cantidad"
+                            value={product.quantity}
+                            onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                            className="w-full border border-gray-300 rounded-md p-2"
+                        />
+                        </div>
+                    ))}
+
+
+
+                    <button
+                        type="button"
+                        onClick={addProductField}
+                        className="mt-2 text-cyan-500 hover:text-cyan-600"
+                    >
+                        + Agregar producto
+                    </button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                    {/* Costo de envío */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Costo de envío</label>
+                        <input
+                            type="number"
+                            value={editOrder.shipping_cost}
+                            onChange={(e) => setEditOrder({ ...editOrder, shipping_cost: parseFloat(e.target.value) }) || 0}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder={`$ ${editOrder.shipping_cost ? editOrder.shipping_cost : 0}`}
+                        />
+                    </div>
+
+                    {/* Subtotal */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Subtotal</label>
+                        <input
+                            type="text"
+                            value={`$ ${subtotal.toLocaleString()}`}
+                            readOnly
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                        />
+                    </div>
+                </div>
+                
+                {/* Total */}
+                <div className="mb-4">
+                        <label className="block text-gray-700">Total</label>
+                        <input
+                            type="text"
+                            value={`$ ${total.toLocaleString()}`}
+                            readOnly
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Abono inicial</label>
+                        <input
+                            type="number"
+                            value={editOrder.initial_payment}
+                            onChange={(e) => setEditOrder({ ...editOrder, initial_payment: e.target.value }) || 0}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="$ 0"
+                        />
+                    </div>
+                
+
+                {/* Estado */}
+                <div>
+                <label className="block text-sm font-medium text-gray-700">Estado</label>
+                <select
+                    value={editOrder.status || ''}
+                    onChange={(e) => setEditOrder({ ...editOrder, status: e.target.value })}
+                    className="mt-1 p-2 border rounded-md w-full"
+                >
+                    <option value="Pendiente">Pendiente</option>
+                    <option value="En proceso">En proceso</option>
+                    <option value="Completada">Completada</option>
+                    <option value="Cancelada">Cancelada</option>
+                </select>
+                </div>
+
+                
                 <div className="mt-4">
                   <button
                     onClick={() => setIsEditing(false)}
@@ -323,15 +568,14 @@ const OrdersList = () => {
                     Cancelar
                   </button>
                   <button
-                    onClick={handleSaveDateChange}
+                    onClick={handleSaveOrderChange}
                     className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
                   >
                     Guardar
                   </button>
                 </div>
-              </div>
+            </form>
             </div>
-            
           )}
         </>
       );
