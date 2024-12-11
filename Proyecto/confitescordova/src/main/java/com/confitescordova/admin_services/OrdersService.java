@@ -121,7 +121,6 @@ public class OrdersService {
         newOrder.setOrder_date(order.getOrder_date());
         newOrder.setPhone(order.getPhone());
         newOrder.setShipping_cost(order.getShipping_cost());
-        newOrder.setShipping_cost(order.getShipping_cost());
         newOrder.setStatus(order.getStatus());
         newOrder.setDelivery_date(order.getDelivery_date());
         newOrder.setDescription(order.getDescription());
@@ -130,6 +129,9 @@ public class OrdersService {
         newOrder.setPhone(order.getPhone());
         newOrder.setCommune(order.getCommune());
         newOrder.setRegion(order.getRegion());
+        newOrder.setOrderProducts(order.getOrderProducts());
+        newOrder.setSubtotal(order.getSubtotal());
+        newOrder.setTotal(order.getTotal());
 
         // Usar save() para actualizar la orden existente
         return orderRepository.save(order); // Esto actualiza la orden con el mismo ID
