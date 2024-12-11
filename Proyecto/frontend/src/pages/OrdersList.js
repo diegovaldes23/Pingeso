@@ -412,6 +412,7 @@ useEffect(() => {
                             onChange={(e) => setEditOrder({ ...editOrder, name: e.target.value })}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                             placeholder="Ej: Juan Pérez"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
                     <div>
@@ -422,6 +423,7 @@ useEffect(() => {
                             onChange={(e) => setEditOrder({ ...editOrder, phone: e.target.value })}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                             placeholder="Ej: 912345678"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
                 </div>
@@ -435,6 +437,7 @@ useEffect(() => {
                         onChange={(e) => setEditOrder({ ...editOrder, description: e.target.value })}
                         className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         placeholder="Ej: Pedido para San Valentín"
+                        disabled={editOrder.purchase_source === 'Tiendanube'}
                     />
                 </div>
                 
@@ -450,6 +453,7 @@ useEffect(() => {
                             dateFormat="dd-MM-yyyy"
                             className="p-2 border rounded-md"
                             value={editOrder.order_date ? formatDate2(editOrder.order_date): ""}
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
                     
@@ -476,6 +480,7 @@ useEffect(() => {
                             value={product.name}
                             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                             className="w-full border border-gray-300 rounded-md p-2"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         >
                             <option value="">Seleccione un producto</option>
                             {availableProducts.map((prod) => (
@@ -492,6 +497,7 @@ useEffect(() => {
                             value={product.quantity}
                             onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                             className="w-full border border-gray-300 rounded-md p-2"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
 
                         {/* Botón para eliminar */}
@@ -499,6 +505,7 @@ useEffect(() => {
                             type="button"
                             onClick={() => removeProductField(index)}
                             className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         >
                             Eliminar
                         </button>
@@ -510,6 +517,7 @@ useEffect(() => {
                         type="button"
                         onClick={addProductField}
                         className="mt-2 text-cyan-500 hover:text-cyan-600"
+                        disabled={editOrder.purchase_source === 'Tiendanube'}
                     >
                         + Agregar producto
                     </button>
@@ -536,6 +544,7 @@ useEffect(() => {
                             value={`$ ${subtotal.toLocaleString()}`}
                             readOnly
                             className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
                 </div>
@@ -548,6 +557,7 @@ useEffect(() => {
                             value={`$ ${total.toLocaleString()}`}
                             readOnly
                             className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                            disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
 
