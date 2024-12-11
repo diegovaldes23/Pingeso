@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.module.css";
 import regionsAndCommunes from './RegionesYComunas';
 
 import axios from 'axios';
+import { fetchProducts } from '../services/productsService';
 
 function AddOrderPage() {
     const [customerName, setCustomerName] = useState('');
@@ -41,7 +42,7 @@ function AddOrderPage() {
         const month = String(date.getMonth() + 1).padStart(2, '0'); // Extrae el mes (agregando 1 porque los meses comienzan desde 0)
         const year = date.getFullYear(); // Extrae el año
     
-        return `${day}/${month}/${year}`; // Formatea como dd-MM-yyyy
+        return `${year}-${month}-${day}`; // Formatea como dd-MM-yyyy
     }
 
     // Filtramos las comunas basadas en la región seleccionada
@@ -56,17 +57,12 @@ function AddOrderPage() {
 
     // Simular llamada al backend para obtener los productos
     useEffect(() => {
-        const fetchProducts = async () => {
+        const loadProducts = async () => {
             try {
-                // Realizar la solicitud GET para obtener los productos
-                const response = await axios.get('http://localhost:8080/admin/products', {
-                    headers: { 'Content-Type': 'application/json' },
-                });
-    
-                // Asignar los productos obtenidos al estado
-                setAvailableProducts(response.data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+                const data = await fetchProducts()
+                setAvailableProducts(data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
             } catch (error) {
-                console.error('Error al obtener los productos:', error);
+
                 alert('Hubo un error al obtener los productos');
             }
         };

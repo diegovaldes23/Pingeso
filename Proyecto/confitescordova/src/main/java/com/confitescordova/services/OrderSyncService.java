@@ -22,6 +22,7 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +65,9 @@ public class OrderSyncService implements CommandLineRunner {
                 if (tiendanubeOrders.isEmpty()) {
                     break; // Si no hay más órdenes, se detiene la paginación
                 }
+
+                // Ordenar los pedidos por fecha de creación
+                tiendanubeOrders.sort(Comparator.comparing(Order::getCreated_at));
 
                 for (Order tnOrder : tiendanubeOrders) {
                     Orders localOrder = convertTiendanubeOrder(tnOrder);
@@ -265,7 +269,7 @@ public class OrderSyncService implements CommandLineRunner {
         ZonedDateTime createdAt = ZonedDateTime.parse(createdAtString, originalFormatter);
 
         // Paso 2: Convertir la fecha a formato "dd-MM-yyyy'T'HH:mm:ssZ" (esto es solo para mostrar el formato)
-        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ssZ");
+        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         String formattedDate = createdAt.format(newFormatter);
 
         // Paso 3: Convertir la fecha a LocalDate (sin la hora)

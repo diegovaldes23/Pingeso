@@ -1,6 +1,7 @@
 package com.confitescordova.admin_services;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import com.confitescordova.admin_entities.Customer;
@@ -149,6 +150,19 @@ public class OrdersService {
 
     public Orders saveLocal(Orders order) {
         order.setCreation_date(LocalDate.now());
+        order.setOrder_date(transformDate(order.getOrder_date().toString()));
         return orderRepository.save(order);
+    }
+
+    public LocalDate transformDate(String dateString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd"); // Define el patrón de la fecha
+
+        // Convertir String a LocalDate
+        LocalDate date = LocalDate.parse(dateString, formatter);
+
+        // Imprimir la fecha
+        System.out.println("LocalDate: " + date);
+
+        return date;
     }
 }

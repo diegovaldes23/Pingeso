@@ -202,6 +202,15 @@ useEffect(() => {
     fetchProducts(); // Llamar a la función para obtener los productos
 }, []); // El arreglo vacío asegura que esta función se ejecute solo una vez al montar el componente
 
+useEffect(() => {
+    // Ordenar filteredOrders por order_date de forma descendente
+    const sortedOrders = [...filteredOrders].sort((a, b) => {
+        const dateA = new Date(a.order_date);
+        const dateB = new Date(b.order_date);
+        return dateB - dateA; // Devolver negativo para ordenar descendente
+    });
+    setOrders(sortedOrders); // Asegúrate de tener un estado o contexto para actualizarlos
+}, [filteredOrders]);
 
 
     const formatDate2 = (date) => {
@@ -209,7 +218,7 @@ useEffect(() => {
         const day = String(date.getDate()).padStart(2, "0");
         const month = String(date.getMonth() + 1).padStart(2, "0"); // Meses empiezan desde 0
         const year = date.getFullYear();
-        return `${day}-${month}-${year}`;
+        return `${year}-${month}-${day}`;
     };
 
     const formatDate = (dateString) => {
