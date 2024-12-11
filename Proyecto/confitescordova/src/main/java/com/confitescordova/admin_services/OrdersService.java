@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import com.confitescordova.admin_entities.Customer;
+import com.confitescordova.admin_entities.OrderProduct;
 import com.confitescordova.entities.Order;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class OrdersService {
 
     @Autowired
     private OrdersRepository orderRepository;
+    @Autowired
+    private OrderProductService orderProductService;
 
     public List<Orders> getAllOrders() {
         return (List<Orders>) orderRepository.findAll();
@@ -129,9 +132,16 @@ public class OrdersService {
         newOrder.setPhone(order.getPhone());
         newOrder.setCommune(order.getCommune());
         newOrder.setRegion(order.getRegion());
-        newOrder.setOrderProducts(order.getOrderProducts());
         newOrder.setSubtotal(order.getSubtotal());
         newOrder.setTotal(order.getTotal());
+
+        newOrder.getOrderProducts().clear();
+
+        List<OrderProduct> updatedProducts = order.getOrderProducts();
+        for(OrderProduct product : updatedProducts){
+            product.setOrder(newOrder);
+            newOrder.getOrderProducts().add(product);
+        }
 
         // Usar save() para actualizar la orden existente
         return orderRepository.save(order); // Esto actualiza la orden con el mismo ID

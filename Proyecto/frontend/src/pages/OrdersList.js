@@ -133,6 +133,12 @@ const OrdersList = () => {
     } 
   };
 
+  const removeProductField = (index) => {
+    const updatedProducts = products.filter((_, i) => i !== index);
+    setProducts(updatedProducts); // Actualiza el estado con los productos restantes
+  };
+  
+
  
   const handleProductChange = (index, field, value) => {
     const updatedProducts = [...products];
@@ -168,13 +174,12 @@ useEffect(() => {
     }, 0);
   
     setSubtotal(newSubtotal);
-  }, [products]); // Se recalcula el subtotal cuando cambian los productos
-   // Se recalcula el subtotal cada vez que cambian los productos o los productos disponibles
-
-   useEffect(() => {
+  }, [products]);
+  
+  useEffect(() => {
     const shippingCost = parseFloat(editOrder?.shipping_cost) || 0;
     setTotal(subtotal + shippingCost);
-  }, [subtotal, editOrder?.shipping_cost]); // Se recalcula el total cuando cambian el subtotal o el costo de envío
+  }, [subtotal, editOrder?.shipping_cost]);
   
   
 // Simular llamada al backend para obtener los productos
@@ -231,31 +236,35 @@ useEffect(() => {
         try {
             const updatedOrder = {
                 ...editOrder,
-                orderProducts: products, // Incluir productos actualizados
+                orderProducts: products.map((product) => ({
+                    name: product.name,
+                    quantity: product.quantity,
+                    cost: product.cost,
+                })),
                 subtotal: subtotal,
                 total: total,
-              };
-              console.log(updatedOrder.orderProducts);
-          const response = await fetch(`http://localhost:8080/admin/orders/${updatedOrder.id}`, {
+            };
+
+            console.log(updatedOrder.orderProducts);
+          const response = await fetch(`http://localhost:8080/admin/orders/${editOrder.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(updatedOrder),
           });
-      
+
           if (response.ok) {
             alert('Pedido actualizado correctamente');
             // Actualiza el estado global (llama una función del contexto para actualizar las órdenes)
             const updatedOrders = orders.map((order) =>
-              order.id === editOrder.id ? editOrder : order
+                order.id === editOrder.id ? { ...order, ...updatedOrder } : order
             );
             setOrders(updatedOrders);
       
             setIsEditing(false); // Cierra el modal
-          } else {
-            alert('Error al actualizar el pedido');
-          }
+          } 
+          
         } catch (error) {
           console.error('Error al guardar los cambios:', error);
           alert('Error al guardar los cambios');
@@ -387,7 +396,10 @@ useEffect(() => {
           {/* Modal de edición de la fecha de entrega */}
           {isEditing && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={handleDateChange}>
+                <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={(e) => {
+    e.preventDefault(); // Evita la recarga de la página
+    handleSaveOrderChange(); // Llama a tu función para guardar los cambios
+  }}>
                 <h2 className="text-2xl font-semibold mb-6">Editar pedido</h2>
 
                 {/* Nombre del cliente y Teléfono */}
@@ -458,14 +470,13 @@ useEffect(() => {
                 <div className="mb-4">
                     <label className="block text-gray-700">Productos</label>
                     {products.map((product, index) => (
-                        <div key={index} className="grid grid-cols-2 gap-4 mt-2">
+                        <div key={index} className="grid grid-cols-3 gap-4 mt-2">
                         {/* Selector de productos */}
                         <select
                             value={product.name}
                             onChange={(e) => handleProductChange(index, 'name', e.target.value)}
                             className="w-full border border-gray-300 rounded-md p-2"
                         >
-                            <option value="origin">{product.name}</option>
                             <option value="">Seleccione un producto</option>
                             {availableProducts.map((prod) => (
                             <option key={prod.id} value={prod.name}>
@@ -482,9 +493,17 @@ useEffect(() => {
                             onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                             className="w-full border border-gray-300 rounded-md p-2"
                         />
+
+                        {/* Botón para eliminar */}
+                        <button
+                            type="button"
+                            onClick={() => removeProductField(index)}
+                            className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                        >
+                            Eliminar
+                        </button>
                         </div>
                     ))}
-
 
 
                     <button
