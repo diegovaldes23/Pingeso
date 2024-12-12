@@ -38,9 +38,6 @@ const OrdersPage = () => {
     // Porción de órdenes a mostrar en la página actual
     const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
 
-    // Cálculo del número total de páginas basado en las órdenes filtradas
-    const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-
     // Actualización de filteredOrders cuando la lista original de órdenes cambie
     useEffect(() => {
         setFilteredOrders(orders); // Si las órdenes cambian, actualiza el estado de `filteredOrders`
