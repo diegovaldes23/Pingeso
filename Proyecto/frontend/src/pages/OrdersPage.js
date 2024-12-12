@@ -4,47 +4,59 @@ import OrderDetailsModal from './OrderDetailsModal';
 import { useGlobalContext } from '../utils/GlobalModelContext';
 import FilterAndSort from './FilterAndSort';
 
+/**
+ * OrdersPage Component
+ * Este componente maneja la pantalla e interacción de órdenes, incluyendo:
+ * - Filtro y ordenamiento de órdenes
+ * - Paginación de la lista de órdenes
+ * - Mostrar el modal de los detalles de una orden específica
+ * 
+ * @component
+ * @returns {React.ReactElement} Rendered OrdersPage component
+ * 
+ */
 const OrdersPage = () => {
+    // Se utiliza el GlobalContext para extraer las variables globales
     const {
         orders,
-        filterStatus,
         handleStatusChange,
         getStatusClass,
-        isModalOpen, // Usamos el estado global
-        setIsModalOpen, // Usamos el estado global
-        selectedOrder, // Usamos el estado global
-        setSelectedOrder, // Usamos el estado global
+        isModalOpen,
+        setIsModalOpen, 
+        selectedOrder,
     } = useGlobalContext();
 
+    // Declaración de variables a ocupar para la paginación
     const [currentPage, setCurrentPage] = useState(1);
-    const [filteredOrders, setFilteredOrders] = useState(orders); // Asegúrate de que `filteredOrders` se usa para la paginación
-    const ordersPerPage = 15;
+    const [filteredOrders, setFilteredOrders] = useState(orders);
 
+    // Constantes de paginación
+    const ordersPerPage = 15;
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+
+    // Porción de órdenes a mostrar en la página actual
     const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+    // Cálculo del número total de páginas basado en las órdenes filtradas
     const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
-    // Asegúrate de que `filteredOrders` se actualiza cuando cambian las órdenes o los filtros
+    // Actualización de filteredOrders cuando la lista original de órdenes cambie
     useEffect(() => {
         setFilteredOrders(orders); // Si las órdenes cambian, actualiza el estado de `filteredOrders`
     }, [orders]);
 
+    // Reseteo a la primera página cuando las órdenes filtradas cambian
     useEffect(() => {
-        setCurrentPage(1); // Cuando cambian los filtros, restablecemos la página a la primera
+        setCurrentPage(1);
     }, [filteredOrders]);
-
-
-    // Para actualizar la página cuando se cambia de página
-    const handlePageChange = (newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
 
     return (
         <div className="orders-container">
+            {/* Componente para filtrar y ordenar las órdenes */}
             <FilterAndSort setFilteredOrders={setFilteredOrders} />
+
+            {/* Lista de órdenes de la página actual */}
             <OrdersList
                 orders={currentOrders}
                 handleStatusChange={handleStatusChange}
@@ -52,6 +64,8 @@ const OrdersPage = () => {
                 isModalOpen={isModalOpen}
                 selectedOrder={selectedOrder}
             />
+
+            {/* Modal para mostrar información detallada de la orden */}
             <OrderDetailsModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
