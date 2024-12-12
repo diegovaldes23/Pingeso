@@ -17,7 +17,7 @@ public class BaseService {
     protected final ObjectMapper objectMapper = new ObjectMapper();
 
     // Método para configurar las cabeceras
-    protected HttpHeaders getHeaders() {
+    public HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authentication", "bearer " + ACCESS_TOKEN); // Cambié "Authentication" a "Authorization"
         headers.set("User-Agent", USER_AGENT);
@@ -27,7 +27,7 @@ public class BaseService {
     }
 
     // Método para realizar una solicitud GET
-    protected String makeGetRequest(String url) {
+    public String makeGetRequest(String url) {
         HttpEntity<String> entity = new HttpEntity<>(getHeaders());
         try {
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
@@ -38,7 +38,7 @@ public class BaseService {
     }
 
     // Método para realizar una solicitud POST
-    protected String makePostRequest(String url, Object body) {
+    public String makePostRequest(String url, Object body) {
         try {
             String json = objectMapper.writeValueAsString(body);
             HttpEntity<String> entity = new HttpEntity<>(json, getHeaders());
@@ -52,7 +52,7 @@ public class BaseService {
     }
 
     // Método para realizar una solicitud PUT
-    protected String makePutRequest(String url, Object body) {
+    public String makePutRequest(String url, Object body) {
         try {
             String json = objectMapper.writeValueAsString(body);
             HttpEntity<String> entity = new HttpEntity<>(json, getHeaders());
@@ -66,7 +66,7 @@ public class BaseService {
     }
 
     // Método para realizar una solicitud DELETE
-    protected void makeDeleteRequest(String url) {
+    public void makeDeleteRequest(String url) {
         HttpEntity<String> entity = new HttpEntity<>(getHeaders());
         try {
             restTemplate.exchange(url, HttpMethod.DELETE, entity, Void.class);
@@ -76,7 +76,7 @@ public class BaseService {
     }
 
     // Método genérico para deserializar respuestas
-    protected <T> T parseResponse(String responseBody, Class<T> responseType) {
+    public <T> T parseResponse(String responseBody, Class<T> responseType) {
         try {
             return objectMapper.readValue(responseBody, responseType);
         } catch (JsonProcessingException e) {

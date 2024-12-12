@@ -82,7 +82,7 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
-    private Orders convertTiendanubeOrder(Order tnOrder) {
+    public Orders convertTiendanubeOrder(Order tnOrder) {
         // Inicialización de nueva orden en base de datos local
         Orders localOrder = new Orders();
         // Inicialización de lista de productos de la orden
@@ -263,7 +263,7 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
-    private LocalDate convertToLocalDate(String createdAtString) {
+    public LocalDate convertToLocalDate(String createdAtString) {
         // Paso 1: Parsear la fecha con el formato original
         DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
         ZonedDateTime createdAt = ZonedDateTime.parse(createdAtString, originalFormatter);
