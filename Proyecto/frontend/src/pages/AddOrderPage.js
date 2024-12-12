@@ -7,6 +7,7 @@ import axios from 'axios';
 import { fetchProducts } from '../services/productsService';
 
 function AddOrderPage() {
+    // Estados para almacenar la información del formulario
     const [customerName, setCustomerName] = useState('');
     const [phone, setPhone] = useState('');
     const [region, setRegion] = useState('');
@@ -26,51 +27,51 @@ function AddOrderPage() {
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
 
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        return date.toLocaleDateString('es-CL', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
-      };
+    // Función para convertir la fecha a formato ISO (yyyy-MM-dd)
+    function formatDateToDDMMYYYY(dateString) {
 
-      function formatDateToDDMMYYYY(dateString) {
-        const date = new Date(dateString); // Convierte la cadena a un objeto Date
-        const day = String(date.getDate()).padStart(2, '0'); // Extrae y asegura que el día tenga 2 dígitos
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Extrae el mes (agregando 1 porque los meses comienzan desde 0)
+        // Convierte la cadena a un objeto Date
+        const date = new Date(dateString);
+
+        // Extrae y asegura que el día tenga 2 dígitos
+        const day = String(date.getDate()).padStart(2, '0'); 
+
+        // Extrae el mes (agregando 1 porque los meses comienzan desde 0)
+        const month = String(date.getMonth() + 1).padStart(2, '0'); 
+
+        // Extrae el año
         const year = date.getFullYear(); // Extrae el año
     
+        // Formatea como yyyy-MM-dd
         return `${year}-${month}-${day}`; // Formatea como dd-MM-yyyy
     }
 
-    // Filtramos las comunas basadas en la región seleccionada
+    // Filtración de las comunas basadas en la región seleccionada
     const selectedRegion = regionsAndCommunes.find(r => r.NombreRegion === region);
     const communes = selectedRegion ? selectedRegion.comunas : [];
-
 
     // Función para manejar cambios en el input de fecha
     const handleDateChange = (date) => {
         setDate(date);
     };
 
-    // Simular llamada al backend para obtener los productos
+    // Llamada al backend para obtener productos disponibles
     useEffect(() => {
-        const loadProducts = async () => {
+        const fetchProducts = async () => {
             try {
-                const data = await fetchProducts()
-                setAvailableProducts(data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+                const response = await axios.get("http://localhost:8080/admin/products", {
+                    headers: { 'Content-Type': 'application/json'},
+                });
+                setAvailableProducts(response.data); 
             } catch (error) {
-
                 alert('Hubo un error al obtener los productos');
             }
         };
     
-        fetchProducts(); // Llamar a la función para obtener los productos
-    }, []); // El arreglo vacío asegura que esta función se ejecute solo una vez al montar el componente
+        fetchProducts(); 
+    }, []); 
     
-
+    // Función para manejar cambios en los productos seleccionados
     const handleProductChange = (index, field, value) => {
         const updatedProducts = [...products];
         updatedProducts[index][field] = value;
@@ -79,43 +80,44 @@ function AddOrderPage() {
         if (field === 'name') {
             const selectedProduct = availableProducts.find(p => p.name === value);
             if (selectedProduct) {
-                updatedProducts[index].cost = selectedProduct.cost; // Asigna el costo correspondiente
+                updatedProducts[index].cost = selectedProduct.cost; 
             } else {
-                updatedProducts[index].cost = 0; // Si no se encuentra el producto, establece el costo en 0
+                updatedProducts[index].cost = 0;
             }
         }
     
-        // Asegurarse de convertir quantity a número (aunque lo estés haciendo en el useEffect)
+        // Asegurarse de convertir quantity a número 
         if (field === 'quantity') {
             const quantity = parseInt(value, 10);
-            updatedProducts[index].quantity = (quantity > 0 ) ? quantity : ''; // Se asegura de que la cantidad sea un número
+            updatedProducts[index].quantity = (quantity > 0 ) ? quantity : ''; 
 
         }
     
+        // Actualiza el estado de los productos
         setProducts(updatedProducts);
     };
 
+    // Calcula el total cada vez que el subtotal o el costo de envío cambian
     useEffect(() => {
-        const newTotal = subtotal + deliveryCost; // Total = Subtotal + Envío - Abono inicial
+        const newTotal = subtotal + deliveryCost;
         setTotal(newTotal);
     }, [subtotal, deliveryCost]);
         
-    
-    // Calcular el subtotal
+    // Calcular el subtotal de los productos seleccionados
     useEffect(() => {
         console.log("Available Products:", availableProducts);
         const newSubtotal = products.reduce((acc, product) => {
             const productInfo = availableProducts.find((p) => p.name === product.name);
             console.log(availableProducts.find((p) => p.name === product.name));
             if (productInfo && product.quantity) {
-                return acc + product.cost * product.quantity; // Usa el cost del producto encontrado
+                return acc + product.cost * product.quantity;
             }
             return acc;
 
         }, 0);
         console.log("Products:", products);
         setSubtotal(newSubtotal);
-    }, [products, availableProducts]); // Se recalcula el subtotal cada vez que cambian los productos o los productos disponibles
+    }, [products, availableProducts]);
 
     const addProductField = () => {
         setProducts([...products, { name: '', quantity: ''}]);
@@ -291,11 +293,15 @@ function AddOrderPage() {
                                 className="w-full border border-gray-300 rounded-md p-2"
                             >
                                 <option value="">Seleccione producto</option>
-                                {availableProducts.map((prod) => (
-                                    <option key={prod.id} value={prod.id}>
-                                        {prod.name} {/* Aquí mostramos el nombre en español */}
-                                    </option>
-                                ))}
+                                {availableProducts.length > 0 ? (
+                                    availableProducts.map((prod) => (
+                                        <option key={prod.id} value={prod.id}>
+                                            {prod.name} {/* Aquí mostramos el nombre en español */}
+                                        </option>
+                                    ))
+                                ) : (
+                                    <option disabled>Cargando productos...</option>
+                                )}
                             </select>
                             <input
                                 type="number"
