@@ -43,3 +43,5 @@ public class Customer {
     private String accepts_marketing_updated_at; // Fecha en la que el comprador actualizó su preferencia respecto a recibir novedades por correo electrónico.
 }
 
+
+

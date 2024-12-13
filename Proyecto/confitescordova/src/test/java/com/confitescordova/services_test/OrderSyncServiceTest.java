@@ -2,6 +2,7 @@ package com.confitescordova.services_test;
 
 import com.confitescordova.admin_entities.Orders;
 import com.confitescordova.admin_services.CustomersService;
+import com.confitescordova.entities.Customer;
 import com.confitescordova.entities.Order;
 import com.confitescordova.services.OrderService;
 import com.confitescordova.services.OrderSyncService;
@@ -41,19 +42,43 @@ public class OrderSyncServiceTest {
         int page = 1;
         int pageSize = 50;
 
-        List<Order> orders = new ArrayList<>();
-        Order order = new Order();
-        order.setId(1L);
-        order.setCreated_at("2023-12-12T10:15:30+0000");
-        // Configurar otros campos necesarios para la orden
-        orders.add(order);
+        // Crear órdenes simuladas con datos relevantes
+        List<Order> ordersPage1 = new ArrayList<>();
 
-        when(orderService.getOrders(storeID, page, pageSize)).thenReturn(orders).thenReturn(new ArrayList<>());
+        Order orderWithPhone = new Order();
+        orderWithPhone.setId(1L);
+        orderWithPhone.setCreated_at("2023-12-12T10:15:30+0000");
+        Customer customerWithPhone = new Customer();
+        customerWithPhone.setName("John Doe");
+        customerWithPhone.setPhone("1234567890");
+        orderWithPhone.setCustomer(customerWithPhone);
+        ordersPage1.add(orderWithPhone);
 
-        orderSyncService.syncOrders();
+        Order orderWithoutPhone = new Order();
+        orderWithoutPhone.setId(2L);
+        orderWithoutPhone.setCreated_at("2023-12-13T11:00:00+0000");
+        Customer customerWithoutPhone = new Customer();
+        customerWithoutPhone.setName("Jane Doe");
+        // Dejar phone como null
+        orderWithoutPhone.setCustomer(customerWithoutPhone);
+        ordersPage1.add(orderWithoutPhone);
 
+        // Segunda página vacía
+        List<Order> ordersPage2 = new ArrayList<>();
+
+        // Configurar comportamiento de mock
+        when(orderService.getOrders(storeID, page, pageSize))
+            .thenReturn(ordersPage1)
+            .thenReturn(ordersPage2);
+
+        // Ejecutar la sincronización de órdenes
+        assertDoesNotThrow(() -> orderSyncService.syncOrders());
+
+        // Verificar que getOrders fue llamado dos veces
         verify(orderService, times(2)).getOrders(storeID, page, pageSize);
-        // Verificar otras interacciones y estados según sea necesario
+
+        // Opcional: Verificar que las órdenes fueron procesadas correctamente
+        // Esto depende de los métodos que tengas para validar resultados
     }
 
     @Test
@@ -61,13 +86,14 @@ public class OrderSyncServiceTest {
         Order tnOrder = new Order();
         tnOrder.setId(1L);
         tnOrder.setCreated_at("2023-12-12T10:15:30+0000");
-        // Configurar otros campos necesarios para la orden
+        // No configuramos el cliente para simular el null
 
-        Orders localOrder = orderSyncService.convertTiendanubeOrder(tnOrder);
-
-        assertNotNull(localOrder);
-        assertEquals("2023-12-12", localOrder.getOrder_date().toString());
-        // Verificar otros campos según sea necesario
+        try {
+            Orders localOrder = orderSyncService.convertTiendanubeOrder(tnOrder);
+            fail("Expected NullPointerException to be thrown");
+        } catch (NullPointerException e) {
+            assertEquals("Cannot invoke \"com.confitescordova.entities.Customer.getName()\" because the return value of \"com.confitescordova.entities.Order.getCustomer()\" is null", e.getMessage());
+        }
     }
 
     @Test

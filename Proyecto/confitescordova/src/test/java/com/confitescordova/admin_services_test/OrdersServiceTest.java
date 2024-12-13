@@ -156,26 +156,29 @@ class OrdersServiceTest {
     }
 
     @Test
-    void testUpdateOrder() {
-        Orders existingOrder = new Orders();
-        existingOrder.setId(1L);
-        when(ordersRepository.findById(1L)).thenReturn(Optional.of(existingOrder));
+void testUpdateOrder() {
+    Orders existingOrder = new Orders();
+    existingOrder.setId(1L);
+    existingOrder.setOrderProducts(new ArrayList<>()); // Inicializa la lista
+    when(ordersRepository.findById(1L)).thenReturn(Optional.of(existingOrder));
 
-        Orders updatedOrder = new Orders();
-        updatedOrder.setId(1L);
-        updatedOrder.setStatus("Completed");
-        when(ordersRepository.save(any(Orders.class))).thenReturn(updatedOrder);
+    Orders updatedOrder = new Orders();
+    updatedOrder.setId(1L);
+    updatedOrder.setStatus("Completed");
+    updatedOrder.setOrderProducts(new ArrayList<>()); // Inicializa la lista
+    when(ordersRepository.save(any(Orders.class))).thenReturn(updatedOrder);
 
-        Orders orderToUpdate = new Orders();
-        orderToUpdate.setId(1L);
-        orderToUpdate.setStatus("Completed");
+    Orders orderToUpdate = new Orders();
+    orderToUpdate.setId(1L);
+    orderToUpdate.setStatus("Completed");
+    orderToUpdate.setOrderProducts(new ArrayList<>()); // Inicializa la lista
 
-        Orders result = ordersService.updateOrder(orderToUpdate);
+    Orders result = ordersService.updateOrder(orderToUpdate);
 
-        assertEquals("Completed", result.getStatus());
-        verify(ordersRepository, times(1)).findById(1L);
-        verify(ordersRepository, times(1)).save(any(Orders.class));
-    }
+    assertEquals("Completed", result.getStatus());
+    verify(ordersRepository, times(1)).findById(1L);
+    verify(ordersRepository, times(1)).save(any(Orders.class));
+}
 
     @Test
     void testSaveLocal() {

@@ -125,12 +125,15 @@ public class CategoryServiceTest {
         HttpHeaders headers = categoryService.getHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        doNothing().when(restTemplate).exchange(eq(url), eq(HttpMethod.DELETE), eq(entity), eq(Void.class));
+        // Simular la respuesta de exchange() para un DELETE
+        when(restTemplate.exchange(eq(url), eq(HttpMethod.DELETE), eq(entity), eq(Void.class)))
+            .thenReturn(ResponseEntity.ok().build()); // O cualquier respuesta que se adapte a tu test
 
         Method makeDeleteRequestMethod = BaseService.class.getDeclaredMethod("makeDeleteRequest", String.class);
         makeDeleteRequestMethod.setAccessible(true);
         makeDeleteRequestMethod.invoke(categoryService, url);
 
+        // Verificar que exchange() fue llamado una vez con los parámetros correctos
         verify(restTemplate, times(1)).exchange(eq(url), eq(HttpMethod.DELETE), eq(entity), eq(Void.class));
     }
 }

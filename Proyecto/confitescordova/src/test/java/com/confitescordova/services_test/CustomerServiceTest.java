@@ -11,6 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,6 +23,9 @@ import java.util.List;
 public class CustomerServiceTest {
 
     @Mock
+    private RestTemplate restTemplate;
+
+    @InjectMocks
     private BaseService baseService;
 
     @InjectMocks
@@ -32,7 +40,8 @@ public class CustomerServiceTest {
     public void testGetAllCustomers() {
         Long storeId = 1L;
         String responseBody = "[{\"id\":1,\"name\":\"John Doe\"}]";
-        when(baseService.makeGetRequest(anyString())).thenReturn(responseBody);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(new ResponseEntity<>(responseBody, HttpStatus.OK));
 
         List<Customer> customers = customerService.getAllCustomers(storeId);
 
@@ -46,7 +55,8 @@ public class CustomerServiceTest {
         Long storeId = 1L;
         Long customerId = 1L;
         String responseBody = "{\"id\":1,\"name\":\"John Doe\"}";
-        when(baseService.makeGetRequest(anyString())).thenReturn(responseBody);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.GET), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(new ResponseEntity<>(responseBody, HttpStatus.OK));
 
         Customer customer = customerService.getCustomerById(storeId, customerId);
 
@@ -60,7 +70,8 @@ public class CustomerServiceTest {
         Customer customer = new Customer();
         customer.setName("John Doe");
         String responseBody = "{\"id\":1,\"name\":\"John Doe\"}";
-        when(baseService.makePostRequest(anyString(), any(Customer.class))).thenReturn(responseBody);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.POST), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(new ResponseEntity<>(responseBody, HttpStatus.OK));
 
         Customer createdCustomer = customerService.createCustomer(storeId, customer);
 
@@ -75,7 +86,8 @@ public class CustomerServiceTest {
         Customer updatedCustomer = new Customer();
         updatedCustomer.setName("Jane Doe");
         String responseBody = "{\"id\":1,\"name\":\"Jane Doe\"}";
-        when(baseService.makePutRequest(anyString(), any(Customer.class))).thenReturn(responseBody);
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.PUT), any(HttpEntity.class), eq(String.class)))
+            .thenReturn(new ResponseEntity<>(responseBody, HttpStatus.OK));
 
         Customer result = customerService.updateCustomer(storeId, customerId, updatedCustomer);
 
@@ -88,7 +100,9 @@ public class CustomerServiceTest {
         Long storeId = 1L;
         Long customerId = 1L;
 
-        doNothing().when(baseService).makeDeleteRequest(anyString());
+        // Simular la respuesta de exchange para una solicitud DELETE
+        when(restTemplate.exchange(anyString(), eq(HttpMethod.DELETE), any(HttpEntity.class), eq(Void.class)))
+            .thenReturn(new ResponseEntity<Void>(HttpStatus.OK));
 
         assertDoesNotThrow(() -> customerService.deleteCustomer(storeId, customerId));
     }

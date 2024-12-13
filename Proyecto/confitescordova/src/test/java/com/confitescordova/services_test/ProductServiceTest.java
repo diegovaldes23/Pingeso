@@ -9,17 +9,30 @@ import com.confitescordova.entities.Product;
 import com.confitescordova.services.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
 
+@ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
 
     @Mock
     private ProductsRepository productsRepository;
+
+    @Mock
+    private RestTemplate restTemplate;
 
     @InjectMocks
     private ProductService productService;
@@ -27,6 +40,7 @@ public class ProductServiceTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        ReflectionTestUtils.setField(productService, "restTemplate", restTemplate);
     }
 
     @Test
@@ -83,17 +97,33 @@ public class ProductServiceTest {
 
     @Test
     public void testGetProductById() {
-        // Mock the response from the API
-        String jsonResponse = "{\"id\":1,\"name\":\"Product1\"}";
-        when(productService.makeGetRequest(anyString())).thenReturn(jsonResponse);
+        // Datos de prueba
+        Long storeId = 1L;
+        Long productId = 100L;
+        Product expectedProduct = new Product();
+        expectedProduct.setId(productId);
+        expectedProduct.setName("Product Name");
 
-        // Call the method
-        Product product = productService.getProductById(3806794L, 1L);
+        // URL esperada para la llamada GET
+        String expectedUrl = "https://api.example.com/stores/1/products/100";  // Ajusta la URL según tu configuración
 
-        // Verify the results
-        assertNotNull(product);
-        assertEquals(1L, product.getId());
-        assertEquals("Product1", product.getName());
+        // Simulamos la respuesta de RestTemplate con ResponseEntity
+        String responseBody = "{\"id\": 100, \"name\": \"Product Name\"}"; // Respuesta de ejemplo
+        ResponseEntity<String> mockResponse = new ResponseEntity<>(responseBody, HttpStatus.OK);
+
+        // Simulamos el comportamiento de RestTemplate.getForEntity
+        Mockito.when(restTemplate.getForEntity(expectedUrl, String.class)).thenReturn(mockResponse);
+
+        // Llamamos al método que estamos probando
+        Product actualProduct = productService.getProductById(storeId, productId);
+
+        // Verificamos que RestTemplate hizo la llamada correcta
+        Mockito.verify(restTemplate).getForEntity(expectedUrl, String.class);
+
+        // Verificamos que el producto no es nulo
+        assertNotNull(actualProduct);
+        assertEquals(expectedProduct.getId(), actualProduct.getId()); // Verificamos el ID
+        assertEquals(expectedProduct.getName(), actualProduct.getName()); // Verificamos el nombre
     }
 
     @Test
@@ -161,9 +191,14 @@ public class ProductServiceTest {
 
     @Test
     public void testGetFilteredProducts() {
-        // Mock the response from the API
         String jsonResponse = "[{\"id\":1,\"name\":\"Product1\",\"variants\":[{\"price\":\"100.0\"}]},{\"id\":2,\"name\":\"Product2\",\"variants\":[{\"price\":\"200.0\"}]}]";
-        when(productService.makeGetRequest(anyString())).thenReturn(jsonResponse);
+        when(restTemplate.exchange(
+            anyString(),
+            eq(HttpMethod.GET),
+            any(HttpEntity.class),
+            eq(String.class),
+            any(Object[].class)
+        )).thenReturn(new ResponseEntity<>(jsonResponse, HttpStatus.OK));
 
         // Call the method
         List<Product> products = productService.getFilteredProducts(3806794L, null, 50.0, 150.0);

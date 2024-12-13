@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +28,10 @@ public class OrderServiceTest {
 
     @Mock
     private RestTemplate restTemplate;
+
+    @Mock
+    private BaseService baseService; // Si tu clase OrderService depende de BaseService
+
 
     @InjectMocks
     private OrderService orderService;
@@ -70,29 +75,52 @@ public class OrderServiceTest {
     }
 
     @Test
-    public void testGetAllOrders() throws Exception {
-        Long storeID = 1L;
-        int page = 1;
-        int pageSize = 100;
-        String url = "https://api.tiendanube.com/v1/" + storeID + "/orders?page=" + page + "&limit=" + pageSize;
-        String expectedResponse = "[{\"id\":1,\"payment_status\":\"paid\",\"customer\":{\"name\":\"John Doe\"}}]";
+    void testGetAllOrders() {
+        // Creamos las órdenes utilizando los setters
+        Order order1 = new Order();
+        order1.setId(1L);
+        order1.setContact_identification("Order 1");
 
-        HttpHeaders headers = orderService.getHeaders();
-        HttpEntity<String> entity = new HttpEntity<>(headers);
+        Order order2 = new Order();
+        order2.setId(2L);
+        order2.setContact_identification("Order 2");
 
-        when(restTemplate.exchange(eq(url), eq(HttpMethod.GET), eq(entity), eq(String.class)))
-                .thenReturn(new ResponseEntity<>(expectedResponse, HttpStatus.OK));
+        Order order3 = new Order();
+        order3.setId(3L);
+        order3.setContact_identification("Order 3");
 
-        Method makeGetRequestMethod = BaseService.class.getDeclaredMethod("makeGetRequest", String.class);
-        makeGetRequestMethod.setAccessible(true);
-        Method parseResponseMethod = BaseService.class.getDeclaredMethod("parseResponse", String.class, Class.class);
-        parseResponseMethod.setAccessible(true);
+        // Simulamos la respuesta de makeGetRequest para las llamadas a getOrders
+        String mockResponsePage1 = "[{ \"id\": 1, \"contact_identification\": \"Order 1\", \"payment_status\": \"paid\" }, "
+                                 + "{ \"id\": 2, \"contact_identification\": \"Order 2\", \"payment_status\": \"paid\" }]";
+        String mockResponsePage2 = "[{ \"id\": 3, \"contact_identification\": \"Order 3\", \"payment_status\": \"paid\" }]";
 
-        List<Order> allOrders = orderService.getAllOrders(storeID);
+        when(baseService.makeGetRequest(anyString())) // Simulamos makeGetRequest para que devuelva respuestas mockeadas
+            .thenReturn(mockResponsePage1) // Respuesta para la primera página
+            .thenReturn(mockResponsePage2) // Respuesta para la segunda página
+            .thenReturn("[]"); // Respuesta vacía para la tercera página
 
-        assertEquals(1, allOrders.size());
-        assertEquals("John Doe", allOrders.get(0).getCustomer().getName());
+        // Simulamos que parseResponse devuelve una lista de órdenes
+        when(baseService.parseResponse(eq(mockResponsePage1), eq(Order[].class)))
+            .thenReturn(new Order[] { order1, order2 });
+        when(baseService.parseResponse(eq(mockResponsePage2), eq(Order[].class)))
+            .thenReturn(new Order[] { order3 });
+
+        // Llamamos al método que estamos probando
+        List<Order> allOrders = orderService.getAllOrders(1L);
+
+        // Verificamos que la lista final contiene 3 órdenes
+        assertEquals(3, allOrders.size());
+
+        // Verificamos que las órdenes correctas están en la lista
+        assertTrue(allOrders.contains(order1));
+        assertTrue(allOrders.contains(order2));
+        assertTrue(allOrders.contains(order3));
+
+        // Verificamos que baseService.makeGetRequest fue llamado correctamente
+        verify(baseService, times(3)).makeGetRequest(anyString());
     }
+
+
 
     @Test
     public void testGetOrderById() throws Exception {
@@ -189,7 +217,8 @@ public class OrderServiceTest {
         HttpHeaders headers = orderService.getHeaders();
         HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        doNothing().when(restTemplate).exchange(eq(url), eq(HttpMethod.DELETE), eq(entity), eq(Void.class));
+        // Simula la respuesta de RestTemplate.exchange()
+        doReturn(new ResponseEntity<Void>(HttpStatus.OK)).when(restTemplate).exchange(eq(url), eq(HttpMethod.DELETE), eq(entity), eq(Void.class));
 
         Method makeDeleteRequestMethod = BaseService.class.getDeclaredMethod("makeDeleteRequest", String.class);
         makeDeleteRequestMethod.setAccessible(true);

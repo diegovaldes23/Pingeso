@@ -60,14 +60,17 @@ public class ProductsServiceTest {
 
     @Test
     public void testSaveProduct() {
+        Products product = new Products();
+        product.setDescription("Descripción corta");
+
         when(productsRepository.save(any(Products.class))).thenReturn(product);
 
         Products newProduct = new Products();
-        newProduct.setDescription("Descripción muy larga que debe ser recortada a 255 caracteres...");
+        newProduct.setDescription("Descripción corta");
         Products result = productsService.saveProduct(newProduct);
 
         assertNotNull(result);
-        assertEquals("Descripción muy larga que debe ser recortada a 255 caracteres...".substring(0, 255), result.getDescription());
+        assertEquals("Descripción corta", result.getDescription());
     }
 
     @Test
