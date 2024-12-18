@@ -442,23 +442,9 @@ useEffect(() => {
                         />
                     </div>
                 </div>
-
-                {/* Descripción */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Descripción del pedido (Opcional)</label>
-                    <input
-                        type="text"
-                        value={editOrder.description}
-                        onChange={(e) => setEditOrder({ ...editOrder, description: e.target.value })}
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                        placeholder="Ej: Pedido para San Valentín"
-                        disabled={editOrder.purchase_source === 'Tiendanube'}
-                    />
-                </div>
                 
-
                 {/* Fecha de pedido */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
                     <label className="block text-sm font-medium text-gray-700">Fecha de pedido</label>
                     <DatePicker 
@@ -474,8 +460,8 @@ useEffect(() => {
                     
                     <div>
                     <label className="block text-sm font-medium text-gray-700">Fecha de entrega</label>
-                <DatePicker 
-                        placeholderText="dd-MM-yyyy"
+                    <DatePicker 
+                        placeholderText="04-06-2024"
                         selected={editOrder.deliveryDate}
                         onChange={handleDateChange}
                         dateFormat="dd-MM-yyyy"
@@ -483,6 +469,19 @@ useEffect(() => {
                         value={editOrder.deliveryDate ? formatDate2(editOrder.deliveryDate): ""}
                     />
                     </div>
+                </div>
+
+                {/* Descripción */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Descripción del pedido (Opcional)</label>
+                    <input
+                        type="text"
+                        value={editOrder.description}
+                        onChange={(e) => setEditOrder({ ...editOrder, description: e.target.value })}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        placeholder="Ej: Pedido para San Valentín"
+                        disabled={editOrder.purchase_source === 'Tiendanube'}
+                    />
                 </div>
 
                 {/* Productos */}
@@ -538,19 +537,7 @@ useEffect(() => {
                     </button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    {/* Costo de envío */}
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Costo de envío</label>
-                        <input
-                            type="number"
-                            value={editOrder.shipping_cost}
-                            onChange={(e) => setEditOrder({ ...editOrder, shipping_cost: parseFloat(e.target.value) }) || 0}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder={`$ ${editOrder.shipping_cost ? editOrder.shipping_cost : 0}`}
-                        />
-                    </div>
-
+                <div className="grid grid-cols-3 gap-4">
                     {/* Subtotal */}
                     <div className="mb-4">
                         <label className="block text-gray-700">Subtotal</label>
@@ -562,10 +549,18 @@ useEffect(() => {
                             disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
-                </div>
-                
-                {/* Total */}
-                <div className="mb-4">
+                    {/* Costo de envío */}
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Costo de envío</label>
+                        <input
+                            type="number"
+                            value={editOrder.shipping_cost}
+                            onChange={(e) => setEditOrder({ ...editOrder, shipping_cost: parseFloat(e.target.value) }) || 0}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder={`$ ${editOrder.shipping_cost ? editOrder.shipping_cost : 0}`}
+                        />
+                    </div>
+                    <div className="mb-4">
                         <label className="block text-gray-700">Total</label>
                         <input
                             type="text"
@@ -575,17 +570,19 @@ useEffect(() => {
                             disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
+                </div>
 
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Abono inicial</label>
-                        <input
-                            type="number"
-                            value={editOrder.initial_payment}
-                            onChange={(e) => setEditOrder({ ...editOrder, initial_payment: e.target.value }) || 0}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="$ 0"
-                        />
-                    </div>
+                {/* Abono inicial */}
+                <div className="mb-4">
+                    <label className="block text-gray-700">Abono inicial</label>
+                    <input
+                        type="number"
+                        value={editOrder.initial_payment}
+                        onChange={(e) => setEditOrder({ ...editOrder, initial_payment: e.target.value }) || 0}
+                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        placeholder="$ 0"
+                    />
+                </div>
                 
 
                 {/* Estado */}
@@ -604,16 +601,16 @@ useEffect(() => {
                 </div>
 
                 
-                <div className="mt-4">
+                <div className="mt-4 flex flex-row gap-3 justify-end">
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                    className="ml-2 px-10 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
                   >
                     Cancelar
                   </button>
                   <button
                     onClick={handleSaveOrderChange}
-                    className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                    className="px-10 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                   >
                     Guardar
                   </button>
