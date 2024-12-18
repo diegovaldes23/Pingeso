@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.module.css";
 import regionsAndCommunes from './RegionesYComunas';
 
 import axios from 'axios';
-import { fetchProducts } from '../services/productsService';
 
 function AddOrderPage() {
     // Estados para almacenar la información del formulario
@@ -26,6 +25,7 @@ function AddOrderPage() {
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
+    const [deliveryDate, setDeliveryDate] = useState(''); // Nueva variable para fecha de entrega
 
     // Función para convertir la fecha a formato ISO (yyyy-MM-dd)
     function formatDateToDDMMYYYY(dateString) {
@@ -54,6 +54,16 @@ function AddOrderPage() {
     const handleDateChange = (date) => {
         setDate(date);
     };
+
+    const handleDeliveryDateChange = (date) => {
+        setDeliveryDate(date);
+    };
+
+    const removeProductField = (index) => {
+        const updatedProducts = products.filter((_, i) => i !== index);
+        setProducts(updatedProducts); // Actualiza el estado con los productos restantes
+    };
+    
 
     // Llamada al backend para obtener productos disponibles
     useEffect(() => {
@@ -149,6 +159,7 @@ function AddOrderPage() {
         const orderDateTime = `${date}T10:00:00`;
 
         const formattedDate = date ? formatDateToDDMMYYYY(date) : null;
+        const formattedDeliveryDate = deliveryDate ? formatDateToDDMMYYYY(deliveryDate) : null;
 
         // Preparar datos para enviar
         const orderData = {
@@ -157,6 +168,7 @@ function AddOrderPage() {
             region,
             commune,
             order_date: formattedDate,
+            delivery_date: formattedDeliveryDate,
             customer_type: customerType,
             purchase_source: purchaseSource,
             shipping_cost: parseFloat(deliveryCost),
@@ -182,7 +194,7 @@ function AddOrderPage() {
     return (
         <div className="flex justify-center items-center min-h-screen">
             <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={handleSubmit}>
-                <h2 className="text-2xl font-semibold mb-6">Crear Pedido</h2>
+                <h2 className="text-2xl font-semibold mb-6">Agregar pedido</h2>
 
                 {/* Nombre del cliente y Teléfono */}
                 <div className="grid grid-cols-2 gap-4 mb-4">
@@ -208,8 +220,9 @@ function AddOrderPage() {
                     </div>
                 </div>
 
-                {/* Región y Comuna */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+
+                {/* Región, Comuna y Dirección en la misma fila */}
+                <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
                         <label className="block text-gray-700">Región</label>
                         <select
@@ -234,7 +247,7 @@ function AddOrderPage() {
                             value={commune}
                             onChange={(e) => setCommune(e.target.value)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            disabled={!region} // Desactiva el select de comuna si no hay región seleccionada
+                            disabled={!region}
                         >
                             <option value="">Seleccione comuna</option>
                             {communes.map((commune) => (
@@ -244,18 +257,67 @@ function AddOrderPage() {
                             ))}
                         </select>
                     </div>
+                    <div>
+                        <label className="block text-gray-700">Dirección</label>
+                        <input
+                            type="text"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholder="Ej: Walker Martínez 3142"
+                        />
+                    </div>
                 </div>
 
-                {/* Dirección */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Dirección</label>
-                    <input
-                        type="text"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                        placeholder="Ej: Walker Martínez 3142"
-                    />
+                {/* Tipo de cliente, Fuente de compra y Fecha */}
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label className="block text-gray-700">Tipo de cliente</label>
+                        <select
+                            value={customerType}
+                            onChange={(e) => setCustomerType(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        >
+                            <option value="">Seleccione tipo</option>
+                            <option value="Antiguo">Antiguo</option>
+                            <option value="Nuevo">Nuevo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Tipo de compra</label>
+                        <select
+                            value={purchaseSource}
+                            onChange={(e) => setPurchaseSource(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        >
+                            <option value="">Seleccione fuente</option>
+                            <option value="Facebook Ads">Facebook Ads</option>
+                            <option value="Orgánico">Orgánico</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label className="block text-gray-700">Fecha de pedido</label>
+                        <DatePicker
+                            selected={date}
+                            onChange={handleDateChange}
+                            dateFormat="dd-MM-yyyy"
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholderText="04-05-2024"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-gray-700">Fecha de entrega</label>
+                        <DatePicker
+                            selected={deliveryDate}
+                            onChange={handleDeliveryDateChange}
+                            dateFormat="dd-MM-yyyy"
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            placeholderText="05-05-2024"
+                        />
+                    </div>
                 </div>
 
                 {/* Descripción */}
@@ -269,24 +331,12 @@ function AddOrderPage() {
                         placeholder="Ej: Pedido para San Valentín"
                     />
                 </div>
-                
-
-                {/* Fecha de pedido */}
-                <div className="mb-4">
-                    <label className="block text-gray-700">Fecha de pedido</label>
-                    <DatePicker
-                        selected={date}
-                        onChange={handleDateChange}
-                        dateFormat="dd-MM-yyyy"
-                        className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                    />
-                </div>
 
                 {/* Productos */}
                 <div className="mb-4">
                     <label className="block text-gray-700">Productos</label>
                     {products.map((product, index) => (
-                        <div key={index} className="grid grid-cols-2 gap-4 mt-2">
+                        <div key={index} className="grid grid-cols-3 gap-4 mt-2">
                             <select
                                 value={product.name}
                                 onChange={(e) => handleProductChange(index, 'name', e.target.value)}
@@ -310,6 +360,14 @@ function AddOrderPage() {
                                 onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                                 className="w-full border border-gray-300 rounded-md p-2"
                             />
+                            {/* Botón para eliminar */}
+                            <button
+                                type="button"
+                                onClick={() => removeProductField(index)}
+                                className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            >
+                                Eliminar
+                            </button>
                         </div>
                     ))}
 
@@ -322,49 +380,9 @@ function AddOrderPage() {
                     </button>
                 </div>
 
-                {/* Tipo de cliente y cómo fue la compra */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                {/* Subtotal, Costo de envío y Total */}
+                <div className="grid grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label className="block text-gray-700">Tipo de cliente</label>
-                        <select
-                            value={customerType}
-                            onChange={(e) => setCustomerType(e.target.value)}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                        >
-                            <option value="">Seleccione tipo</option>
-                            <option value="Antiguo">Antiguo</option>
-                            <option value="Nuevo">Nuevo</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Cómo fue la compra</label>
-                        <select
-                            value={purchaseSource}
-                            onChange={(e) => setPurchaseSource(e.target.value)}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                        >
-                            <option value="">Seleccione fuente</option>
-                            <option value="Facebook Ads">Facebook Ads</option>
-                            <option value="Orgánico">Orgánico</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                    {/* Costo de envío */}
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Costo de envío</label>
-                        <input
-                            type="number"
-                            value={deliveryCost}
-                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value)) || 0}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="$ 0"
-                        />
-                    </div>
-
-                    {/* Subtotal */}
-                    <div className="mb-4">
                         <label className="block text-gray-700">Subtotal</label>
                         <input
                             type="text"
@@ -373,10 +391,16 @@ function AddOrderPage() {
                             className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
                         />
                     </div>
-                </div>
-                
-                {/* Total */}
-                <div className="mb-4">
+                    <div>
+                        <label className="block text-gray-700">Costo de envío</label>
+                        <input
+                            type="number"
+                            value={deliveryCost}
+                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value)) || 0}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                        />
+                    </div>
+                    <div>
                         <label className="block text-gray-700">Total</label>
                         <input
                             type="text"
@@ -385,22 +409,10 @@ function AddOrderPage() {
                             className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
                         />
                     </div>
+                </div>
 
-                    <div className="mb-4">
-                        <label className="block text-gray-700">Abono inicial</label>
-                        <input
-                            type="number"
-                            value={initialPayment}
-                            onChange={(e) => setInitialPayment(parseFloat(e.target.value)) || 0}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="$ 0"
-                        />
-                    </div>
-                
-
-
-                {/* Email y Comentario */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                {/* Email */}
+                <div className="grid grid-cols-1 gap-4 mb-4">
                     <div>
                         <label className="block text-gray-700">Email (Opcional)</label>
                         <input
@@ -409,16 +421,6 @@ function AddOrderPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                             placeholder="Ej: cliente@correo.com"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-gray-700">Comentario (Opcional)</label>
-                        <input
-                            type="text"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="Añadir un comentario"
                         />
                     </div>
                 </div>

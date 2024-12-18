@@ -50,9 +50,13 @@ const OrdersPage = () => {
 
     return (
         <div className="orders-container">
+            <header className="mt-10 mb-10 flex flex-col items-center">
+                <h1 className="text-4xl font-extrabold text-gray-800">Gestión de pedidos</h1>
+            </header>
+    
             {/* Componente para filtrar y ordenar las órdenes */}
             <FilterAndSort setFilteredOrders={setFilteredOrders} />
-
+    
             {/* Lista de órdenes de la página actual */}
             <OrdersList
                 orders={currentOrders}
@@ -61,7 +65,7 @@ const OrdersPage = () => {
                 isModalOpen={isModalOpen}
                 selectedOrder={selectedOrder}
             />
-
+    
             {/* Modal para mostrar información detallada de la orden */}
             <OrderDetailsModal
                 isOpen={isModalOpen}
@@ -69,7 +73,7 @@ const OrdersPage = () => {
                 order={selectedOrder}
             />
         </div>
-    );
+    );    
 };
 
 export default OrdersPage;

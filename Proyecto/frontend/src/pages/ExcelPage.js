@@ -66,28 +66,32 @@ const ExcelPage = () => {
 };
 
 return (
-    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="max-w-4xl w-full p-10 bg-white shadow-lg rounded-lg h-[40vh] flex flex-col items-center justify-center">
         {/* Título de página */}
         <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
-            Exportar órdenes
+          Exportar órdenes
         </h1>
-      
+  
         {/* Botón de exportar */}
-        <div className="flex justify-center mb-6">
-            <button
+        <div className="flex justify-center">
+          <button
             onClick={exportToExcel}
             className="bg-purple-600 text-white py-2 px-6 rounded-full hover:bg-purple-700 transition duration-300"
-            >
-            Exportar a Excel
-            </button>
+          >
+            Exportar
+          </button>
         </div>
-
+  
         {/* Texto descriptivo */}
         <div className="text-center mt-6">
-            <p className="text-gray-600">Aquí puedes exportar los datos de las órdenes a un archivo Excel.</p>
+          <p className="text-gray-600">Aquí puedes exportar los datos de las órdenes a un archivo Excel.</p>
         </div>
+      </div>
     </div>
-    );
+  );
+  
+  
 };
 
 export default ExcelPage;

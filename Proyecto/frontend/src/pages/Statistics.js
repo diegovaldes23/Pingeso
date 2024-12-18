@@ -30,20 +30,20 @@ const Statistics = () => {
                 <div className="p-6 min-h-screen">
                     <h2 className="text-2xl font-bold mb-6">Resumen</h2>
                     
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="grid grid-cols-4 gap-4 mb-12">
+                      <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                         <p className="text-sm text-gray-600">Total de ingresos</p>
                         <p className="text-2xl font-bold">${stats.totalRevenue.toLocaleString()}</p>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                         <p className="text-sm text-gray-600">Total de órdenes</p>
                         <p className="text-2xl font-bold">{stats.totalOrders}</p>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                         <p className="text-sm text-gray-600">Comuna más popular</p>
                         <p className="text-2xl font-bold">{stats.popularCommune}</p>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
                         <p className="text-sm text-gray-600">Ingresos del último mes</p>
                         <p className="text-2xl font-bold">${stats.lastMonthRevenue.toLocaleString()}</p>
                       </div>
@@ -51,18 +51,33 @@ const Statistics = () => {
             
                     <div className="grid grid-cols-2 gap-6">
                       <div className="bg-white p-4 rounded-lg">
-                        <div className="mb-4">
-                          <select 
+                      <div className="relative w-56">
+                        <select
                             value={selectedView}
                             onChange={(e) => setSelectedView(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-1"
-                          >
+                            className="block w-full appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-10 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
                             <option value="commune">Ventas por comuna</option>
                             <option value="channel">Pedidos por canal</option>
                             <option value="products">Ingresos por producto</option>
-                          </select>
+                        </select>
+                        {/* Flecha para el desplegable */}
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-4 h-4 text-gray-400"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            >
+                            <path
+                                fillRule="evenodd"
+                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                clipRule="evenodd"
+                            />
+                            </svg>
                         </div>
-                        <div className="h-[400px]">
+                        </div>
+                        <div className="h-[400px] mt-10">
                           {selectedView === 'products' ? (
                             <Bar data={getChartData()} options={chartOptions} />
                           ) : (
@@ -191,7 +206,7 @@ const Statistics = () => {
       } catch (error) {
         console.error("Error al obtener las estadísticas:", error);
       } finally {
-        setTimeout(() => setIsLoading(false), 500);
+        setTimeout(() => setIsLoading(false), 10);
       }
     };
 
@@ -200,12 +215,12 @@ const Statistics = () => {
 
   // Función para obtener colores (ampliar la paleta de colores pastel si es necesario)
   const pastelColors = [
-  '#FFB3BA', // Light Red
-  '#FFDFBA', // Light Orange
-  '#FFFFAA',  // Soft Yellow
-  '#BAFFC9', // Soft Green
-  '#BAE1FF', // Soft Blue
-  '#C9C9FF', // Soft Purple
+  '#FF6384', // Light Red
+  '#FF9F40', // Light Orange
+  '#FFCD56',  // Soft Yellow
+  '#4BC0C0', // Soft Green
+  '#36A2EB', // Soft Blue
+  '#9966FF', // Soft Purple
   '#F1CBFF'  // Soft Pink
 
 ];
@@ -315,7 +330,7 @@ const Statistics = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       {isLoading ? (
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center h-screen w-screen">
         <svg
           width="48"
           height="48"

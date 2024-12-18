@@ -412,9 +412,9 @@ useEffect(() => {
           {isEditing && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                 <form className="w-full max-w-3xl bg-white p-8 rounded-lg shadow-md" onSubmit={(e) => {
-    e.preventDefault(); // Evita la recarga de la página
-    handleSaveOrderChange(); // Llama a tu función para guardar los cambios
-  }}>
+                e.preventDefault(); // Evita la recarga de la página
+                handleSaveOrderChange(); // Llama a tu función para guardar los cambios
+            }}>
                 <h2 className="text-2xl font-semibold mb-6">Editar pedido</h2>
 
                 {/* Nombre del cliente y Teléfono */}
