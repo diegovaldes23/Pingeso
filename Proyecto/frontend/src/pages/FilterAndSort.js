@@ -77,26 +77,32 @@ const FilterAndSort = ( ) => {
     };
 
     /**
-   * Restablece todos los filtros a su estado inicial
-   */
+     * Restablece todos los filtros a su estado inicial
+     * y aplica los cambios automáticamente
+     */
     const resetFilters = () => {
-        setFilters({
-        region: '',
-        commune: '',
-        startDate: '',
-        endDate: '',
-        customerType: '',
-        purchaseSource: '',
-        status: '',
-        productName: '',
-        year: '',
-        month: '',
-        sortBy: '',
-        sortOrder: '',
-        searchTerm: ''
-        });
-        setSearchTerm('');
+        const defaultFilters = {
+            region: '',
+            commune: '',
+            startDate: '',
+            endDate: '',
+            customerType: '',
+            purchaseSource: '',
+            status: '',
+            productName: '',
+            year: '',
+            month: '',
+            sortBy: '',
+            sortOrder: '',
+            searchTerm: ''
+        };
+
+        setFilters(defaultFilters);  // Restablece los filtros globales
+        setLocalFilters(defaultFilters); // Sincroniza los filtros locales
+        setSearchTerm(''); // Limpia el término de búsqueda
+        applyFilters(); // Aplica los filtros inmediatamente
     };
+
 
     // Sincroniza los filtros locales con los filtros globales
     useEffect(() => {
@@ -158,7 +164,9 @@ const FilterAndSort = ( ) => {
                                 <select
                                     value={localFilters.region}
                                     onChange={(e) => {
-                                        handleLocalFilterChange('region', e.target.value)
+                                        const selectedRegion = e.target.value;
+                                        handleLocalFilterChange('region', selectedRegion);
+                                        handleLocalFilterChange('commune', ''); // Resetea la comuna
                                     }}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
@@ -178,15 +186,20 @@ const FilterAndSort = ( ) => {
                                     value={localFilters.commune}
                                     onChange={(e) => handleLocalFilterChange('commune', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
+                                    disabled={!localFilters.region} // Desactiva si no hay región seleccionada
                                 >
                                     <option value="">Todas</option>
-                                    {availableCommunes.map((c) => (
-                                        <option key={c} value={c}>
-                                        {c}
-                                        </option>
-                                    ))}
-                                    </select>
+                                    {regionsAndCommunes
+                                        .find(r => r.NombreRegion === localFilters.region)
+                                        ?.comunas.map((commune) => (
+                                            <option key={commune} value={commune}>
+                                                {commune}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
                             </div>
+
 
                             <div className="mb-4">
                                 <label className="block text-gray-700">Año</label>

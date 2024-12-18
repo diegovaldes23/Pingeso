@@ -76,7 +76,7 @@ export const GlobalProvider = ({ children }) => {
   });
 
   const applyFilters = () => {
-    let filtered = [...orders];
+    let filtered = orders;
 
     // Aplica filtros
     const {
