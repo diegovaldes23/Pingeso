@@ -16,8 +16,16 @@ export const GlobalProvider = ({ children }) => {
     try {
         const response = await fetch(URL + '/admin/orders');
         const data = await response.json();
-        setOrders(data);
-        setFilteredOrders(data);
+
+        // Ordenar las órdenes por fecha de pedido (descendente)
+    const sortedData = data.sort((a, b) => {
+        const dateA = new Date(a.order_date);
+        const dateB = new Date(b.order_date);
+        return dateB - dateA; // Orden descendente
+      });
+
+        setOrders(sortedData);
+        setFilteredOrders(sortedData);
     } catch (error) {
         console.error('Error al obtener las órdenes: ', error);
     }
@@ -76,7 +84,7 @@ export const GlobalProvider = ({ children }) => {
   });
 
   const applyFilters = () => {
-    let filtered = orders;
+    let filtered = [...orders];
 
     // Aplica filtros
     const {
@@ -177,28 +185,27 @@ export const GlobalProvider = ({ children }) => {
 
   // Función para restablecer filtros
   const resetFilters = () => {
-    setFilters({
-      region: '',
-      commune: '',
-      startDate: '',
-      endDate: '',
-      customerType: '',
-      purchaseSource: '',
-      status: '',
-      productName: '',
-      year: '',
-      month: '',
-      sortBy: '',
-      sortOrder: '',
-      searchTerm: '',
-    });
-    setFilteredOrders(orders); // Restablece a la vista original
-  };
+    const defaultFilters = {
+        region: '',
+        commune: '',
+        startDate: '',
+        endDate: '',
+        customerType: '',
+        purchaseSource: '',
+        status: '',
+        productName: '',
+        year: '',
+        month: '',
+        sortBy: '',
+        sortOrder: '',
+        searchTerm: '',
+      };
 
-  // Aplicar filtros y ordenamiento cada vez que cambien los filtros o las órdenes
-  useEffect(() => {
+    setFilters(defaultFilters); // Restablece los filtros globales
+    fetchOrders();
+    setFilteredOrders([...orders]); // Restablece a la vista original
     applyFilters();
-  }, [filters, orders]);
+  };
 
   const getStatusClass = (status) => {
     switch (status) {

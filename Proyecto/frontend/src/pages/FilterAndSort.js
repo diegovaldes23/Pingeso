@@ -18,10 +18,8 @@ import "react-datepicker/dist/react-datepicker.css";
  */
 const FilterAndSort = ( ) => {
     // Extracción de métodos y estado de filtros del contexto global
-    const { filters, setFilters, applyFilters } = useGlobalContext();
+    const { filters, setFilters, applyFilters, resetFilters } = useGlobalContext();
 
-    // Estado local para manejar filtros antes de aplicarlos
-    const [localFilters, setLocalFilters] = useState(filters);
     const [searchTerm, setSearchTerm] = useState('');
 
     // Referencias para manejar clicks fuera de los dropdowns
@@ -45,15 +43,11 @@ const FilterAndSort = ( ) => {
         ? regionsAndCommunes.find(r => r.NombreRegion === filters.region)?.comunas || []
         : [];
 
-    /**
-     * Actualiza un filtro local específico
-     * 
-     * @param {string} key - Clave del filtro a modificar  
-     * @param {*} value - Nuevo valor para el filtro
-     */
-    const handleLocalFilterChange = (key, value) => {
-        setLocalFilters(prev => ({ ...prev, [key]: value}));
+
+    const handleFilterChange = (key, value) => {
+        setFilters((prev) => ({ ...prev, [key]: value }));
     };
+          
 
     /**
    * Maneja los cambios en la búsqueda global
@@ -64,7 +58,6 @@ const FilterAndSort = ( ) => {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setFilters(prev => ({ ...prev, searchTerm: e.target.value }));
-        applyFilters();
     }
 
     /**
@@ -72,42 +65,9 @@ const FilterAndSort = ( ) => {
    * Ejecuta la función de filtrado
    */
     const handleApplyFilters = () => {
-        setFilters(localFilters);
+        setFilters(filters);
         applyFilters();
     };
-
-    /**
-     * Restablece todos los filtros a su estado inicial
-     * y aplica los cambios automáticamente
-     */
-    const resetFilters = () => {
-        const defaultFilters = {
-            region: '',
-            commune: '',
-            startDate: '',
-            endDate: '',
-            customerType: '',
-            purchaseSource: '',
-            status: '',
-            productName: '',
-            year: '',
-            month: '',
-            sortBy: '',
-            sortOrder: '',
-            searchTerm: ''
-        };
-
-        setFilters(defaultFilters);  // Restablece los filtros globales
-        setLocalFilters(defaultFilters); // Sincroniza los filtros locales
-        setSearchTerm(''); // Limpia el término de búsqueda
-        applyFilters(); // Aplica los filtros inmediatamente
-    };
-
-
-    // Sincroniza los filtros locales con los filtros globales
-    useEffect(() => {
-        setLocalFilters(filters);
-    }, [filters]);
 
     // Gestiona el cierre de dropdowns al hacer click fuera
     useEffect(() => {
@@ -162,11 +122,11 @@ const FilterAndSort = ( ) => {
                             <div>
                                 <label className="block text-gray-700">Región</label>
                                 <select
-                                    value={localFilters.region}
+                                    value={filters.region}
                                     onChange={(e) => {
                                         const selectedRegion = e.target.value;
-                                        handleLocalFilterChange('region', selectedRegion);
-                                        handleLocalFilterChange('commune', ''); // Resetea la comuna
+                                        handleFilterChange('region', selectedRegion);
+                                        handleFilterChange('commune', ''); // Resetea la comuna
                                     }}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
@@ -183,14 +143,14 @@ const FilterAndSort = ( ) => {
                             <div>
                                 <label className="block text-gray-700">Comuna</label>
                                 <select
-                                    value={localFilters.commune}
-                                    onChange={(e) => handleLocalFilterChange('commune', e.target.value)}
+                                    value={filters.commune}
+                                    onChange={(e) => handleFilterChange('commune', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
-                                    disabled={!localFilters.region} // Desactiva si no hay región seleccionada
+                                    disabled={!filters.region} // Desactiva si no hay región seleccionada
                                 >
                                     <option value="">Todas</option>
                                     {regionsAndCommunes
-                                        .find(r => r.NombreRegion === localFilters.region)
+                                        .find(r => r.NombreRegion === filters.region)
                                         ?.comunas.map((commune) => (
                                             <option key={commune} value={commune}>
                                                 {commune}
@@ -204,8 +164,8 @@ const FilterAndSort = ( ) => {
                             <div className="mb-4">
                                 <label className="block text-gray-700">Año</label>
                                 <select
-                                    value={localFilters.year}
-                                    onChange={(e) => handleLocalFilterChange('year', e.target.value)}
+                                    value={filters.year}
+                                    onChange={(e) => handleFilterChange('year', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Todos</option>
@@ -218,8 +178,8 @@ const FilterAndSort = ( ) => {
                             <div className="mb-4">
                                 <label className="block text-gray-700">Mes</label>
                                 <select
-                                    value={localFilters.month}
-                                    onChange={(e) => handleLocalFilterChange('month', e.target.value)}
+                                    value={filters.month}
+                                    onChange={(e) => handleFilterChange('month', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Todos</option>
@@ -242,8 +202,8 @@ const FilterAndSort = ( ) => {
                             <div>
                                 <label className="block text-gray-700">Fecha de Inicio</label>
                                 <DatePicker
-                                    selected={localFilters.startDate}
-                                    onChange={(date) => handleLocalFilterChange('startDate', date)}
+                                    selected={filters.startDate}
+                                    onChange={(date) => handleFilterChange('startDate', date)}
                                     dateFormat="dd/MM/yyyy"
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     placeholderText="Selecciona una fecha"
@@ -254,8 +214,8 @@ const FilterAndSort = ( ) => {
                             <div>
                                 <label className="block text-gray-700">Fecha de Término</label>
                                 <DatePicker
-                                    selected={localFilters.endDate}
-                                    onChange={(date) => handleLocalFilterChange('endDate', date)}
+                                    selected={filters.endDate}
+                                    onChange={(date) => handleFilterChange('endDate', date)}
                                     dateFormat="dd/MM/yyyy"
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     placeholderText="Selecciona una fecha"
@@ -269,8 +229,8 @@ const FilterAndSort = ( ) => {
                                 Estado del pedido
                             </label>
                             <select
-                                value={localFilters.orderStatus}
-                                onChange={(e) => handleLocalFilterChange('orderStatus', e.target.value)}
+                                value={filters.orderStatus}
+                                onChange={(e) => handleFilterChange('orderStatus', e.target.value)}
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5 h-9 p-2"
                             >
                                 <option value="">Todos los estados</option>
@@ -310,8 +270,8 @@ const FilterAndSort = ( ) => {
                             <div className="mb-4">
                                 <label className="block text-gray-700">Criterio</label>
                                 <select
-                                    value={localFilters.sortBy}
-                                    onChange={(e) => handleLocalFilterChange('sortBy', e.target.value)}
+                                    value={filters.sortBy}
+                                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Ninguno</option>
@@ -323,8 +283,8 @@ const FilterAndSort = ( ) => {
                             <div className="mb-4">
                                 <label className="block text-gray-700">Orden</label>
                                 <select
-                                    value={localFilters.sortOrder}
-                                    onChange={(e) => handleLocalFilterChange('sortOrder', e.target.value)}
+                                    value={filters.sortOrder}
+                                    onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Ninguno</option>
@@ -344,7 +304,10 @@ const FilterAndSort = ( ) => {
 
                 {/* Botón Restablecer */}
                 <button
-                    onClick={resetFilters}
+                    onClick={() => {
+                        resetFilters();
+                        setSearchTerm('');
+                      }}
                     className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
                 >
                     Restablecer
