@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -12,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 
 @Entity
@@ -25,36 +27,64 @@ public class Orders {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id; // atributo llave
+
+    @ExcelProperty("Name")
     private String name; // Nombre del cliente
-    private String phone; // Telefono
+
+    @ExcelProperty("Phone")
+    private String phone; // Teléfono
+
+    @ExcelProperty("Region")
     private String region; // Región del cliente
+
+    @ExcelProperty("Commune")
     private String commune; // Comuna del cliente
 
-    private LocalDate order_date; // fecha de orden
+    @ExcelProperty("Order Date")
+    private LocalDate order_date; // Fecha de orden
+
+    @ExcelProperty("Customer Type")
     private String customer_type; // Tipo de cliente (cliente consumo, cliente negocio)
-    private String purchase_source; // Fuente de la compra (Organico, Facebook Adds)
 
-    // Products
+    @ExcelProperty("Purchase Source")
+    private String purchase_source; // Fuente de la compra (Orgánico, Facebook Adds)
 
-    private Double shipping_cost; // costo de envio
+    @ExcelProperty("Shipping Cost")
+    private Double shipping_cost; // Costo de envío
+
+    @ExcelProperty("Subtotal")
     private Double subtotal; // Subtotal (costo de los productos)
-    private Double total; // Total (costo productos + costo de envio)
+
+    @ExcelProperty("Total")
+    private Double total; // Total (costo productos + costo de envío)
+
+    @ExcelProperty("Initial Payment")
     private Double initial_payment; // Pago inicial
+
+    @ExcelProperty("Status")
     private String status; // Estado
 
+    @ExcelProperty("Delivery Date")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    private LocalDate delivery_date; // fecha de entrega (cuando se completó el pedido)
+    private LocalDate delivery_date; // Fecha de entrega (cuando se completó el pedido)
+
+    @ExcelProperty("Description")
     private String description;
+
+    @ExcelProperty("Address")
     private String address; // Dirección
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderProduct> orderProducts;
-    ////
+
+    @ExcelProperty("Email")
     private String email;
 
-    ////
-    private LocalDate creation_date; // fecha de creación de la orden
+    @ExcelProperty("Creation Date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate creation_date; // Fecha de creación de la orden
 
+    @ExcelProperty("External Order ID")
     private Long externalOrderId;
 }
