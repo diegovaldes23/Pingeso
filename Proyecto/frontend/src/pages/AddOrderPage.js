@@ -15,7 +15,6 @@ function AddOrderPage() {
     const [address, setAddress] = useState(''); // Nueva variable para dirección
     const [email, setEmail] = useState(''); // Nueva variable para email
     const [description, setDescription] = useState(''); // Nueva variable para descripcion
-    const [comment, setComment] = useState(''); // Nueva variable para comentario
     const [products, setProducts] = useState([{ name: '', quantity: '', cost: 0.0}]);
     const [deliveryCost, setDeliveryCost] = useState(0);
     const [status, setStatus] = useState('Pendiente');
@@ -210,13 +209,36 @@ function AddOrderPage() {
                     </div>
                     <div>
                         <label className="block text-gray-700">Teléfono</label>
-                        <input
-                            type="text"
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholder="Ej: 912345678"
-                        />
+                        <div className="flex mt-1 items-center border border-gray-300 rounded-md">
+                            {/* Prefijo fijo */}
+                            <span className="px-3 py-2 bg-gray-200 text-gray-700 rounded-l-md">
+                                +569
+                            </span>
+                            {/* Campo de entrada */}
+                            <input
+                                type="text"
+                                value={phone}
+                                onChange={(e) => {
+                                    const input = e.target.value;
+
+                                    // Validar que solo se ingresen números
+                                    const sanitizedInput = input.replace(/\D/g, '');
+
+                                    // Limitar la longitud máxima a 8 caracteres
+                                    if (sanitizedInput.length <= 8) {
+                                        setPhone(sanitizedInput);
+                                    }
+                                }}
+                                className="flex-1 px-4 py-2 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="12345678"
+                            />
+                        </div>
+                        {/* Mensaje de error */}
+                        {phone && phone.length !== 8 && phone.length !== 12 && (
+                            <span className="text-red-500 text-sm">
+                                El número debe tener exactamente 8 dígitos.
+                            </span>
+                        )}
                     </div>
                 </div>
 
@@ -263,7 +285,7 @@ function AddOrderPage() {
                             type="text"
                             value={address}
                             onChange={(e) => setAddress(e.target.value)}
-                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
+                            className="mt-1 w-full py-2 border border-gray-300 rounded-md p-2"
                             placeholder="Ej: Walker Martínez 3142"
                         />
                     </div>

@@ -16,7 +16,6 @@ const OrdersList = () => {
   const [subtotal, setSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [availableProducts, setAvailableProducts] = useState([]);
-
   const [region, setRegion] = useState(null);
 
   const selectedRegion = regionsAndCommunes.find(r => r.NombreRegion === region);

@@ -21,6 +21,7 @@ const FilterAndSort = ( ) => {
     const { filters, setFilters, applyFilters, resetFilters } = useGlobalContext();
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [localFilters, setLocalFilters] = useState({});
 
     // Referencias para manejar clicks fuera de los dropdowns
     const filterDropdownRef = useRef(null);
@@ -96,9 +97,9 @@ const FilterAndSort = ( ) => {
                 {/* Barra de búsqueda */}
                 <input
                     type="text"
-                    placeholder="Buscar por ID, cliente, fecha (dd-MM-aaaa), productos..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
+                    placeholder="Buscar órdenes..."
+                    value={filters.searchTerm}
+                    onChange={(e) => setFilters({...filters, searchTerm: e.target.value})}
                     className="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 
