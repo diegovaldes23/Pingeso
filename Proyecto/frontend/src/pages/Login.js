@@ -25,7 +25,8 @@ const Login = () => {
       }
 
       const data = await response.json();
-      localStorage.setItem("token", data.token); // Almacenar el token en localStorage
+      localStorage.setItem("authToken", data.token); // Cambia 'token' por 'authToken'
+      // Almacenar el token en localStorage
       navigate("/orders"); // Redirigir a la página de órdenes
     } catch (err) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");

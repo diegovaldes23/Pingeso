@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Importar React Router
+import { Link, useLocation, useNavigate  } from "react-router-dom"; // Importar React Router
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation(); // Obtener la ubicación actual
+  const navigate = useNavigate(); // Para redirigir al usuario
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem("authToken"); // Eliminar el token de localStorage
+    navigate("/"); // Redirigir al inicio de sesión
   };
 
   // Verificar si estamos en la ruta de ExcelPage
@@ -137,6 +144,22 @@ const Sidebar = () => {
               </span>
             )}
           </Link>
+        </li>
+
+        {/* Botón de Cerrar sesión */}
+        <li
+          className={`flex items-center p-4 rounded hover:bg-red-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+          onClick={handleLogout}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
+            <path
+              fill="white"
+              d="M10 16v-2H3v-4h7V8l5 4l-5 4zm11-12v16c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2z"
+            />
+          </svg>
+          {!isCollapsed && <span className="ml-3">Cerrar sesión</span>}
         </li>
       </ul>
     </div>
