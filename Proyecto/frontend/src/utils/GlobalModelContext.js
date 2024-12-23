@@ -8,13 +8,25 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
 
+  
+
 
   const URL = 'http://localhost:8080'
 
   // Función para cargar las órdenes desde el backend
   const fetchOrders = async () => {
     try {
-        const response = await fetch(URL + '/admin/orders');
+        const token = localStorage.getItem("authToken"); // Obtener el token de localStorage
+        if (!token) throw new Error("No autenticado");
+        const headers = { Authorization: `Bearer ${token}` }; 
+
+        
+        const response = await fetch(URL + '/admin/orders', { headers });
+
+        if (!response.ok) {
+          throw new Error("Error en la solicitud: " + response.statusText);
+        }
+
         const data = await response.json();
 
         // Ordenar las órdenes por fecha de pedido (descendente)

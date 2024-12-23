@@ -6,8 +6,10 @@ import OrdersPage from "./pages/OrdersPage";
 import AddOrderPage from "./pages/AddOrderPage";
 import Dashboard from "./pages/Dashboard";
 import ExcelPage from "./pages/ExcelPage";
+import Login from "./pages/Login";
 
 import Statistics from "./pages/Statistics";
+import GetOrders from "./pages/getOrders";
 
 const App = () => {
   return (
@@ -17,11 +19,14 @@ const App = () => {
           <Sidebar />
           <div className="flex-1 p-6">
             <Routes>
+              <Route path="/" element ={<Login/>} />
+              <Route path="/a" element ={<GetOrders/>} />
               <Route path="/orders" element={<OrdersPage />} />
               <Route path="/statistics" element={<Dashboard />} />
               <Route path="/add-order" element={<AddOrderPage />} />
               <Route path="/excel" element={<ExcelPage />}/>
               <Route path="/statistics" element={<Statistics />} />
+              
             </Routes>
           </div>
         </div>
