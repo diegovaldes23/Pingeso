@@ -79,7 +79,7 @@ public class JwtService {
      * @return Una instancia de `Key` derivada de la clave secreta.
      */
     private Key getKey() {
-        System.out.println("Llave secreta " + SECRET_KEY +"\n");
+        // System.out.println("Llave secreta " + SECRET_KEY +"\n");
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }

@@ -37,6 +37,9 @@ public class AuthService {
                         .username(request.getUsername())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .role(RoleEntity.MODERATOR) // por defecto es moderador
+                        .email(request.getEmail())
+                        .firstname(request.getFirstname())
+                        .lastname(request.getLastname())
                         .build();
 
                 userRepository.save(user);
