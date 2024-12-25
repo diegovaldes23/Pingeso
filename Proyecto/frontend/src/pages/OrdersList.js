@@ -98,6 +98,7 @@ const OrdersList = () => {
     
         if (response.ok) {
           console.log("Estado del pedido cambiado con éxito");
+          window.location.reload();
         } else {
           alert('Hubo un error al actualizar el estado del pedido');
         }
@@ -328,11 +329,11 @@ useEffect(() => {
                     <td className="py-1 px-2 border font-bold">{order.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
                     <td className="py-1 px-2 border max-w-10">{(order.shipping_cost || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
                     <td className="py-1 px-2 border font-bold">{order.total.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
-                    <td className="py-1 px-2 border text-center">
+                    <td className={`${getStatusClass(order.status)}`}>
                       <select
                         value={order.status}
                         onChange={(e) => handleStateChange(order.id, e.target.value)}
-                        className={`p-1 rounded ${getStatusClass(order.status)}`}
+                        className={`px-2 ${getStatusClass(order.status)}`}
                       >
                         <option value="Pendiente">Pendiente</option>
                         <option value="En proceso">En proceso</option>

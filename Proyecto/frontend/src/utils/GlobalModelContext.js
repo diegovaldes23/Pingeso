@@ -43,7 +43,7 @@ export const GlobalProvider = ({ children }) => {
   useEffect(() => {
     fetchOrders();
   }, []);
-
+  
   const [statistics, setStatistics] = useState({
     totalOrders: 0,
     statusCounts: {},
@@ -175,21 +175,7 @@ export const GlobalProvider = ({ children }) => {
             )
         );
         }
-    } else {
-        // Si no hay término de búsqueda, mostrar todas las órdenes
-        filtered = [...orders];
     }
-
-    // Filtro de búsqueda
-  if (searchTerm.trim() !== '') {
-    const searchLower = searchTerm.toLowerCase();
-    filtered = filtered.filter(order =>
-      order.id.toString().includes(searchLower) ||
-      order.name?.toLowerCase().includes(searchLower) ||
-      order.address.toLowerCase().includes(searchLower) ||
-      order.orderProducts?.some(product => product.name.toLowerCase().includes(searchLower))
-    );
-  }
 
     setFilteredOrders(filtered);
 
@@ -197,19 +183,9 @@ export const GlobalProvider = ({ children }) => {
     setShowSortDropdown(false);
   };
 
-  useEffect(() => {
-    if (filters.searchTerm.trim() === '') {
-      // Si el término de búsqueda está vacío, muestra todas las órdenes originales
-      setFilteredOrders(orders);
-    } else {
-      // Si hay texto en `searchTerm`, aplica los filtros
-      applyFilters();
-    }
-  }, [filters.searchTerm]); // Observa cambios en `searchTerm` y `orders`
-  
   // Función para restablecer filtros
   const resetFilters = () => {
-    const defaultFilters = {
+    setFilters({
         region: '',
         commune: '',
         startDate: '',
@@ -222,10 +198,8 @@ export const GlobalProvider = ({ children }) => {
         month: '',
         sortBy: '',
         sortOrder: '',
-        searchTerm: '',
-      };
-
-    setFilters(defaultFilters); // Restablece los filtros globales
+        searchTerm: '', // Limpia el término de búsqueda
+      });
     fetchOrders();
     setFilteredOrders([...orders]); // Restablece a la vista original
     applyFilters();

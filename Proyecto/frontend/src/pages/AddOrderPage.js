@@ -163,7 +163,7 @@ function AddOrderPage() {
         // Preparar datos para enviar
         const orderData = {
             name: customerName,
-            phone,
+            phone: `+569${phone}`,
             region,
             commune,
             order_date: formattedDate,

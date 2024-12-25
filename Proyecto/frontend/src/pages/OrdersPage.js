@@ -26,6 +26,8 @@ const OrdersPage = () => {
         selectedOrder,
     } = useGlobalContext();
 
+    const searchTerm = useState('');
+
     // Declaración de variables a ocupar para la paginación
     const [currentPage, setCurrentPage] = useState(1);
     const [filteredOrders, setFilteredOrders] = useState(orders);
