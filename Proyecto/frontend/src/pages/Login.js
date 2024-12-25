@@ -26,21 +26,22 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem("authToken", data.token); // Cambia 'token' por 'authToken'
+      localStorage.setItem("role_u", data.role); // Rol del usuario
       localStorage.setItem("username", username);   // Guardar username
       // Almacenar el token en localStorage
       navigate("/orders"); // Redirigir a la página de órdenes
-    } catch (err) {
+    } catch (err) { // bg-gray-100
       setError("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md w-80">
-        <h2 className="text-2xl font-bold mb-4">Iniciar sesión</h2>
+    <div className="flex items-center justify-center min-h-screen bg-purple-800 ">
+      <form onSubmit={handleLogin} className="bg-white p-6 shadow-md shadow-purple-800 rounded shadow-md w-80 ">
+        <h2 className="text-2xl text-purple-800 font-bold mb-4">Iniciar sesión</h2>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <div className="mb-4">
-          <label className="block text-sm font-medium">Usuario</label>
+          <label className="block text-purple-800 text-sm font-medium">Usuario</label>
           <input
             type="text"
             value={username}
@@ -51,7 +52,7 @@ const Login = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-sm font-medium">Contraseña</label>
+          <label className="block text-purple-800 text-sm font-medium">Contraseña</label>
           <input
             type="password"
             value={password}
@@ -63,7 +64,7 @@ const Login = () => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-purple-800 text-white py-2 rounded hover:bg-purple-600"
         >
           Iniciar sesión
         </button>

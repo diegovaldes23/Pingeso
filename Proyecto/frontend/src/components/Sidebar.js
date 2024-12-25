@@ -6,6 +6,8 @@ const Sidebar = () => {
   const location = useLocation(); // Obtener la ubicación actual
   const navigate = useNavigate(); // Para redirigir al usuario
 
+  const role = localStorage.getItem("role_u");
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -13,6 +15,8 @@ const Sidebar = () => {
   // Función para cerrar sesión
   const handleLogout = () => {
     localStorage.removeItem("authToken"); // Eliminar el token de localStorage
+    localStorage.removeItem("role_u");
+    localStorage.removeItem("username");
     navigate("/"); // Redirigir al inicio de sesión
   };
 
@@ -114,25 +118,24 @@ const Sidebar = () => {
         </li>
         
         {/* Agregar Pedido */}
-        <li
-          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
-            isCollapsed ? "justify-center" : "justify-start"
-          }`}
-        >
-          <Link
-            to="/add-order"
-            className="flex items-center w-full p-2"
+        {role !== "ANALYST" && (
+          <li
+            className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+              isCollapsed ? "justify-center" : "justify-start"
+            }`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 20 20">
-              <path fill="white" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20"/>
-            </svg>
-            {!isCollapsed && (
-              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
-                Agregar pedido
-              </span>
-            )}
-          </Link>
-        </li>
+            <Link to="/add-order" className="flex items-center w-full p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 20 20">
+                <path fill="white" d="M11 9V5H9v4H5v2h4v4h2v-4h4V9zm-1 11a10 10 0 1 1 0-20a10 10 0 0 1 0 20"/>
+              </svg>
+              {!isCollapsed && (
+                <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                  Agregar pedido
+                </span>
+              )}
+            </Link>
+          </li>
+        )}
 
         
 

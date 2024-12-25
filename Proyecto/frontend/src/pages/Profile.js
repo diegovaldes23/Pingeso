@@ -25,6 +25,7 @@ const Profile = () => {
   useEffect(() => {
     const username = localStorage.getItem("username");
     const authToken = localStorage.getItem("authToken");
+    
 
     if (!username || !authToken) {
       setErrorMessage("Error de autenticación.");
@@ -312,14 +313,13 @@ const Profile = () => {
                 return (
                     <div className="p-6 min-h-[48vh] h-auto">
                         <div>
-                            <h2 className="text-2xl font-bold mb-6">Usuarios del Sistema:</h2>
+                        <h2 className="text-2xl font-bold mb-6">Usuarios del Sistema:</h2>
+                        <div className="flex flex-row items-center  space-x-2">
+                            <h2 className="text-xl font-bold mb-6">Cantidad de usuarios administrativos en el sistema:</h2>
+                            <h2 className="text-xl mb-6">{users.length}</h2>
+                        </div>
 
-                            <div className="flex flex-row items-center  space-x-2">
-                                <h2 className="text-xl font-bold mb-6">Cantidad de usuarios administrativos en el sistema:</h2>
-                                <h2 className="text-xl mb-6">{users.length}</h2>
-                            </div>
-
-                            {users.length > 0 ? (
+                        {users.length > 0 ? (
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b">
@@ -332,22 +332,29 @@ const Profile = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {users.map((user) => (
-                                        <tr key={user.id} className="border-b">
-                                            <td className="py-2 px-4 text-center">{user.id}</td>
-                                            <td className="py-2 px-4 text-center">{user.username}</td>
-                                            <td className="py-2 px-4 text-center">{user.name} {user.firstname}</td>
-                                            <td className="py-2 px-4 text-center">{user.email ? user.email : "No ingresado"}</td>
-                                            <td className="py-2 px-4 text-center">{translateRole(user.role)}</td>
-                                            <td className="py-2 px-4 text-center">borrar</td>
-                                        </tr>
-                                    ))}
+                                    {users.map((user) => {
+                                        const isCurrentUser = user.username === localStorage.getItem("username");; // Verificar si el usuario es el mismo que el del localStorage
+                                        return (
+                                            <tr 
+                                                key={user.id} 
+                                                className={`border-b ${isCurrentUser ? 'font-bold' : ''}`} // Si es el mismo usuario, poner la fila en negrita
+                                            >
+                                                <td className="py-2 px-4 text-center">{user.id}</td>
+                                                <td className="py-2 px-4 text-center">{user.username}</td>
+                                                <td className="py-2 px-4 text-center">{user.name} {user.firstname}</td>
+                                                <td className="py-2 px-4 text-center">{user.email ? user.email : "No ingresado"}</td>
+                                                <td className="py-2 px-4 text-center">{translateRole(user.role)}</td>
+                                                <td className="py-2 px-4 text-center">
+                                                    {isCurrentUser ? 'Yo (mi usuario)' : 'borrar'} {/* Cambiar acción si es el mismo usuario */}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
-
                             </table>
-                            ):(
-                                <p>No hay usuarios en este sistema</p>
-                            )}
+                        ) : (
+                            <p>No hay usuarios en este sistema</p>
+                        )}
 
                             <button
                                 className="mt-4 px-4 py-2 bg-[#FFABBD] hover:text-white rounded hover:bg-[#FF6384]"
