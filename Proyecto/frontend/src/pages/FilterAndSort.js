@@ -3,6 +3,9 @@ import { useGlobalContext } from '../utils/GlobalModelContext';
 import regionsAndCommunes from './RegionesYComunas';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axios from 'axios';
+import { debounce } from 'lodash';
+import {format} from 'date-fns';
 
 /**
  * FilterAndSort Component
@@ -18,9 +21,24 @@ import "react-datepicker/dist/react-datepicker.css";
  */
 const FilterAndSort = ( ) => {
     // Extracción de métodos y estado de filtros del contexto global
-    const { orders, setFilteredOrders, filters, setFilters, applyFilters, resetFilters } = useGlobalContext();
+    const { orders, setFilteredOrders, filters, setFilters, applyFilters } = useGlobalContext();
 
-    const [localFilters, setLocalFilters] = useState(filters);
+    const [localFilters, setLocalFilters] = useState({
+        region: '',
+        commune: '',
+        startDate: '',
+        endDate: '',
+        customerType: '',
+        purchaseSource: '',
+        status: '',
+        productName: '',
+        year: '',
+        month: '',
+        searchTerm: '',
+        sortBy: '',
+        sortOrder: '',
+    }) 
+
     const [searchTerm, setSearchTerm] = useState('');
 
     // Referencias para manejar clicks fuera de los dropdowns
@@ -57,82 +75,80 @@ const FilterAndSort = ( ) => {
         }));
     };
 
+    const formatDate = (date) => {
+        if (!date) return '';
+        return format(new Date(date), 'yyyy-MM-dd');
+    }
+
+    // Aplica los filtros locales a las órdenes originales
+    const applyLocalFilters = async () => {
+        try {
+            const token = localStorage.getItem("authToken"); 
+
+            const formattedFilters = {
+                ...localFilters,
+                startDate: formatDate(localFilters.startDate),
+                endDate: formatDate(localFilters.endDate),
+            };
+
+            if (!token) throw new Error("No autenticado");
+            const params = new URLSearchParams(formattedFilters);
+            // Realizar la solicitud GET para obtener las órdenes
+            const response = await axios.get(`http://localhost:8080/admin/orders/filtering?${params.toString()}`, {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`, // Mueve esta línea dentro de `headers`
+                },
+            });
+
+            // Asignar las órdenes obtenidos al estado
+            setFilteredOrders(response.data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+        } catch (error) {
+            console.error('Error al obtener las órdenes:', error);
+            alert('Hubo un error al obtener las órdenes');
+        }
+    };
+
     // Resetea los filtros locales
-    const resetLocalFilters = () => {
+    const resetLocalFilters = async () => {
         setLocalFilters({
-        region: '',
-        commune: '',
-        startDate: '',
-        endDate: '',
-        customerType: '',
-        purchaseSource: '',
-        status: '',
-        productName: '',
-        year: '',
-        month: '',
-        searchTerm: '',
-        sortBy: '',
-        sortOrder: '',
-        });
-        setFilteredOrders([...orders]); // Restaura las órdenes originales
+            region: '',
+            commune: '',
+            startDate: '',
+            endDate: '',
+            customerType: '',
+            purchaseSource: '',
+            status: '',
+            productName: '',
+            year: '',
+            month: '',
+            searchTerm: '',
+            sortBy: '',
+            sortOrder: '',
+            });
+        try {
+                const token = localStorage.getItem("authToken");
+                if (!token) throw new Error("No autenticado");
+                
+                // Realiza una solicitud al backend para obtener todas las órdenes originales
+                const response = await axios.get('http://localhost:8080/admin/orders', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+        
+                // Restaura todas las órdenes al estado global
+                setFilteredOrders(response.data);
+            } catch (error) {
+                console.error('Error al restablecer las órdenes:', error);
+                alert('Hubo un error al restablecer las órdenes');
+            }
     };
 
     useEffect(() => {
-        setLocalFilters(filters);
-    }, [filters]);
-    
-    // Aplica los filtros locales a las órdenes originales
-    const applyLocalFilters = () => {
-        let filtered = [...orders]; // Parte de las órdenes originales
-
-        const {
-        region,
-        commune,
-        startDate,
-        endDate,
-        customerType,
-        purchaseSource,
-        status,
-        productName,
-        year,
-        month,
-        searchTerm,
-        } = localFilters;
-
-        // Filtros por región, comuna, fechas, etc.
-        if (region) filtered = filtered.filter(order => order.region === region);
-        if (commune) filtered = filtered.filter(order => order.commune === commune);
-        if (startDate) filtered = filtered.filter(order => new Date(order.order_date) >= new Date(startDate));
-        if (endDate) filtered = filtered.filter(order => new Date(order.order_date) <= new Date(endDate));
-        if (customerType) filtered = filtered.filter(order => order.customer_type === customerType);
-        if (purchaseSource) filtered = filtered.filter(order => order.purchase_source === purchaseSource);
-        if (status) filtered = filtered.filter(order => order.status === status);
-        if (productName) {
-        filtered = filtered.filter(order =>
-            order.products.some(product =>
-            product.name.toLowerCase().includes(productName.toLowerCase())
-            )
-        );
-        }
-        if (year) filtered = filtered.filter(order => new Date(order.order_date).getFullYear() === parseInt(year, 10));
-        if (month) filtered = filtered.filter(order => new Date(order.order_date).getMonth() + 1 === parseInt(month, 10));
-
-        // Filtro por término de búsqueda
-        if (searchTerm.trim() !== '') {
-        const searchLower = searchTerm.toLowerCase();
-        filtered = filtered.filter(order =>
-            order.id.toString().includes(searchLower) ||
-            order.name?.toLowerCase().includes(searchLower) ||
-            order.address.toLowerCase().includes(searchLower) ||
-            order.orderProducts?.some(product =>
-            product.name.toLowerCase().includes(searchLower)
-            )
-        );
-        }
-
-        // Actualiza las órdenes filtradas en el contexto global
-        setFilteredOrders(filtered);
-    };
+        applyLocalFilters();
+    }, [localFilters.searchTerm]);
 
     /**
    * Maneja los cambios en la búsqueda global
@@ -140,15 +156,16 @@ const FilterAndSort = ( ) => {
    * 
    * @param {React.ChangeEvent<HTMLInputElement>} e - Evento de cambio del input
    */
-    const handleSearchChange = (e) => {
-        const newSearchTerm = e.target.value;
-    
-        // Solo actualiza el campo searchTerm en los filtros
-        setFilters((prev) => ({
-            ...prev, // Mantén los valores actuales de los filtros
-            searchTerm: newSearchTerm, // Actualiza solo el searchTerm
-        }));
-        applyFilters();
+    const handleSearchChange = debounce((value) => {
+        const updatedFilters = { ...localFilters, searchTerm: value };
+        setLocalFilters(updatedFilters);
+        applyLocalFilters(updatedFilters);
+    }, 300);
+
+    const onSearchTermChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        handleSearchChange(value);
     };
     
 
@@ -195,7 +212,7 @@ const FilterAndSort = ( ) => {
                     type="text"
                     placeholder="Buscar órdenes..."
                     value={searchTerm}
-                    onChange={(e) => handleSearchChange}
+                    onChange={onSearchTermChange}
                     className="w-1/3 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
 

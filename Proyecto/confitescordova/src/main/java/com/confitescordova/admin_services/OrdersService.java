@@ -2,6 +2,7 @@ package com.confitescordova.admin_services;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 import com.confitescordova.admin_entities.Customer;
@@ -9,8 +10,11 @@ import com.confitescordova.admin_entities.OrderProduct;
 import com.confitescordova.entities.Order;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.confitescordova.admin_entities.Orders;
@@ -27,7 +31,11 @@ public class OrdersService {
     private OrderProductService orderProductService;
 
     public List<Orders> getAllOrders() {
-        return (List<Orders>) orderRepository.findAll();
+        List<Orders> orders = (List<Orders>) orderRepository.findAll();
+
+        orders.sort(Comparator.comparing(Orders::getOrder_date).reversed());
+
+        return orders;
     }
 
     public Optional<Orders> getOrderById(Long id) {
@@ -36,8 +44,7 @@ public class OrdersService {
 
     // Para obtener los productos mas vendidos
     public List<CommuneOrderCountDTO> salesByCommune() {
-        Pageable top10 = PageRequest.of(0, 10); // Limita los resultados a los 10 primeros
-        return orderRepository.countOrdersByCommune(top10);
+        return orderRepository.countOrdersByCommune();
     }
 
     public List<SalesByChannelDTO> salesByChannel() {
@@ -169,5 +176,106 @@ public class OrdersService {
     // Método para obtener las órdenes por el username_creator
     public List<Orders> getOrdersByUsernameCreator(String usernameCreator) {
         return orderRepository.findByUsernameCreator(usernameCreator);
+    }
+
+    public List<Orders> getOrdersByFiltering(
+            String region,
+            String commune,
+            String startDateString,
+            String endDateString,
+            String customerType,
+            String purchaseSource,
+            String status,
+            String productName,
+            Integer year,
+            Integer month,
+            String searchTerm
+    ){
+        // Usa Specifications para construir dinámicamente la consulta
+        Specification<Orders> spec = Specification.where(null);
+
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try {
+            if (startDateString != null && !startDateString.isEmpty()) {
+                startDate = LocalDate.parse(startDateString, formatter);
+            }
+            if (endDateString != null && !endDateString.isEmpty()) {
+                endDate = LocalDate.parse(endDateString, formatter);
+            }
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Error al parsear las fechas: " + e.getMessage());
+        }
+
+        // Variables finales efectivas
+        final LocalDate finalStartDate = startDate;
+        final LocalDate finalEndDate = endDate;
+
+        // Agregar los filtros de fecha
+        if (startDate != null && endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.between(root.get("order_date"), finalStartDate, finalEndDate)
+            );
+        } else if (startDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThanOrEqualTo(root.get("order_date"), finalStartDate)
+            );
+        } else if (endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThanOrEqualTo(root.get("order_date"), finalEndDate)
+            );
+        }
+
+        if (region != null && !region.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("region"), region));
+        }
+
+        if (commune != null && !commune.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("commune"), commune));
+        }
+
+        if (customerType != null && !customerType.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("customer_type"), customerType));
+        }
+
+        if (purchaseSource != null && !purchaseSource.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("purchase_source"), purchaseSource));
+        }
+
+        if (status != null && !status.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status));
+        }
+
+        if (productName != null && !productName.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.like(criteriaBuilder.lower(root.join("orderProducts").get("name")), "%" + productName.toLowerCase() + "%"));
+        }
+
+        if (year != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(criteriaBuilder.function("YEAR", Integer.class, root.get("order_date")), year));
+        }
+
+        if (month != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(criteriaBuilder.function("MONTH", Integer.class, root.get("order_date")), month));
+        }
+
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) -> {
+                String search = "%" + searchTerm.toLowerCase() + "%";
+                return criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), search),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), search),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), search),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.join("orderProducts").get("name")), search)
+                );
+            });
+        }
+
+        List<Orders> orders = orderRepository.findAll(spec);
+
+        orders.sort(Comparator.comparing(Orders::getOrder_date).reversed());
+
+        return orders;
     }
 }

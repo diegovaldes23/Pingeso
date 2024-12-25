@@ -1,5 +1,6 @@
 package com.confitescordova.admin_controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import com.confitescordova.admin_services.CommuneOrderCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
 import com.confitescordova.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -174,5 +176,24 @@ public class OrdersController {
     @GetMapping("/byCreator/{usernameCreator}")
     public List<Orders> getOrdersByUsernameCreator(@PathVariable String usernameCreator) {
         return orderService.getOrdersByUsernameCreator(usernameCreator);
+    }
+
+    @GetMapping("/filtering")
+    public ResponseEntity<List<Orders>> getOrdersByFiltering(
+            @RequestParam(required = false) String region,
+            @RequestParam(required = false) String commune,
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate,
+            @RequestParam(required = false) String customerType,
+            @RequestParam(required = false) String purchaseSource,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String productName,
+            @RequestParam(required = false) Integer year,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) String searchTerm
+    ){
+        // Llama al servicio para obtener las órdenes filtradas
+        List<Orders> orders = orderService.getOrdersByFiltering(region, commune, startDate, endDate, customerType, purchaseSource, status, productName, year, month, searchTerm);
+        return ResponseEntity.ok(orders);
     }
 }

@@ -4,6 +4,7 @@ import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_services.CommuneOrderCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -13,11 +14,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface OrdersRepository extends CrudRepository<Orders, Long>{
+public interface OrdersRepository extends CrudRepository<Orders, Long>, JpaSpecificationExecutor<Orders> {
     @Query("SELECT new com.confitescordova.admin_services.CommuneOrderCountDTO(o.commune, COUNT(o), SUM(o.total)) " +
             "FROM Orders o " +
-            "GROUP BY o.commune")
-    List<CommuneOrderCountDTO> countOrdersByCommune(Pageable pageable);
+            "GROUP BY o.commune " +
+            "ORDER BY COUNT(o) DESC " +
+            "LIMIT 10")
+    List<CommuneOrderCountDTO> countOrdersByCommune();
 
     @Query("SELECT new com.confitescordova.admin_services.SalesByChannelDTO(o.purchase_source, COUNT(o), SUM(o.total)) " +
             "FROM Orders o " +
@@ -37,5 +40,4 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
 
     @Query("SELECT o FROM Orders o WHERE o.username_creator = :usernameCreator")
     List<Orders> findByUsernameCreator(@Param("usernameCreator") String usernameCreator);
-
 } 

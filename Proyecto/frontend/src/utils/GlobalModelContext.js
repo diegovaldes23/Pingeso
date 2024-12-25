@@ -8,9 +8,6 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
 
-  
-
-
   const URL = 'http://localhost:8080'
 
   // Función para cargar las órdenes desde el backend

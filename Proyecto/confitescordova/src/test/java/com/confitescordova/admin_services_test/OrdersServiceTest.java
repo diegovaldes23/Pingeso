@@ -99,15 +99,14 @@ class OrdersServiceTest {
     @Test
     void testSalesByCommune() {
         CommuneOrderCountDTO mockDTO = new CommuneOrderCountDTO("Santiago", 5L, 500.0);
-        Pageable pageable = PageRequest.of(0, 10);
-        when(ordersRepository.countOrdersByCommune(pageable)).thenReturn(List.of(mockDTO));
+        when(ordersRepository.countOrdersByCommune()).thenReturn(List.of(mockDTO));
 
         List<CommuneOrderCountDTO> result = ordersService.salesByCommune();
 
         assertEquals(1, result.size());
         assertEquals("Santiago", result.get(0).getCommune());
         assertEquals(500.0, result.get(0).getTotal());
-        verify(ordersRepository, times(1)).countOrdersByCommune(pageable);
+        verify(ordersRepository, times(1)).countOrdersByCommune();
     }
 
     @Test
