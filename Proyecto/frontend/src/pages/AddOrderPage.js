@@ -68,9 +68,16 @@ function AddOrderPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
+
+                const token = localStorage.getItem("authToken"); 
+                if (!token) throw new Error("No autenticado");
+                // const headers = { Authorization: `Bearer ${token}` };
+
                 const response = await axios.get("http://localhost:8080/admin/products", {
-                    headers: { 'Content-Type': 'application/json'},
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, },
+                    
                 });
+                
                 setAvailableProducts(response.data); 
             } catch (error) {
                 alert('Hubo un error al obtener los productos');
@@ -134,14 +141,24 @@ function AddOrderPage() {
 
     const createOrder = async (orderData) => {
         try {
-            const response = await axios.post('http://localhost:8080/admin/orders/post', orderData, {
-                headers: { 'Content-Type': 'application/json' },
+            const token = localStorage.getItem('authToken');
+            console.log('Token:', token);
+
+            if (!token) {
+                throw new Error("No autenticado: Token no encontrado");
+            }
+    
+            const response = await axios.post('http://localhost:8080/admin/orderproduct/post', orderData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
             });
             console.log('Pedido creado:', response.data);
             alert('Pedido creado con éxito');
         } catch (error) {
-            console.error('Error al crear el pedido:', error);
-            alert('Hubo un error al crear el pedido');
+            console.error('Error al crear el pedido:', error.response?.data || error.message);
+            alert(`Hubo un error al crear el pedido: ${error.response?.data?.message || error.message}`);
         }
     };
     

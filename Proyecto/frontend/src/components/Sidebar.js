@@ -1,12 +1,19 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom"; // Importar React Router
+import { Link, useLocation, useNavigate  } from "react-router-dom"; // Importar React Router
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation(); // Obtener la ubicación actual
+  const navigate = useNavigate(); // Para redirigir al usuario
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  // Función para cerrar sesión
+  const handleLogout = () => {
+    localStorage.removeItem("authToken"); // Eliminar el token de localStorage
+    navigate("/"); // Redirigir al inicio de sesión
   };
 
   // Verificar si estamos en la ruta de ExcelPage
@@ -44,6 +51,8 @@ const Sidebar = () => {
           isCollapsed ? "items-center justify-center" : ""
         }`}
       >
+
+        
         {/* Visualización de pedidos */}
         <li
           className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
@@ -69,6 +78,36 @@ const Sidebar = () => {
             {!isCollapsed && (
               <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
                 Inicio
+              </span>
+            )}
+          </Link>
+        </li>
+
+        {/* Perfil */}
+        <li
+          className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+        >
+          <Link
+            to="/profile"
+            className="flex items-center w-full p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
+              <defs>
+                <mask id="ipSTableReport0">
+                  <g fill="none" stroke-linejoin="round" stroke-width="4">
+                    <path fill="#fff" stroke="#fff" d="M5 7a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3v37H8a3 3 0 0 1-3-3z"/>
+                    <path stroke="#fff" d="M35 24a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v17a3 3 0 0 1-3 3h-5z"/>
+                    <path stroke="#000" stroke-linecap="round" d="M11 12h8m-8 7h12"/>
+                  </g>
+                </mask>
+              </defs>
+              <path fill="white" d="M0 0h48v48H0z" mask="url(#ipSTableReport0)"/>
+            </svg>
+            {!isCollapsed && (
+              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                Perfil
               </span>
             )}
           </Link>
@@ -137,6 +176,22 @@ const Sidebar = () => {
               </span>
             )}
           </Link>
+        </li>
+
+        {/* Botón de Cerrar sesión */}
+        <li
+          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+          onClick={handleLogout}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
+            <path
+              fill="white"
+              d="M10 16v-2H3v-4h7V8l5 4l-5 4zm11-12v16c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2z"
+            />
+          </svg>
+          {!isCollapsed && <span className="ml-3">Cerrar sesión</span>}
         </li>
       </ul>
     </div>

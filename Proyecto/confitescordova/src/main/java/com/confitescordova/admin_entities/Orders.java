@@ -87,4 +87,7 @@ public class Orders {
 
     @ExcelProperty("External Order ID")
     private Long externalOrderId;
+
+    @ExcelProperty("Username creator")
+    private String username_creator; // username del creador en nuestra plataforma
 }

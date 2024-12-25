@@ -6,28 +6,44 @@ import OrdersPage from "./pages/OrdersPage";
 import AddOrderPage from "./pages/AddOrderPage";
 import Dashboard from "./pages/Dashboard";
 import ExcelPage from "./pages/ExcelPage";
+import Login from "./pages/Login";
 
 import Statistics from "./pages/Statistics";
+
+import { useLocation } from "react-router-dom"; // Importa useLocation
+import Profile from "./pages/Profile";
+
+const AppContent = () => {
+  const location = useLocation(); // Ahora estamos dentro del Router
+  const hideSidebar = location.pathname === "/"; // Condición para ocultar el Sidebar en login
+
+  return (
+    <div className="flex max-h-max">
+      {!hideSidebar && <Sidebar />} {/* Renderiza Sidebar solo si no está en / */}
+      <div className="flex-1 p-6">
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/orders" element={<OrdersPage />} />
+          <Route path="/statistics" element={<Dashboard />} />
+          <Route path="/add-order" element={<AddOrderPage />} />
+          <Route path="/excel" element={<ExcelPage />} />
+          <Route path="/statistics" element={<Statistics />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   return (
     <GlobalProvider>
       <Router>
-        <div className="flex max-h-max">
-          <Sidebar />
-          <div className="flex-1 p-6">
-            <Routes>
-              <Route path="/orders" element={<OrdersPage />} />
-              <Route path="/statistics" element={<Dashboard />} />
-              <Route path="/add-order" element={<AddOrderPage />} />
-              <Route path="/excel" element={<ExcelPage />}/>
-              <Route path="/statistics" element={<Statistics />} />
-            </Routes>
-          </div>
-        </div>
+        <AppContent /> {/* Mueve el contenido principal aquí */}
       </Router>
     </GlobalProvider>
-  )
+  );
 };
 
 export default App;
+

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.confitescordova.admin_entities.Orders;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,4 +34,8 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>{
             "GROUP BY o.name, o.phone " +
             "ORDER BY SUM(o.total) DESC")
     List<Object[]> findTopCustomers(Pageable pageable);
+
+    @Query("SELECT o FROM Orders o WHERE o.username_creator = :usernameCreator")
+    List<Orders> findByUsernameCreator(@Param("usernameCreator") String usernameCreator);
+
 } 

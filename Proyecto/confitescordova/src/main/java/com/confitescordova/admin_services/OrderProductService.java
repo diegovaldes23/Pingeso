@@ -50,6 +50,9 @@ public class OrderProductService {
         String region = (String) orderJson.get("region"); order.setRegion(region); // Región
         String commune = (String) orderJson.get("commune"); order.setCommune(commune); // Comuna
         String orderDateString = (String) orderJson.get("order_date");
+
+        String username_creator = (String) orderJson.get("username_creator"); order.setUsername_creator(username_creator);
+
         LocalDate order_date = LocalDate.parse(orderDateString.split("T")[0]);
         order.setOrder_date(order_date); // Fecha de la orden
         // Tipo de cliente (cliente consumo, cliente negocio)

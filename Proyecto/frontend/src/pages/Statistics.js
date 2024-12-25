@@ -152,19 +152,25 @@ const Statistics = () => {
     const fetchStats = async () => {
       setIsLoading(true);
       try {
-        const ordersRes = await fetch("http://localhost:8080/admin/orders");
+
+        const token = localStorage.getItem("authToken");
+        
+        if (!token) throw new Error("No autenticado");
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const ordersRes = await fetch("http://localhost:8080/admin/orders", { headers });
         const ordersData = await ordersRes.json();
 
-        const salesByCommuneRes = await fetch("http://localhost:8080/admin/orders/salesByCommune");
+        const salesByCommuneRes = await fetch("http://localhost:8080/admin/orders/salesByCommune", { headers });
         const salesByCommuneData = await salesByCommuneRes.json();
 
-        const salesByChannelRes = await fetch("http://localhost:8080/admin/orders/salesByChannel");
+        const salesByChannelRes = await fetch("http://localhost:8080/admin/orders/salesByChannel", { headers });
         const salesByChannelData = await salesByChannelRes.json();
 
-        const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales");
+        const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales", { headers });
         const productSalesData = await productSalesRes.json();
 
-        const topCustomerRes = await fetch("http://localhost:8080/admin/orders/top-customers");
+        const topCustomerRes = await fetch("http://localhost:8080/admin/orders/top-customers", { headers });
         const topCustomersData = await topCustomerRes.json();
 
         let totalRevenue = 0;
