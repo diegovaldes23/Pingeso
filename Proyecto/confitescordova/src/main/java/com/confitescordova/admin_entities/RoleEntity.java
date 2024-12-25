@@ -3,6 +3,7 @@ package com.confitescordova.admin_entities;
 public enum RoleEntity {
     ADMIN, // Rol de administrador
     MODERATOR, // Rol de moderador
+    ANALYST,
     OTHER;
 
     /**

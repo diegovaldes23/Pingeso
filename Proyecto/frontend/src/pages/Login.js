@@ -26,6 +26,7 @@ const Login = () => {
 
       const data = await response.json();
       localStorage.setItem("authToken", data.token); // Cambia 'token' por 'authToken'
+      localStorage.setItem("username", username);   // Guardar username
       // Almacenar el token en localStorage
       navigate("/orders"); // Redirigir a la página de órdenes
     } catch (err) {

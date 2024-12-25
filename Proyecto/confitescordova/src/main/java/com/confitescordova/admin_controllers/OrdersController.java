@@ -170,4 +170,9 @@ public class OrdersController {
         Orders orders = orderService.saveLocal(order);
         return ResponseEntity.ok(orders);
     }
+
+    @GetMapping("/byCreator/{usernameCreator}")
+    public List<Orders> getOrdersByUsernameCreator(@PathVariable String usernameCreator) {
+        return orderService.getOrdersByUsernameCreator(usernameCreator);
+    }
 }

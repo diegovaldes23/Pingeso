@@ -165,4 +165,9 @@ public class OrdersService {
 
         return date;
     }
+
+    // Método para obtener las órdenes por el username_creator
+    public List<Orders> getOrdersByUsernameCreator(String usernameCreator) {
+        return orderRepository.findByUsernameCreator(usernameCreator);
+    }
 }
