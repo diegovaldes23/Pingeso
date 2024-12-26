@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 const OrdersList = () => {
-  const { orders, setOrders, filteredOrders, getStatusClass, updateOrderDeliveryDate, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
+  const { orders, setOrders, filteredOrders, getStatusClass, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
 
   const [isEditing, setIsEditing] = useState(false);
   const [deliveryDate, setDeliveryDate] = useState('');
@@ -254,14 +254,14 @@ useEffect(() => {
         const formattedOrderDate = editOrder.order_date
         ? new Date(editOrder.order_date).toISOString().split('T')[0]
         : null; // Convierte a "yyyy-MM-dd" si es necesario
-    const formattedDeliveryDate = editOrder.deliveryDate
-        ? new Date(editOrder.deliveryDate).toISOString().split('T')[0]
+    const formattedDeliveryDate = editOrder.delivery_date
+        ? new Date(editOrder.delivery_date).toISOString().split('T')[0]
         : null;
 
         const updatedOrder = {
             ...editOrder,
             order_date: formattedOrderDate, // Usa el formato correcto
-            deliveryDate: formattedDeliveryDate,
+            delivery_date: formattedDeliveryDate,
             orderProducts: products, // Incluye los productos actualizados
             subtotal: subtotal,
             total: total,
@@ -471,11 +471,11 @@ useEffect(() => {
                     <label className="block text-sm font-medium text-gray-700">Fecha de entrega</label>
                     <DatePicker 
                         placeholderText="04-06-2024"
-                        selected={editOrder.deliveryDate}
+                        selected={editOrder.delivery_date}
                         onChange={handleDateChange}
                         dateFormat="dd-MM-yyyy"
                         className="p-2 border rounded-md"
-                        value={editOrder.deliveryDate ? formatDate2(editOrder.deliveryDate): ""}
+                        value={editOrder.delivery_date ? formatDate2(editOrder.delivery_date): ""}
                     />
                     </div>
                 </div>

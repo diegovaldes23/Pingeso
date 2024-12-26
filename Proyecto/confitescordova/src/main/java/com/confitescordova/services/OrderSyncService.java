@@ -111,7 +111,7 @@ public class OrderSyncService implements CommandLineRunner {
         // Establecer la fecha en la orden
         localOrder.setOrder_date(orderDateFormatted); // Solo la fecha
 
-        localOrder.setStatus("Pendiente");
+        localOrder.setStatus("Completada");
         localOrder.setPurchase_source("Tiendanube");
         localOrder.setAddress(tnOrder.getShipping_address().getAddress() + " " + tnOrder.getShipping_address().getNumber() + ", " + tnOrder.getShipping_address().getFloor());
         localOrder.setEmail(tnOrder.getCustomer().getEmail());

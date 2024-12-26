@@ -157,7 +157,7 @@ public class ExcelService {
             return LocalDate.parse(normalizedDate, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
         } catch (Exception e) {
             System.err.println("Error al convertir a LocalDate: " + value);
-            return defaultValue;
+            return defaultValue != null ? defaultValue : LocalDate.now(); // Usa `LocalDate.now()` o algún valor fijo
         }
     }
 
