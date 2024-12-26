@@ -197,7 +197,7 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
-    private String formatPhoneNumber(String phone) {
+    public String formatPhoneNumber(String phone) {
         // Eliminar cualquier espacio, guión u otros caracteres no numéricos
         phone = phone.replaceAll("[^0-9]", "");
 

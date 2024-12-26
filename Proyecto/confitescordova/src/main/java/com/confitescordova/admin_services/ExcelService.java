@@ -7,6 +7,7 @@ import com.alibaba.excel.read.listener.ReadListener;
 import com.confitescordova.admin_entities.OrderProduct;
 import com.confitescordova.admin_entities.Orders;
 import com.confitescordova.admin_repositories.OrdersRepository;
+import com.confitescordova.services.OrderSyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,12 +18,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ExcelService {
 
     @Autowired
     private OrdersRepository ordersRepository;
+
+    @Autowired
+    private OrderSyncService orderSyncService;
 
     public void saveOrdersFromExcel(MultipartFile file) {
         try (InputStream is = file.getInputStream()) {
@@ -63,18 +68,28 @@ public class ExcelService {
 
                         // Crear una entidad de orden
                         Orders order = new Orders();
-                        order.setName(name);
-                        order.setPhone(phone);
-                        order.setInitial_payment(initialPayment);
+                        order.setName(capitalizeEachWord(name));
+
+                        order.setPhone(orderSyncService.formatPhoneNumber(phone));
                         order.setOrder_date(orderDate);
                         order.setDelivery_date(deliveryDate);
-                        order.setAddress(address);
-                        order.setCommune(commune);
-                        order.setShipping_cost(shippingCost);
-                        order.setSubtotal(subtotal);
-                        order.setTotal(total);
-                        order.setPurchase_source(purchase_source);
-                        order.setCustomer_type(customer_type);
+                        order.setAddress(capitalizeFirstLetter(address));
+                        order.setCommune(RegionComunaMapper.formatComuna(commune));
+                        order.setRegion(RegionComunaMapper.getRegionByComuna(commune));
+                        order.setShipping_cost(parseDoubleIgnoringCommasAndDollarSign(shipping_cost, 0.0));
+                        order.setSubtotal(parseDoubleIgnoringCommasAndDollarSign(subtotalStr, 0.0));
+                        order.setTotal(parseDoubleIgnoringCommasAndDollarSign(totalStr, 0.0));
+                        order.setInitial_payment(parseDoubleIgnoringCommasAndDollarSign(initialPaymentStr, order.getTotal()));
+                        order.setPurchase_source(capitalizeFirstLetter(purchase_source));
+                        order.setCustomer_type(capitalizeFirstLetter(customer_type));
+
+                        if(order.getInitial_payment().equals(order.getTotal())){
+                            order.setStatus("Completada");
+                        } else if (order.getInitial_payment() < order.getTotal() && order.getInitial_payment() > 0) {
+                            order.setStatus("En proceso");
+                        } else {
+                            order.setStatus("Pendiente");
+                        }
                         order.setEmail(email);
                         order.setCreation_date(LocalDate.now());
 
@@ -185,5 +200,47 @@ public class ExcelService {
 
         return year + "/" + month + "/" + day;
     }
+
+    private String capitalizeFirstLetter(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return input; // Retorna el valor original si es nulo o vacío
+        }
+        input = input.trim(); // Elimina espacios en blanco al principio y al final
+        return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
+    }
+
+    private Double parseDoubleIgnoringCommasAndDollarSign(String value, Double defaultValue) {
+        if (value == null || value.trim().isEmpty()) {
+            return defaultValue;
+        }
+
+        try {
+            // Elimina el signo de dólar, las comas y los espacios
+            String sanitizedValue = value.replace("$", "").replace(",", "").trim();
+            return Double.parseDouble(sanitizedValue);
+        } catch (NumberFormatException e) {
+            System.err.println("Error al convertir: '" + value + "' a número. Usando valor predeterminado.");
+            return defaultValue;
+        }
+    }
+
+    private String capitalizeEachWord(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return input; // Retorna el valor original si es nulo o vacío
+        }
+
+        String[] words = input.trim().toLowerCase().split("\\s+");
+        StringBuilder capitalized = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                capitalized.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1)).append(" ");
+            }
+        }
+
+        return capitalized.toString().trim();
+    }
+
+
 
 }
