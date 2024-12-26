@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "order_products")
@@ -33,5 +34,6 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "id_order", referencedColumnName = "id", updatable = false)
     @JsonBackReference  // No serializa esta propiedad
+    @ToString.Exclude // Excluye para evitar ciclos en toString
     private Orders order;
 }

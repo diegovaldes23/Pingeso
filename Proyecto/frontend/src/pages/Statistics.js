@@ -227,7 +227,7 @@ const Statistics = () => {
   '#4BC0C0', // Soft Green
   '#36A2EB', // Soft Blue
   '#9966FF', // Soft Purple
-  '#F1CBFF'  // Soft Pink
+  '#E89CFC'  // Soft Pink
 
 ];
 

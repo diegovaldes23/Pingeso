@@ -13,7 +13,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import lombok.ToString;
 
 
 @Entity
@@ -76,6 +76,7 @@ public class Orders {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    @ToString.Exclude // Excluye para evitar ciclos en toString
     private List<OrderProduct> orderProducts;
 
     @ExcelProperty("Email")

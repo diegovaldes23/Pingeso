@@ -82,36 +82,6 @@ const Sidebar = () => {
             )}
           </Link>
         </li>
-
-        {/* Perfil */}
-        <li
-          className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
-            isCollapsed ? "justify-center" : "justify-start"
-          }`}
-        >
-          <Link
-            to="/profile"
-            className="flex items-center w-full p-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
-              <defs>
-                <mask id="ipSTableReport0">
-                  <g fill="none" stroke-linejoin="round" stroke-width="4">
-                    <path fill="#fff" stroke="#fff" d="M5 7a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3v37H8a3 3 0 0 1-3-3z"/>
-                    <path stroke="#fff" d="M35 24a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v17a3 3 0 0 1-3 3h-5z"/>
-                    <path stroke="#000" stroke-linecap="round" d="M11 12h8m-8 7h12"/>
-                  </g>
-                </mask>
-              </defs>
-              <path fill="white" d="M0 0h48v48H0z" mask="url(#ipSTableReport0)"/>
-            </svg>
-            {!isCollapsed && (
-              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
-                Perfil
-              </span>
-            )}
-          </Link>
-        </li>
         
         {/* Agregar Pedido */}
         <li
@@ -178,21 +148,48 @@ const Sidebar = () => {
           </Link>
         </li>
 
-        {/* Botón de Cerrar sesión */}
+        {/* Perfil */}
         <li
-          className={`flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+          className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
             isCollapsed ? "justify-center" : "justify-start"
           }`}
-          onClick={handleLogout}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
-            <path
-              fill="white"
-              d="M10 16v-2H3v-4h7V8l5 4l-5 4zm11-12v16c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2z"
-            />
-          </svg>
-          {!isCollapsed && <span className="ml-3">Cerrar sesión</span>}
+          <Link
+            to="/profile"
+            className="flex items-center w-full p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24"><path fill="#fff" fill-rule="evenodd" d="M8 7a4 4 0 1 1 8 0a4 4 0 0 1-8 0m0 6a5 5 0 0 0-5 5a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3a5 5 0 0 0-5-5z" clip-rule="evenodd"/></svg>
+            {!isCollapsed && (
+              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                Perfil
+              </span>
+            )}
+          </Link>
         </li>
+
+        {/* Cerrar sesión */}
+        <li
+        className={`inline-flex items-center p-4 rounded hover:bg-purple-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+        }`}
+        >
+        <button
+            className="flex items-center ml-1 w-full p-2 space-x-2 focus:outline-none"
+            onClick={handleLogout}
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 512 512">
+            <path fill="#fff" d="M336 376V272H191a16 16 0 0 1 0-32h145V136a56.06 56.06 0 0 0-56-56H88a56.06 56.06 0 0 0-56 56v240a56.06 56.06 0 0 0 56 56h192a56.06 56.06 0 0 0 56-56m89.37-104l-52.68 52.69a16 16 0 0 0 22.62 22.62l80-80a16 16 0 0 0 0-22.62l-80-80a16 16 0 0 0-22.62 22.62L425.37 240H336v32Z"/>
+            </svg>
+            {!isCollapsed && (
+            <span className="transition-opacity duration-300 whitespace-nowrap">
+                Cerrar sesión
+            </span>
+            )}
+        </button>
+        </li>
+
+
+
       </ul>
     </div>
   );
