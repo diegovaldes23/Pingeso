@@ -385,7 +385,7 @@ const FilterAndSort = ( ) => {
                                 <label className="block text-gray-700">Criterio</label>
                                 <select
                                     value={localFilters.sortBy}
-                                    onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+                                    onChange={(e) => handleLocalFilterChange('sortBy', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Ninguno</option>
@@ -398,7 +398,7 @@ const FilterAndSort = ( ) => {
                                 <label className="block text-gray-700">Orden</label>
                                 <select
                                     value={localFilters.sortOrder}
-                                    onChange={(e) => handleFilterChange('sortOrder', e.target.value)}
+                                    onChange={(e) => handleLocalFilterChange('sortOrder', e.target.value)}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                 >
                                     <option value="">Ninguno</option>
