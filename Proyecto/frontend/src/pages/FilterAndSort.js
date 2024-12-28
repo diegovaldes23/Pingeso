@@ -101,8 +101,25 @@ const FilterAndSort = ( ) => {
                 },
             });
 
+            let filteredOrders = response.data; // Asegúrate de que la respuesta sea un array de órdenes
+
+            // Aplica la lógica de ordenamiento si el usuario seleccionó "Ordenar por: Fecha de envío"
+            if (localFilters.sortOrder === "deliveryDate") {
+                filteredOrders = filteredOrders.sort((a, b) => {
+                    if (!a.delivery_date && b.delivery_date) return 1; // Las que no tienen fecha al final
+                    if (a.delivery_date && !b.delivery_date) return -1; // Las que tienen fecha al principio
+                    if (a.delivery_date && b.delivery_date) {
+                        // Si ambas tienen fecha, ordenarlas ascendente o descendente
+                        const dateA = new Date(a.delivery_date);
+                        const dateB = new Date(b.delivery_date);
+                        return localFilters.sortOrder === "desc" ? dateB - dateA : dateA - dateB;
+                    }
+                    return 0; // Si ambas no tienen fecha, no cambiar el orden
+                });
+            }
+
             // Asignar las órdenes obtenidos al estado
-            setFilteredOrders(response.data); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
+            setFilteredOrders(filteredOrders); // Asegúrate de que la respuesta tenga el formato adecuado (array de productos)
         } catch (error) {
             console.error('Error al obtener las órdenes:', error);
             alert('Hubo un error al obtener las órdenes');
@@ -318,7 +335,7 @@ const FilterAndSort = ( ) => {
                                 <DatePicker
                                     selected={localFilters.startDate}
                                     onChange={(date) => handleLocalFilterChange('startDate', date)}
-                                    dateFormat="dd/MM/yyyy"
+                                    dateFormat="yyyy-MM-dd"
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     placeholderText="Selecciona una fecha"
                                 />
@@ -330,7 +347,7 @@ const FilterAndSort = ( ) => {
                                 <DatePicker
                                     selected={localFilters.endDate}
                                     onChange={(date) => handleLocalFilterChange('endDate', date)}
-                                    dateFormat="dd/MM/yyyy"
+                                    dateFormat="yyyy-MM-dd"
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     placeholderText="Selecciona una fecha"
                                 />
