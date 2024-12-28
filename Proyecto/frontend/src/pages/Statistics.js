@@ -167,8 +167,10 @@ const Statistics = () => {
         const salesByChannelRes = await fetch("http://localhost:8080/admin/orders/salesByChannel", { headers });
         const salesByChannelData = await salesByChannelRes.json();
 
-        const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales", { headers });
+        const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales", { headers });;
         const productSalesData = await productSalesRes.json();
+
+        console.log(productSalesData);
 
         const topCustomerRes = await fetch("http://localhost:8080/admin/orders/top-customers", { headers });
         const topCustomersData = await topCustomerRes.json();
@@ -204,7 +206,7 @@ const Statistics = () => {
             return acc;
           }, {}),
           productRevenue: productSalesData.reduce((acc, item) => {
-            acc[item.productName] = item.totalPrice;
+            acc[item.productName] = item.cost;
             return acc;
           }, {}),
         });
@@ -215,7 +217,6 @@ const Statistics = () => {
         setTimeout(() => setIsLoading(false), 10);
       }
     };
-
     fetchStats();
   }, []);
 
@@ -287,8 +288,8 @@ const Statistics = () => {
           labels: Object.keys(stats.productRevenue),
           datasets: [{
             label: 'Ingresos por producto',
-            data: Object.values(stats.productRevenue),
-            backgroundColor: '#36A2EB'
+            data: Object.values(stats.productRevenue || {}).map((val) => val || 0), // Maneja undefined
+            backgroundColor: pastelColors.slice(0, Object.keys(stats.productRevenue).length)
           }]
         };
       default:

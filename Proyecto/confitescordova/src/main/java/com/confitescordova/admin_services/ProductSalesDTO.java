@@ -12,14 +12,11 @@ public class ProductSalesDTO {
     //public ProductsService productsService;
 
     private Long idProduct;
-    private Long totalQuantity;
-    private Double totalPrice;
+    private Double cost;
     private String productName;
 
-    public ProductSalesDTO(Long idProduct, Long totalQuantity, Double totalPrice, String productName) {
-        this.idProduct = idProduct;
-        this.totalQuantity = totalQuantity;
-        this.totalPrice = totalPrice;
+    public ProductSalesDTO(String productName, Double cost) {
+        this.cost = cost;
         this.productName = productName;
         /*
         if(productsService.getProductById(idProduct).isPresent()){

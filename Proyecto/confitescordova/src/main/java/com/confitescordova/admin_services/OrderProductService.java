@@ -100,7 +100,6 @@ public class OrderProductService {
         return new_order;
     }
 
-
     // Para obtener las ordenes mas costosas
     public List<OrderProduct> getOrderProductsOrderedByCost() {
         return orderProductRepository.findAllByOrderByCostDesc();

@@ -103,18 +103,18 @@ const FilterAndSort = ( ) => {
 
             let filteredOrders = response.data; // Asegúrate de que la respuesta sea un array de órdenes
 
-            // Aplica la lógica de ordenamiento si el usuario seleccionó "Ordenar por: Fecha de envío"
-            if (localFilters.sortOrder === "deliveryDate") {
+            if (localFilters.sortBy === "deliveryDate") {
                 filteredOrders = filteredOrders.sort((a, b) => {
-                    if (!a.delivery_date && b.delivery_date) return 1; // Las que no tienen fecha al final
-                    if (a.delivery_date && !b.delivery_date) return -1; // Las que tienen fecha al principio
-                    if (a.delivery_date && b.delivery_date) {
-                        // Si ambas tienen fecha, ordenarlas ascendente o descendente
-                        const dateA = new Date(a.delivery_date);
-                        const dateB = new Date(b.delivery_date);
-                        return localFilters.sortOrder === "desc" ? dateB - dateA : dateA - dateB;
-                    }
-                    return 0; // Si ambas no tienen fecha, no cambiar el orden
+                    const dateA = a.delivery_date ? new Date(a.delivery_date) : null;
+                    const dateB = b.delivery_date ? new Date(b.delivery_date) : null;
+    
+                    // Coloca las órdenes sin fecha de entrega primero o al final, según el orden seleccionado
+                    if (!dateA && !dateB) return 0; // Ambas sin fecha, mantener el orden actual
+                    if (!dateA) return localFilters.sortOrder === "asc" ? -1 : 1; // Sin fecha va primero/último
+                    if (!dateB) return localFilters.sortOrder === "asc" ? 1 : -1; // Sin fecha va último/primero
+    
+                    // Si ambas tienen fecha, ordénalas ascendente o descendente
+                    return localFilters.sortOrder === "desc" ? dateB - dateA : dateA - dateB;
                 });
             }
 
@@ -424,7 +424,7 @@ const FilterAndSort = ( ) => {
                                 </select>
                             </div>
                             <button
-                                onClick={handleApplyFilters}
+                                onClick={applyLocalFilters}
                                 className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
                             >
                                 Aplicar

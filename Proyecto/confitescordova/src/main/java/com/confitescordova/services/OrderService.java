@@ -4,6 +4,9 @@ import com.confitescordova.entities.Order;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,11 +24,28 @@ public class OrderService extends BaseService{
         String responseBody = makeGetRequest(url);
         Order[] orders = parseResponse(responseBody, Order[].class);
 
+        LocalDate minDate = LocalDate.of(2024, 12, 1); // CAMBIAR ESTA FECHA SEGÚN LO QUE SE REQUIERA
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ"); // Formato original
+
         // Filtrar las órdenes para obtener solo aquellas cuyo payment_status sea "paid"
         // Filtrar las órdenes para obtener solo aquellas cuyo payment_status sea "paid" y el nombre del cliente no sea "Sebastian Cordova" ni "Cliente anónimo"
         return Arrays.stream(orders)
                 .filter(order -> "paid".equals(order.getPayment_status()))  // Filtro por estado de pago
                 .filter(order -> !("Sebastian Cordova".equals(order.getCustomer().getName()) || "Cliente anónimo".equals(order.getCustomer().getName())))  // Filtro por nombre del cliente
+                .filter(order -> {
+                    try {
+                        // Parsear la fecha de la orden al formato "yyyy-MM-dd"
+                        ZonedDateTime zonedDateTime = ZonedDateTime.parse(order.getCreated_at(), formatter);
+                        LocalDate orderDate = zonedDateTime.toLocalDate();
+
+                        // Filtrar por fecha mínima
+                        return !orderDate.isBefore(minDate);
+                    } catch (Exception e) {
+                        System.err.println("Error al parsear la fecha: " + order.getCreated_at());
+                        return false; // Excluir órdenes con fechas inválidas
+                    }
+                })
                 .collect(Collectors.toList());
     }
 

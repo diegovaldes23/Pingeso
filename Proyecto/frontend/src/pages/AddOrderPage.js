@@ -165,6 +165,19 @@ function AddOrderPage() {
         }
     };
     
+    const handleInputChange = (event, setter) => {
+        const rawValue = event.target.value;
+    
+        // Eliminar caracteres no numéricos (excepto números)
+        const sanitizedValue = rawValue.replace(/[^0-9]/g, "");
+    
+        // Convertir el valor a número y asegurarse de que sea mayor o igual a 0
+        const numericValue = Math.max(0, parseInt(sanitizedValue, 10) || 0);
+    
+        // Actualizar el estado con el valor formateado
+        setter(numericValue);
+    };
+    
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -435,9 +448,9 @@ function AddOrderPage() {
                     <div>
                         <label className="block text-gray-700">Costo de envío</label>
                         <input
-                            type="number"
-                            value={deliveryCost}
-                            onChange={(e) => setDeliveryCost(parseFloat(e.target.value)) || 0}
+                            type="text"
+                            value={deliveryCost.toLocaleString()}
+                            onChange={(e) => handleInputChange(e, setDeliveryCost)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
@@ -457,13 +470,14 @@ function AddOrderPage() {
                     <div>
                         <label className="block text-gray-700">Abono inicial</label>
                         <input
-                            type="number"
-                            value={initialPayment}
-                            onChange={(e) => setInitialPayment(e.target.value)}
+                            type="text"
+                            value={initialPayment.toLocaleString()}
+                            onChange={(e) => handleInputChange(e, setInitialPayment)}
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
                 </div>
+
 
                 {/* Email */}
                 <div className="grid grid-cols-1 gap-4 mb-4">

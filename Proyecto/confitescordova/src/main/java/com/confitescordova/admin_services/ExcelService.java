@@ -37,7 +37,6 @@ public class ExcelService {
                 @Override
                 public void invoke(Map<Integer, String> data, AnalysisContext context) {
                     int rowIndex = context.readRowHolder().getRowIndex();
-                    System.out.println("Procesando fila: " + rowIndex);
 
                     try {
                         // Obtener valores crudos de las columnas
@@ -80,7 +79,7 @@ public class ExcelService {
                         order.setSubtotal(parseDoubleIgnoringCommasAndDollarSign(subtotalStr, 0.0));
                         order.setTotal(parseDoubleIgnoringCommasAndDollarSign(totalStr, 0.0));
                         order.setInitial_payment(parseDoubleIgnoringCommasAndDollarSign(initialPaymentStr, order.getTotal()));
-                        order.setPurchase_source(capitalizeFirstLetter(purchase_source));
+                        order.setPurchase_source(capitalizeFirstLetter(formatPurchaseSource(purchase_source)));
                         order.setCustomer_type(capitalizeFirstLetter(customer_type));
 
                         if(order.getInitial_payment().equals(order.getTotal())){
@@ -96,6 +95,7 @@ public class ExcelService {
                         // Asignar productos
                         List<OrderProduct> productsList = parseProducts(products, order);
                         order.setOrderProducts(productsList);
+                        productsList.get(0).setUnit_cost(order.getSubtotal());
 
                         // Agregar a la lista para guardar después
                         ordersList.add(order);
@@ -241,6 +241,21 @@ public class ExcelService {
         return capitalized.toString().trim();
     }
 
+    private String formatPurchaseSource(String purchaseSource) {
+        if (purchaseSource == null || purchaseSource.isEmpty()) {
+            return null;
+        }
+        // Normalizar a minúsculas para facilitar la búsqueda
+        String lowerCaseSource = purchaseSource.toLowerCase();
+
+        // Si contiene "facebook", actualizar a "Facebook"
+        if (lowerCaseSource.contains("facebook")) {
+            return "Facebook";
+        }
+
+        // Caso general: capitalizar la primera letra de cada palabra
+        return capitalizeFirstLetter(purchaseSource);
+    }
 
 
 }

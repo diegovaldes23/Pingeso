@@ -75,6 +75,11 @@ public class OrderSyncService implements CommandLineRunner {
                     saveOrderIfNotExists(localOrder, Long.valueOf(tnOrder.getId()));
                 }
 
+                List<Product> productList = productService.getAllProducts(storeID);
+                for(Product product : productList){
+                    saveProductIfNotExists(product.getName(), product.getPrice());
+                }
+
                 page++; // Avanza a la siguiente página
             }
         } catch (Exception e) {
@@ -112,7 +117,7 @@ public class OrderSyncService implements CommandLineRunner {
         // Establecer la fecha en la orden
         localOrder.setOrder_date(orderDateFormatted); // Solo la fecha
 
-        localOrder.setStatus("Completada");
+        localOrder.setStatus("Pendiente");
         localOrder.setPurchase_source("Tiendanube");
         localOrder.setAddress(tnOrder.getShipping_address().getAddress() + " " + tnOrder.getShipping_address().getNumber() + ", " + tnOrder.getShipping_address().getFloor());
         localOrder.setEmail(tnOrder.getCustomer().getEmail());
@@ -245,7 +250,7 @@ public class OrderSyncService implements CommandLineRunner {
         }
     }
 
-    private void saveProductIfNotExists(String name, Double cost){
+    public void saveProductIfNotExists(String name, Double cost){
         // Validar que el nombre no esté vacío ni sea "Nombre desconocido"
         if (name == null || name.trim().isEmpty() || "Nombre desconocido".equals(name)) {
             return; // No guardes el producto si el nombre es inválido

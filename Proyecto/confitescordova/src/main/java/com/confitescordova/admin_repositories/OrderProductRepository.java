@@ -13,8 +13,7 @@ public interface OrderProductRepository extends JpaRepository<OrderProduct, Long
 
     List<OrderProduct> findAllByOrderByCostDesc();
 
-    @Query("SELECT new com.confitescordova.admin_services.ProductSalesDTO(op.id_product, SUM(op.quantity), SUM(op.cost), p.name) " +
-            "FROM OrderProduct op JOIN Products p ON op.id_product = p.id_product " +
-            "GROUP BY op.id_product, p.name")
+    @Query("SELECT new com.confitescordova.admin_services.ProductSalesDTO(op.name, SUM(op.cost)) " +
+            "FROM OrderProduct op GROUP BY op.name ORDER BY SUM(op.cost) DESC LIMIT 8")
     List<ProductSalesDTO> findProductSales();
 }
