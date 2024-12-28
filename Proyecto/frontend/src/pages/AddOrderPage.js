@@ -77,7 +77,7 @@ function AddOrderPage() {
                 if (!token) throw new Error("No autenticado");
                 // const headers = { Authorization: `Bearer ${token}` };
 
-                const response = await axios.get("http://localhost:8080/admin/products", {
+                const response = await axios.get("http://192.81.208.123:8080/admin/products", {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, },
                     
                 });
@@ -152,7 +152,7 @@ function AddOrderPage() {
                 throw new Error("No autenticado: Token no encontrado");
             }
     
-            const response = await axios.post('http://localhost:8080/admin/orders/post', orderData, {
+            const response = await axios.post('http://192.81.208.123:8080/admin/orders/post', orderData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,

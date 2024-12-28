@@ -62,7 +62,7 @@ const ExcelPage = () => {
     try {
       const token = localStorage.getItem("authToken"); // Token de autenticación
       const response = await axios.post(
-        "http://localhost:8080/admin/excel/upload", // Cambia la URL según tu backend
+        "http://192.81.208.123:8080/admin/excel/upload", // Cambia la URL según tu backend
         formData,
         {
           headers: {

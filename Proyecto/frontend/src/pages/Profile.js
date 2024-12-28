@@ -33,7 +33,7 @@ const Profile = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/admin/user/${username}`, {
+        const response = await fetch(`http://192.81.208.123:8080/admin/user/${username}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -61,7 +61,7 @@ const Profile = () => {
 
     const fetchUsers = async () => {
         try {
-          const response = await fetch("http://localhost:8080/admin/user", {
+          const response = await fetch("http://192.81.208.123:8080/admin/user", {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -80,7 +80,7 @@ const Profile = () => {
 
     const fetchUserOrders = async () => {
         try {
-          const response = await fetch(`http://localhost:8080/admin/orders/byCreator/${username}`, {
+          const response = await fetch(`http://192.81.208.123:8080/admin/orders/byCreator/${username}`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -188,7 +188,7 @@ const Profile = () => {
             role: form_role,
         };
         try {
-            const response = await fetch("http://localhost:8080/auth/register", {
+            const response = await fetch("http://192.81.208.123:8080/auth/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

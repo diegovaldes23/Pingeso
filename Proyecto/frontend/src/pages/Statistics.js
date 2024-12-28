@@ -158,21 +158,21 @@ const Statistics = () => {
         if (!token) throw new Error("No autenticado");
         const headers = { Authorization: `Bearer ${token}` };
 
-        const ordersRes = await fetch("http://localhost:8080/admin/orders", { headers });
+        const ordersRes = await fetch("http://192.81.208.123:8080/admin/orders", { headers });
         const ordersData = await ordersRes.json();
 
-        const salesByCommuneRes = await fetch("http://localhost:8080/admin/orders/salesByCommune", { headers });
+        const salesByCommuneRes = await fetch("http://192.81.208.123:8080/admin/orders/salesByCommune", { headers });
         const salesByCommuneData = await salesByCommuneRes.json();
 
-        const salesByChannelRes = await fetch("http://localhost:8080/admin/orders/salesByChannel", { headers });
+        const salesByChannelRes = await fetch("http://192.81.208.123:8080/admin/orders/salesByChannel", { headers });
         const salesByChannelData = await salesByChannelRes.json();
 
-        const productSalesRes = await fetch("http://localhost:8080/admin/orderproduct/product-sales", { headers });;
+        const productSalesRes = await fetch("http://192.81.208.123:8080/admin/orderproduct/product-sales", { headers });;
         const productSalesData = await productSalesRes.json();
 
         console.log(productSalesData);
 
-        const topCustomerRes = await fetch("http://localhost:8080/admin/orders/top-customers", { headers });
+        const topCustomerRes = await fetch("http://192.81.208.123:8080/admin/orders/top-customers", { headers });
         const topCustomersData = await topCustomerRes.json();
 
         let totalRevenue = 0;
