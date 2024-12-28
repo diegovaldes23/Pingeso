@@ -154,7 +154,7 @@ public class ExcelService {
             // Normaliza la fecha al formato correcto
             String normalizedDate = normalizeDate(value);
             // Convierte usando el formato especificado
-            return LocalDate.parse(normalizedDate, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+            return LocalDate.parse(normalizedDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (Exception e) {
             System.err.println("Error al convertir a LocalDate: " + value);
             return defaultValue != null ? defaultValue : LocalDate.now(); // Usa `LocalDate.now()` o algún valor fijo
@@ -198,7 +198,7 @@ public class ExcelService {
         String month = parts[1].trim().length() == 1 ? "0" + parts[1].trim() : parts[1].trim();
         String day = parts[2].trim().length() == 1 ? "0" + parts[2].trim() : parts[2].trim();
 
-        return year + "/" + month + "/" + day;
+        return year + "-" + month + "-" + day;
     }
 
     private String capitalizeFirstLetter(String input) {

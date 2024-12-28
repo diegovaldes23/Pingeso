@@ -3,6 +3,7 @@ import { useGlobalContext } from '../utils/GlobalModelContext';
 import DatePicker from 'react-datepicker';
 import regionsAndCommunes from './RegionesYComunas';
 import axios from 'axios';
+import { format, parseISO } from 'date-fns';
 
 
 const OrdersList = () => {
@@ -110,29 +111,22 @@ const OrdersList = () => {
       } 
   };
   
-  const handleEditClick = (orderId, currentDeliveryDate, order) => {
+  const handleEditClick = (orderId, order) => {
     setSelectedOrderId(orderId);
     setEditOrder(order);
-    console.log(currentDeliveryDate);
-    console.log(selectedOrderId);
 
     setProducts(order.orderProducts || []);
-    
-    // Si currentDeliveryDate es una cadena, convertirla a un objeto Date
-    const date = currentDeliveryDate ? new Date(currentDeliveryDate) : null;
-    date?.setHours(0, 0, 0, 0);  // Asegura que no tenga hora asignada (día completo)
 
-    console.log(date);
-    setDeliveryDate(date); // Establecemos un objeto Date en el estado
     setIsEditing(true);
-  };
+};
 
-  const handleDateChange = (date) => {
+  const handleDateChange = (date, field) => {
     if (date) {
-        date?.setHours(0, 0, 0, 0); // Asegura que no haya horas
-        console.log(date);
-        setDeliveryDate(date);
-    } 
+        setEditOrder((prevOrder) => ({
+            ...prevOrder,
+            [field]: date, // Establece un objeto Date en el campo correspondiente
+        }));
+    }
   };
 
   const removeProductField = (index) => {
@@ -217,32 +211,21 @@ useEffect(() => {
         return dateB - dateA; // Devolver negativo para ordenar descendente
     });
     setOrders(sortedOrders); // Asegúrate de tener un estado o contexto para actualizarlos
-}, [filteredOrders]);
-
-
-    const formatDate2 = (date) => {
-        if (!(date instanceof Date) || isNaN(date)) return "";
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Meses empiezan desde 0
-        const year = date.getFullYear();
-        return `${year}-${month}-${day}`;
-    };
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-        return date.toLocaleDateString('es-CL', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-        });
-      };
+    console.log(sortedOrders);
+}, [filteredOrders]);    
 
     useEffect(() => {
         if(selectedOrderId){
             console.log(selectedOrderId);
         }
     }, [selectedOrderId]);
+
+    const normalizeDate = (dateString) => {
+        if (!dateString) return null;
+        const date = new Date(dateString);
+        return new Date(date.getTime() + date.getTimezoneOffset() * 60000); // Ajusta para compensar el desfase de la zona horaria
+    };
+    
   
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -251,12 +234,13 @@ useEffect(() => {
       const handleSaveOrderChange = async () => {
         try {
             // Convierte las fechas al formato ISO-8601 o "yyyy-MM-dd"
+        // Convierte las fechas al formato "yyyy-MM-dd" antes de enviar
         const formattedOrderDate = editOrder.order_date
-        ? new Date(editOrder.order_date).toISOString().split('T')[0]
-        : null; // Convierte a "yyyy-MM-dd" si es necesario
-    const formattedDeliveryDate = editOrder.delivery_date
-        ? new Date(editOrder.delivery_date).toISOString().split('T')[0]
-        : null;
+            ? format(new Date(editOrder.order_date), "yyyy-MM-dd")
+            : null;
+        const formattedDeliveryDate = editOrder.delivery_date
+            ? format(new Date(editOrder.delivery_date), "yyyy-MM-dd")
+            : null;
 
         const updatedOrder = {
             ...editOrder,
@@ -333,7 +317,7 @@ useEffect(() => {
                         </div>
                     </td>
                     <td className="py-1 px-2 h-full truncate max-w-12">{order.address}</td>
-                    <td className="py-1 px-2 border">{order.order_date ? formatDate(order.order_date) : 'Fecha no disponible'}</td>
+                    <td className="py-1 px-2 border">{order.order_date}</td>
                     <td className="py-1 px-2 h-full truncate max-w-12">{order.orderProducts.map((product) => product.name).join(', ')}</td>
                     <td className="py-1 px-2 border font-bold">{order.subtotal.toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
                     <td className="py-1 px-2 border max-w-10">{(order.shipping_cost || 0).toLocaleString('es-CL', { style: 'currency', currency: 'CLP' })}</td>
@@ -350,7 +334,7 @@ useEffect(() => {
                         <option value="Cancelada">Cancelada</option>
                       </select>
                     </td>
-                    <td className="py-1 px-2 border">{order.delivery_date ? formatDate(order.delivery_date) : 'No asignada'}</td>
+                    <td className="py-1 px-2 border">{order.delivery_date ? order.delivery_date : 'No asignada'}</td>
                     <td className="py-1 px-2 h-full truncate max-w-12">{order.description}</td>
                     <td className="py-1 px-2 border text-center">
                         <div className="flex items-center justify-center space-x-2">
@@ -363,7 +347,7 @@ useEffect(() => {
                                 </svg>
                             </button>
                             <button
-                                onClick={() => handleEditClick(order.id, order.delivery_date, order)}
+                                onClick={() => handleEditClick(order.id, order)}
                                 className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -457,12 +441,11 @@ useEffect(() => {
                     <div>
                     <label className="block text-sm font-medium text-gray-700">Fecha de pedido</label>
                     <DatePicker 
-                            placeholderText={`${editOrder.order_date}`}
-                            selected={editOrder.order_date}
-                            onChange={handleDateChange}
-                            dateFormat="dd-MM-yyyy"
+                            placeholderText="Seleccione una fecha"
+                            selected={editOrder.order_date ? normalizeDate(new Date(editOrder.order_date)) : null} // Convierte la cadena a Date
+                            onChange={(date) => handleDateChange(date, "order_date")} // Maneja el cambio de fecha
+                            dateFormat="yyyy-MM-dd" // Formato que se mostrará
                             className="p-2 border rounded-md"
-                            value={editOrder.order_date ? formatDate2(editOrder.order_date): ""}
                             disabled={editOrder.purchase_source === 'Tiendanube'}
                         />
                     </div>
@@ -470,12 +453,11 @@ useEffect(() => {
                     <div>
                     <label className="block text-sm font-medium text-gray-700">Fecha de entrega</label>
                     <DatePicker 
-                        placeholderText="04-06-2024"
-                        selected={editOrder.delivery_date}
-                        onChange={handleDateChange}
-                        dateFormat="dd-MM-yyyy"
+                        placeholderText="Seleccione una fecha"
+                        selected={editOrder.delivery_date ? normalizeDate(new Date(editOrder.delivery_date)) : null}
+                        onChange={(date) => handleDateChange(date, "delivery_date")}
+                        dateFormat="yyyy-MM-dd"
                         className="p-2 border rounded-md"
-                        value={editOrder.delivery_date ? formatDate2(editOrder.delivery_date): ""}
                     />
                     </div>
                 </div>

@@ -8,7 +8,19 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
 
-  const URL = 'http://localhost:8080'
+  const URL = 'http://localhost:8080';
+
+  const formatToDDMMYYYY = (dateStr) => {
+    if (!dateStr) return ""; // Manejo de casos nulos
+    try {
+        const [year, month, day] = dateStr.split("-");
+        return `${day}-${month}-${year}`;
+    } catch (error) {
+        console.error("Error al formatear la fecha:", dateStr);
+        return dateStr; // Devuelve la fecha original si hay un error
+    }
+};
+
 
   // Función para cargar las órdenes desde el backend
   const fetchOrders = async () => {
@@ -33,7 +45,12 @@ export const GlobalProvider = ({ children }) => {
         return dateB - dateA; // Orden descendente
       });
 
-        setOrders(sortedData);
+        const formattedOrders = sortedData.map((order) => ({
+            ...order,
+            order_date: order.order_date ? new Date(order.order_date) : null,
+            delivery_date: order.delivery_date ? new Date(order.delivery_date) : null,
+    }));
+        setOrders(formattedOrders);
         setFilteredOrders(sortedData);
     } catch (error) {
         console.error('Error al obtener las órdenes: ', error);

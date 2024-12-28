@@ -65,7 +65,6 @@ public class Orders {
     private String status; // Estado
 
     @ExcelProperty("Delivery Date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate delivery_date; // Fecha de entrega (cuando se completó el pedido)
 
     @ExcelProperty("Description")
@@ -83,7 +82,6 @@ public class Orders {
     private String email;
 
     @ExcelProperty("Creation Date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate creation_date; // Fecha de creación de la orden
 
     @ExcelProperty("External Order ID")

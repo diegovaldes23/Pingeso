@@ -160,9 +160,12 @@ public class OrdersController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody Orders order) {
-        Orders updatedOrder = orderService.updateOrder(order);
-        System.out.println("Pasó la prueba de fuego");
+    public ResponseEntity<Orders> updateOrder(@PathVariable Long orderId, @RequestBody OrdersDTO order) {
+        Orders orders = order.toEntity();
+
+        orders.setId(orderId);
+
+        Orders updatedOrder = orderService.updateOrder(orders);
         return ResponseEntity.ok(updatedOrder);
 
     }

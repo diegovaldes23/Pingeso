@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.module.css";
 import regionsAndCommunes from './RegionesYComunas';
+import {format} from 'date-fns';
 
 import axios from 'axios';
+import { unicode } from '@fortawesome/free-brands-svg-icons/fa42Group';
 
 function AddOrderPage() {
     // Estados para almacenar la información del formulario
@@ -51,13 +53,14 @@ function AddOrderPage() {
 
     // Función para manejar cambios en el input de fecha
     const handleDateChange = (date) => {
-        setDate(date);
+        setDate(date ? new Date(date) : null); // Convierte a Date o establece en null
     };
 
     const handleDeliveryDateChange = (date) => {
-        setDeliveryDate(date);
+        setDeliveryDate(date ? new Date(date) : null); // Convierte a Date o establece en null
     };
 
+    
     const removeProductField = (index) => {
         const updatedProducts = products.filter((_, i) => i !== index);
         setProducts(updatedProducts); // Actualiza el estado con los productos restantes
@@ -148,7 +151,7 @@ function AddOrderPage() {
                 throw new Error("No autenticado: Token no encontrado");
             }
     
-            const response = await axios.post('http://localhost:8080/admin/orderproduct/post', orderData, {
+            const response = await axios.post('http://localhost:8080/admin/orders/post', orderData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
@@ -171,11 +174,9 @@ function AddOrderPage() {
             return;
         }
     
-        // Construir la fecha y hora en el formato ISO
-        const orderDateTime = `${date}T10:00:00`;
-
-        const formattedDate = date ? formatDateToDDMMYYYY(date) : null;
-        const formattedDeliveryDate = deliveryDate ? formatDateToDDMMYYYY(deliveryDate) : null;
+        // Convierte las fechas al formato "yyyy-MM-dd"
+    const formattedOrderDate = date ? format(new Date(date), "yyyy-MM-dd") : null;
+    const formattedDeliveryDate = deliveryDate ? format(new Date(deliveryDate), "yyyy-MM-dd") : null;
 
         // Preparar datos para enviar
         const orderData = {
@@ -183,7 +184,7 @@ function AddOrderPage() {
             phone: `+569${phone}`,
             region,
             commune,
-            order_date: formattedDate,
+            order_date: formattedOrderDate,
             delivery_date: formattedDeliveryDate,
             customer_type: customerType,
             purchase_source: purchaseSource,
@@ -198,6 +199,7 @@ function AddOrderPage() {
             orderProducts: products.map(product => ({
                 name: product.name,
                 quantity: parseInt(product.quantity, 10),
+                unit_cost: product.cost,
             })),
         };
     
@@ -342,9 +344,9 @@ function AddOrderPage() {
                         <DatePicker
                             selected={date}
                             onChange={handleDateChange}
-                            dateFormat="dd-MM-yyyy"
+                            dateFormat="yyyy-MM-dd"
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholderText="04-05-2024"
+                            placeholderText="Seleccione fecha"
                         />
                     </div>
                     <div>
@@ -352,9 +354,9 @@ function AddOrderPage() {
                         <DatePicker
                             selected={deliveryDate}
                             onChange={handleDeliveryDateChange}
-                            dateFormat="dd-MM-yyyy"
+                            dateFormat="yyyy-MM-dd"
                             className="mt-1 w-full border border-gray-300 rounded-md p-2"
-                            placeholderText="05-05-2024"
+                            placeholderText="Seleccione fecha"
                         />
                     </div>
                 </div>
@@ -446,6 +448,19 @@ function AddOrderPage() {
                             value={`$ ${total.toLocaleString()}`}
                             readOnly
                             className="mt-1 w-full border border-gray-300 rounded-md p-2 bg-gray-100"
+                        />
+                    </div>
+                </div>
+
+                {/* Abono inicial */}
+                <div className="grid grid-cols-1 gap-4 mb-4">
+                    <div>
+                        <label className="block text-gray-700">Abono inicial</label>
+                        <input
+                            type="number"
+                            value={initialPayment}
+                            onChange={(e) => setInitialPayment(e.target.value)}
+                            className="mt-1 w-full border border-gray-300 rounded-md p-2"
                         />
                     </div>
                 </div>

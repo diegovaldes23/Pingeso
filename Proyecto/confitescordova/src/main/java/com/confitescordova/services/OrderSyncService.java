@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -264,18 +265,20 @@ public class OrderSyncService implements CommandLineRunner {
     }
 
     public LocalDate convertToLocalDate(String createdAtString) {
-        // Paso 1: Parsear la fecha con el formato original
-        DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-        ZonedDateTime createdAt = ZonedDateTime.parse(createdAtString, originalFormatter);
+        if (createdAtString == null || createdAtString.isEmpty()) {
+            throw new IllegalArgumentException("La fecha proporcionada está vacía o es nula");
+        }
 
-        // Paso 2: Convertir la fecha a formato "dd-MM-yyyy'T'HH:mm:ssZ" (esto es solo para mostrar el formato)
-        DateTimeFormatter newFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
-        String formattedDate = createdAt.format(newFormatter);
+        try {
+            // Paso 1: Parsear la fecha original con el formato ISO-8601
+            DateTimeFormatter originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
+            ZonedDateTime zonedDateTime = ZonedDateTime.parse(createdAtString, originalFormatter);
 
-        // Paso 3: Convertir la fecha a LocalDate (sin la hora)
-        LocalDate localDate = createdAt.toLocalDate();
-
-        return localDate;
+            // Paso 2: Convertir a LocalDate (solo la fecha, sin la hora)
+            return zonedDateTime.toLocalDate();
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Error al parsear la fecha: " + createdAtString, e);
+        }
     }
 
     private void deleteNullProduct(Products products) {

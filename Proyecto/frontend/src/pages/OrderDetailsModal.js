@@ -51,7 +51,7 @@ return (
                 <p className="text-center text-sm">RUT: 77.130.395-1</p>
                 <p className="text-center text-sm">N° {order.id}</p>
                 <p className="text-center text-sm">CONFITES CÓRDOVA</p>
-                <p className="text-center text-sm">FECHA EMISIÓN: {formatDate(order.order_date)}</p>
+                <p className="text-center text-sm">FECHA EMISIÓN: {order.order_date}</p>
             </div>
 
             {/* Sección de detalles del cliente */}
@@ -86,7 +86,7 @@ return (
                 </div>
                 <div className="flex ">
                     <span className="font-bold block w-40">Fecha de entrega:</span>
-                    <span>{formatDate(order.delivery_date) || 'No asignada'}</span>
+                    <span>{order.delivery_date || 'No asignada'}</span>
                 </div>
             </div>
 
