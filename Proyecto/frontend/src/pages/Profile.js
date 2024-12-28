@@ -105,7 +105,7 @@ const Profile = () => {
   const getRoleColor = (role) => {
     switch (role) {
       case "ADMIN":
-        return "bg-[#FF6384]";
+        return "bg-[#36A2EB]";
       case "ANALYST":
         return "bg-[#FF9D3C]";
       case "MODERATOR":
@@ -118,7 +118,7 @@ const Profile = () => {
   const getRoleTextColor = (role) => {
     switch (role) {
       case "ADMIN":
-        return "text-[#FF6384]";
+        return "text-[#36A2EB]";
       case "ANALYST":
         return "text-[#FF9D3C]";
       case "MODERATOR":
@@ -219,7 +219,7 @@ const Profile = () => {
     const renderModal = () => (
         <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
             <div className="bg-white p-6 rounded-lg w-96">
-                <h2 className="text-2xl text-[#FF6384] font-bold mb-4">Registrar Usuario</h2>
+                <h2 className="text-2xl text-[#36A2EB] font-bold mb-4">Registrar usuario</h2>
                 <div className="mb-4">
                     <label className="block text-sm font-semibold mb-1">Username - Nombre de usuario</label>
                     <input
@@ -312,7 +312,7 @@ const Profile = () => {
                 return (
                     <div className="p-6 min-h-[48vh] h-auto">
                         <div>
-                            <h2 className="text-2xl font-bold mb-6">Usuarios del Sistema:</h2>
+                            <h2 className="text-2xl font-bold mb-6">Usuarios del sistema:</h2>
 
                             <div className="flex flex-row items-center  space-x-2">
                                 <h2 className="text-xl font-bold mb-6">Cantidad de usuarios administrativos en el sistema:</h2>
@@ -328,7 +328,6 @@ const Profile = () => {
                                         <th className="py-2 px-4 text-center">Nombres</th>
                                         <th className="py-2 px-4 text-center">Correo</th>
                                         <th className="py-2 px-4 text-center">Rol</th>
-                                        <th className="py-2 px-4 text-center">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -339,7 +338,6 @@ const Profile = () => {
                                             <td className="py-2 px-4 text-center">{user.name} {user.firstname}</td>
                                             <td className="py-2 px-4 text-center">{user.email ? user.email : "No ingresado"}</td>
                                             <td className="py-2 px-4 text-center">{translateRole(user.role)}</td>
-                                            <td className="py-2 px-4 text-center">borrar</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -350,10 +348,10 @@ const Profile = () => {
                             )}
 
                             <button
-                                className="mt-4 px-4 py-2 bg-[#FFABBD] hover:text-white rounded hover:bg-[#FF6384]"
+                                className="mt-4 px-4 py-2 bg-[#36A2EB] hover:text-white rounded hover:bg-[#36A2EB]"
                                 onClick={handleOpenModal}
                             >
-                                Insertar Usuario
+                                Insertar usuario
                             </button>
 
             {showModal && renderModal()}
@@ -364,7 +362,7 @@ const Profile = () => {
                 case 'my_orders':
                     return (
                         <div className="p-6 min-h-[48vh] h-auto">
-                        <h2 className="text-2xl font-bold mb-6">Mis Pedidos:</h2>
+                        <h2 className="text-2xl font-bold mb-6">Mis pedidos:</h2>
 
                             <div className=" flex flex-row items-center  space-x-2">
                                 <h2 className="text-xl font-bold mb-6">Pedidos agregados por mi (en este sistema):</h2>
@@ -391,16 +389,13 @@ const Profile = () => {
                                         <td className="py-2 px-4 text-center">{order.phone}</td>
                                         <td className="py-2 px-4 text-center">{order.commune}</td>
                                         <td className="py-2 px-4 text-center">{order.address}</td>
-                                        <td className="py-2 px-4 text-center">{formatDate(order.order_date)}</td>
+                                        <td className="py-2 px-4 text-center">{order.order_date}</td>
                                         <td className="py-2 px-4 text-center">
                                             {order.orderProducts.map((product) => product.name).join(", ") || "Ninguno"}
                                         </td>
                                         </tr>
                                     ))}
                                 </tbody>
-
-                                
-
                             </table>
                             ):(
                                 <div>
@@ -493,7 +488,7 @@ const Profile = () => {
         <div className={`${getRoleColor(userData.role)} w-20 h-20 rounded-full flex items-center justify-center`}>
           <span className="text-white text-xs font-bold">{userData.role}</span>
         </div>
-        <h1 className={`text-4xl font-extrabold ${getRoleTextColor(userData.role)}`}>Perfil Administrativo:</h1>
+        <h1 className={`text-4xl font-extrabold ${getRoleTextColor(userData.role)}`}>Perfil administrativo:</h1>
         <h1 className="text-4xl font-bold text-gray-800">
           #{userData.id} {userData.username}
         </h1>
@@ -502,7 +497,7 @@ const Profile = () => {
       <h2 className="text-2xl font-bold mb-6">Detalles del perfil:</h2>
       <div className="grid grid-cols-4 gap-4 mb-12">
         <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
-          <p className="text-sm text-gray-600">Nombre de Usuario</p>
+          <p className="text-sm text-gray-600">Nombre de usuario</p>
           <p className="text-2xl font-bold">{userData.username}</p>
         </div>
         <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
@@ -526,7 +521,7 @@ const Profile = () => {
                     className={`px-4 py-2 rounded ${activeTab === 'users_system' ? ` ${getRoleColor(userData.role)} text-white` : `${getRoleColor(userData.role)} bg-opacity-20`}`}
                     onClick={() => setActiveTab('users_system')}
                 >
-                    Usuarios del Sistema
+                    Usuarios del sistema
                 </button>
             )}
             {["ADMIN", "MODERATOR"].includes(userData.role) && (
@@ -534,7 +529,7 @@ const Profile = () => {
                     className={`px-4 py-2 rounded ${activeTab === "my_orders" ? `${getRoleColor(userData.role)} text-white` : `${getRoleColor(userData.role)} bg-opacity-20`}`}
                     onClick={() => setActiveTab("my_orders")}
                 >
-                    Pedidos agregados por mi
+                    Pedidos agregados por mí
                 </button>
             )}
             <button

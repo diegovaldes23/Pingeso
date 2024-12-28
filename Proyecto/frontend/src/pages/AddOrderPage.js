@@ -6,6 +6,7 @@ import {format} from 'date-fns';
 
 import axios from 'axios';
 import { unicode } from '@fortawesome/free-brands-svg-icons/fa42Group';
+import { get } from 'lodash';
 
 function AddOrderPage() {
     // Estados para almacenar la información del formulario
@@ -214,6 +215,7 @@ function AddOrderPage() {
                 quantity: parseInt(product.quantity, 10),
                 unit_cost: product.cost,
             })),
+            username_creator: localStorage.getItem('username'),
         };
     
         console.log('Datos enviados al backend:', orderData);
