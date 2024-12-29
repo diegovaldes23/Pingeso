@@ -7,7 +7,7 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const API_URL = "http://192.81.208.123:8080";
+  const API_URL = "http://165.22.189.49:8080";
 
   const handleLogin = async (e) => {
     e.preventDefault();

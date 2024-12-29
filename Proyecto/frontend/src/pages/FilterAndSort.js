@@ -94,7 +94,7 @@ const FilterAndSort = ( ) => {
             if (!token) throw new Error("No autenticado");
             const params = new URLSearchParams(formattedFilters);
             // Realizar la solicitud GET para obtener las órdenes
-            const response = await axios.get(`http://192.81.208.123:8080/admin/orders/filtering?${params.toString()}`, {
+            const response = await axios.get(`http://165.22.189.49:8080/admin/orders/filtering?${params.toString()}`, {
                 headers: { 
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`, // Mueve esta línea dentro de `headers`
@@ -148,7 +148,7 @@ const FilterAndSort = ( ) => {
                 if (!token) throw new Error("No autenticado");
                 
                 // Realiza una solicitud al backend para obtener todas las órdenes originales
-                const response = await axios.get('http://192.81.208.123:8080/admin/orders', {
+                const response = await axios.get('http://165.22.189.49:8080/admin/orders', {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,

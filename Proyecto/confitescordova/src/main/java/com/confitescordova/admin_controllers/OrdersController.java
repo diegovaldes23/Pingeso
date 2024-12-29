@@ -18,7 +18,6 @@ import com.confitescordova.admin_services.OrdersService;
 
 
 
-@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/admin/orders")
 public class OrdersController {
