@@ -29,4 +29,10 @@ public class UserController {
         List<UserEntity> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+    @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<String> deleteUser(@PathVariable Long userId) {
+        userService.deleteUserById(userId);
+        return ResponseEntity.ok("Usuario eliminado exitosamente.");
+    }
 }

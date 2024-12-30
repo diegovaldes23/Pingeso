@@ -29,6 +29,7 @@ const Login = () => {
       const data = await response.json();
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", username);
+      localStorage.setItem("role_u", data.role); // Rol del usuario
       navigate("/orders");
     } catch (err) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
