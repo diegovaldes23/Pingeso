@@ -1,5 +1,6 @@
 package com.confitescordova.admin_services;
 
+import com.confitescordova.admin_entities.RoleEntity;
 import com.confitescordova.admin_entities.UserEntity;
 import com.confitescordova.admin_repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,19 @@ public class UserService {
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();
+    }
+
+    public void deleteUserById(Long userId) {
+
+        UserEntity userToDelete = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("El usuario con ID " + userId + " no existe."));
+
+        if (userToDelete.getRole() == RoleEntity.ADMIN) {
+            throw new IllegalArgumentException("No puedes eliminar a otro usuario con el rol ADMIN.");
+        }
+
+        System.out.println("eliminando el usuario " + userId);
+        userRepository.deleteById(userId);
     }
 
 }

@@ -22,6 +22,39 @@ const Profile = () => {
     const [users, setUsers] = useState([]); // Estado para usuarios del sistema
     const [errorUsersMessage, setErrorUsersMessage] = useState(""); // Mensaje de error específico para usuarios
 
+    const handleDeleteUser = async (userId) => {
+      const authToken = localStorage.getItem("authToken");
+    
+      if (!authToken) {
+        alert("Error de autenticación. Por favor, inicia sesión nuevamente.");
+        return;
+      }
+    
+      const confirmDelete = window.confirm(
+        `¿Estás seguro de que deseas eliminar al usuario con ID ${userId}?`
+      );
+    
+      if (!confirmDelete) return;
+    
+      try {
+        const response = await fetch(`http://165.22.189.49:8080/admin/user/${userId}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+    
+        if (!response.ok) {
+          throw new Error("Error al eliminar el usuario.");
+        }
+    
+        alert("Usuario eliminado exitosamente.");
+        setUsers((prevUsers) => prevUsers.filter((user) => user.id !== userId));
+      } catch (error) {
+        alert("No se pudo eliminar el usuario. Por favor, inténtalo nuevamente.");
+      }
+    };
+
   useEffect(() => {
     const username = localStorage.getItem("username");
     const authToken = localStorage.getItem("authToken");
@@ -100,6 +133,7 @@ const Profile = () => {
     fetchUserData();
     fetchUsers();
     fetchUserOrders();
+    
   }, []);
 
   const getRoleColor = (role) => {
@@ -328,18 +362,37 @@ const Profile = () => {
                                         <th className="py-2 px-4 text-center">Nombres</th>
                                         <th className="py-2 px-4 text-center">Correo</th>
                                         <th className="py-2 px-4 text-center">Rol</th>
+                                        <th className="py-2 px-4 text-center">Acción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {users.map((user) => (
-                                        <tr key={user.id} className="border-b">
+                                    {users.map((user) => {
+                                        const isCurrentUser = user.username === localStorage.getItem("username");; // Verificar si el usuario es el mismo que el del localStorage
+                                        return (
+                                            <tr 
+                                                key={user.id} 
+                                                className={`border-b ${isCurrentUser ? 'font-bold' : ''}`} // Si es el mismo usuario, poner la fila en negrita
+                                            >
                                             <td className="py-2 px-4 text-center">{user.id}</td>
                                             <td className="py-2 px-4 text-center">{user.username}</td>
                                             <td className="py-2 px-4 text-center">{user.name} {user.firstname}</td>
                                             <td className="py-2 px-4 text-center">{user.email ? user.email : "No ingresado"}</td>
                                             <td className="py-2 px-4 text-center">{translateRole(user.role)}</td>
+                                            <td className="py-2 px-4 text-center">
+                                            {isCurrentUser ? (
+                                              "Yo (mi usuario)"
+                                            ) : user.role !== "ADMIN" ? (
+                                              <button
+                                                onClick={() => handleDeleteUser(user.id)}
+                                                className= {` px-2 py-1 ${getRoleColor(userData.role)}  text-white rounded hover:bg-red-600`}
+                                              >
+                                                Eliminar
+                                              </button>
+                                            ) : null}
+                                          </td>
                                         </tr>
-                                    ))}
+                                       );
+                                  })}
                                 </tbody>
 
                             </table>
