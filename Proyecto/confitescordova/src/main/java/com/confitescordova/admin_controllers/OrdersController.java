@@ -192,10 +192,11 @@ public class OrdersController {
             @RequestParam(required = false) String productName,
             @RequestParam(required = false) Integer year,
             @RequestParam(required = false) Integer month,
-            @RequestParam(required = false) String searchTerm
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String deliveryDate
     ){
         // Llama al servicio para obtener las órdenes filtradas
-        List<Orders> orders = orderService.getOrdersByFiltering(region, commune, startDate, endDate, customerType, purchaseSource, status, productName, year, month, searchTerm);
+        List<Orders> orders = orderService.getOrdersByFiltering(region, commune, startDate, endDate, customerType, purchaseSource, status, productName, year, month, searchTerm, deliveryDate);
         return ResponseEntity.ok(orders);
     }
 }

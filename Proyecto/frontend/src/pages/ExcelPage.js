@@ -96,7 +96,7 @@ const ExcelPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
       <div className="max-w-4xl w-full p-10 bg-white shadow-lg rounded-lg h-[50vh] flex flex-col items-center justify-center">
         {/* Título de página */}
-        <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
+        <h1 className="text-3xl font-bold text-center mb-6 text-indigo-800">
           Gestión de órdenes
         </h1>
 
@@ -104,7 +104,7 @@ const ExcelPage = () => {
         <div className="flex justify-center mb-4">
           <button
             onClick={exportToExcel}
-            className="bg-purple-600 text-white py-2 px-6 rounded-full hover:bg-purple-700 transition duration-300 mr-4"
+            className="bg-indigo-700 text-white py-2 px-6 rounded-full hover:bg-indigo-600 transition duration-300 mr-4"
           >
             Exportar
           </button>

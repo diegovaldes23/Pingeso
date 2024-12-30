@@ -282,7 +282,7 @@ useEffect(() => {
     return (
         <>
           <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-purple-800">
+            <thead className="bg-indigo-800">
               <tr>
                 <th className="py-1 px-2 border text-white">ID</th>
                 <th className="py-1 px-2 border text-white">Cliente</th>

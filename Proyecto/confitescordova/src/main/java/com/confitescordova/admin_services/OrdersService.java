@@ -7,7 +7,9 @@ import java.util.*;
 
 import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_entities.OrderProduct;
+import com.confitescordova.admin_entities.Products;
 import com.confitescordova.entities.Order;
+import com.confitescordova.services.OrderSyncService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
@@ -29,6 +31,11 @@ public class OrdersService {
     private OrdersRepository orderRepository;
     @Autowired
     private OrderProductService orderProductService;
+    @Autowired
+    private ProductsService productsService;
+    @Autowired
+    private CustomersService customersService;
+
 
     public List<Orders> getAllOrders() {
         List<Orders> orders = (List<Orders>) orderRepository.findAll();
@@ -158,8 +165,25 @@ public class OrdersService {
     public Orders saveLocal(Orders order) {
         order.setCreation_date(LocalDate.now());
         order.setOrder_date(transformDate(order.getOrder_date().toString()));
-        
-        return orderRepository.save(order);
+
+        if(customersService.existsCustomerByPhoneOrName(order.getPhone(), order.getName())){
+            order.setCustomer_type("Antiguo");
+        } else {
+            order.setCustomer_type("Nuevo");
+        }
+
+        Orders savedOrder = orderRepository.save(order);
+
+        List<OrderProduct> productList = order.getOrderProducts();
+        for (OrderProduct product : productList) {
+            product.setOrder(savedOrder);
+
+            saveProductIfNotExists(product.getName(), product.getUnit_cost());
+
+            orderProductService.save(product);
+        }
+
+        return savedOrder;
     }
 
     public LocalDate transformDate(String dateString) {
@@ -172,6 +196,25 @@ public class OrdersService {
         System.out.println("LocalDate: " + date);
 
         return date;
+    }
+
+    public void saveProductIfNotExists(String name, Double cost){
+        // Validar que el nombre no esté vacío ni sea "Nombre desconocido"
+        if (name == null || name.trim().isEmpty() || "Nombre desconocido".equals(name)) {
+            return; // No guardes el producto si el nombre es inválido
+        }
+
+        Optional<Products> existingProduct = productsService.getProductByName(name);
+        if(existingProduct.isPresent()){
+
+        } else {
+            // Si no existe, lo insertas
+            Products newProducts = new Products();
+            System.out.println(name);
+            newProducts.setName(name);
+            newProducts.setCost(cost);
+            productsService.saveProduct(newProducts);
+        }
     }
 
     // Método para obtener las órdenes por el username_creator
@@ -190,13 +233,15 @@ public class OrdersService {
             String productName,
             Integer year,
             Integer month,
-            String searchTerm
+            String searchTerm,
+            String deliveryDateString
     ){
         // Usa Specifications para construir dinámicamente la consulta
         Specification<Orders> spec = Specification.where(null);
 
         LocalDate startDate = null;
         LocalDate endDate = null;
+        LocalDate deliveryDate = null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         try {
@@ -206,6 +251,10 @@ public class OrdersService {
             if (endDateString != null && !endDateString.isEmpty()) {
                 endDate = LocalDate.parse(endDateString, formatter);
             }
+            if (deliveryDateString != null && !deliveryDateString.isEmpty()) {
+                deliveryDate = LocalDate.parse(deliveryDateString, formatter);
+            }
+
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Error al parsear las fechas: " + e.getMessage());
         }
@@ -213,6 +262,7 @@ public class OrdersService {
         // Variables finales efectivas
         final LocalDate finalStartDate = startDate;
         final LocalDate finalEndDate = endDate;
+        final LocalDate finalDeliveryDate = deliveryDate;
 
         // Agregar los filtros de fecha
         if (startDate != null && endDate != null) {
@@ -227,6 +277,10 @@ public class OrdersService {
             spec = spec.and((root, query, criteriaBuilder) ->
                     criteriaBuilder.lessThanOrEqualTo(root.get("order_date"), finalEndDate)
             );
+        }
+
+        if (deliveryDate != null){
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("delivery_date"), finalDeliveryDate));
         }
 
         if (region != null && !region.isEmpty()) {
@@ -268,6 +322,7 @@ public class OrdersService {
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("address")), search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("region")), search),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("commune")), search),
                         criteriaBuilder.like(criteriaBuilder.lower(root.join("orderProducts").get("name")), search)
                 );
             });

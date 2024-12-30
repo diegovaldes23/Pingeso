@@ -28,6 +28,7 @@ function AddOrderPage() {
     const [total, setTotal] = useState(0);
     const [availableProducts, setAvailableProducts] = useState([]);
     const [deliveryDate, setDeliveryDate] = useState(''); // Nueva variable para fecha de entrega
+    const [customProducts, setCustomProducts] = useState([]); // Nueva variable para productos personalizados
 
     // Función para convertir la fecha a formato ISO (yyyy-MM-dd)
     function formatDateToDDMMYYYY(dateString) {
@@ -60,12 +61,21 @@ function AddOrderPage() {
     const handleDeliveryDateChange = (date) => {
         setDeliveryDate(date ? new Date(date) : null); // Convierte a Date o establece en null
     };
-
-    
+ 
     const removeProductField = (index) => {
         const updatedProducts = products.filter((_, i) => i !== index);
         setProducts(updatedProducts); // Actualiza el estado con los productos restantes
     };
+
+    const capitalizeEachWord = (name) => {
+        if (!name) return '';
+        return name
+            .toLowerCase() // Convierte todo a minúsculas
+            .split(' ') // Divide el string por espacios
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitaliza la primera letra de cada palabra
+            .join(' '); // Une las palabras nuevamente
+    };
+    
     
 
     // Llamada al backend para obtener productos disponibles
@@ -135,12 +145,20 @@ function AddOrderPage() {
             return acc;
 
         }, 0);
+
+        const newSubtotalCustom = customProducts.reduce((acc, customProduct) => {
+            return acc + parseFloat(customProduct.unit_cost);
+        }, 0);
         console.log("Products:", products);
-        setSubtotal(newSubtotal);
-    }, [products, availableProducts]);
+        setSubtotal(newSubtotalCustom + newSubtotal);
+    }, [products, availableProducts, customProducts]);
 
     const addProductField = () => {
         setProducts([...products, { name: '', quantity: ''}]);
+    };
+
+    const addCustomProductField = () => {
+        setCustomProducts([...customProducts, { name: '', quantity: '', unit_cost: ''}])
     };
 
     const createOrder = async (orderData) => {
@@ -160,12 +178,46 @@ function AddOrderPage() {
             });
             console.log('Pedido creado:', response.data);
             alert('Pedido creado con éxito');
+
+            // Limpiar el formulario después de crear el pedido
+            setCustomerName('');
+            setPhone('');
+            setRegion('');
+            setCommune('');
+            setDate('');
+            setAddress('');
+            setEmail('');
+            setDescription('');
+            setProducts([{ name: '', quantity: ''}]);
+            setDeliveryCost(0);
+            setStatus('Pendiente');
+            setCustomerType('');
+            setPurchaseSource('');
+            setInitialPayment(0);
+            setSubtotal(0);
+            setTotal(0);
+            setCustomProducts([]);
+
         } catch (error) {
             console.error('Error al crear el pedido:', error.response?.data || error.message);
             alert(`Hubo un error al crear el pedido: ${error.response?.data?.message || error.message}`);
         }
     };
     
+    // Combinar productos normales y personalizados
+    const allProducts = [
+        ...products.map(product => ({
+            name: product.name,
+            quantity: parseInt(product.quantity, 10),
+            unit_cost: product.cost,
+        })),
+        ...customProducts.map((customProduct) => ({
+            name: customProduct.name,
+            quantity: 1,
+            unit_cost: parseFloat(customProduct.unit_cost),
+        })),
+    ];
+
     const handleInputChange = (event, setter) => {
         const rawValue = event.target.value;
     
@@ -194,7 +246,7 @@ function AddOrderPage() {
 
         // Preparar datos para enviar
         const orderData = {
-            name: customerName,
+            name: capitalizeEachWord(customerName),
             phone: `+569${phone}`,
             region,
             commune,
@@ -210,11 +262,7 @@ function AddOrderPage() {
             description,
             address, // Agregar un campo para la dirección
             email,
-            orderProducts: products.map(product => ({
-                name: product.name,
-                quantity: parseInt(product.quantity, 10),
-                unit_cost: product.cost,
-            })),
+            orderProducts: allProducts,
             username_creator: localStorage.getItem('username'),
         };
     
@@ -434,6 +482,59 @@ function AddOrderPage() {
                     >
                         + Agregar producto
                     </button>
+
+                    {/* Agregar botón de producto personalizado aquí */}
+                    <button
+                        type="button"
+                        onClick={addCustomProductField}
+                        className="mt-2 text-purple-500 hover:text-purple-600"
+                    >
+                        + Agregar producto personalizado
+                    </button>
+
+                    {/* Productos personalizados */}
+                    {customProducts.map((customProduct, index) => (
+                        <div key={index} className="grid grid-cols-3 gap-4 mt-2">
+                            {/* Nombre */}
+                            <input
+                                type="text"
+                                placeholder="Nombre"
+                                value={customProduct.name}
+                                onChange={(e) => {
+                                    const updatedProducts = [...customProducts];
+                                    updatedProducts[index].name = e.target.value;
+                                    setCustomProducts(updatedProducts);
+                                }}
+                                className="w-full border border-gray-300 rounded-md p-2"
+                            />
+
+                            {/* Precio */}
+                            <input
+                                type="number"
+                                placeholder="Precio"
+                                value={customProduct.unit_cost}
+                                onChange={(e) => {
+                                    const updatedProducts = [...customProducts];
+                                    updatedProducts[index].unit_cost = e.target.value;
+                                    setCustomProducts(updatedProducts);
+                                }}
+                                className="w-full border border-gray-300 rounded-md p-2"
+                            />
+
+                            {/* Botón para eliminar */}
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const updatedProducts = customProducts.filter((_, i) => i !== index);
+                                    setCustomProducts(updatedProducts);
+                                }}
+                                className="px-2 py-1 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    ))}
+
                 </div>
 
                 {/* Subtotal, Costo de envío y Total */}

@@ -29,6 +29,10 @@ public class CustomersService {
         return customerRepository.existsById(customerId);
     }
 
+    public boolean existsCustomerByPhoneOrName(String phone, String name) {
+        return customerRepository.existsCustomerByPhoneOrName(phone, name);
+    }
+
     public Optional<Customer> getCustomerById(Long customerId) {
         return customerRepository.findById(customerId);
     }

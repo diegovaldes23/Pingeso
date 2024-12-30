@@ -98,13 +98,13 @@ public class OrderSyncService implements CommandLineRunner {
         String formattedPhone = formatPhoneNumber(tnOrder.getCustomer().getPhone());
         localOrder.setPhone(formattedPhone);
 
-        saveCustomerIfNotExists(tnOrder.getCustomer().getId(), tnOrder.getCustomer().getName(), formattedPhone);
-
-        if(customersService.existsCustomerById(tnOrder.getCustomer().getId())){
+        if(customersService.existsCustomerByPhoneOrName(formattedPhone, tnOrder.getCustomer().getName())){
             localOrder.setCustomer_type("Antiguo");
         } else {
             localOrder.setCustomer_type("Nuevo");
         }
+
+        saveCustomerIfNotExists(tnOrder.getCustomer().getId(), tnOrder.getCustomer().getName(), formattedPhone);
 
         localOrder.setRegion(tnOrder.getBilling_province());
         localOrder.setCommune(tnOrder.getCustomer().getBilling_city());

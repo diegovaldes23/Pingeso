@@ -37,6 +37,7 @@ const FilterAndSort = ( ) => {
         searchTerm: '',
         sortBy: '',
         sortOrder: '',
+        deliveryDate: '',
     }) 
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -89,6 +90,7 @@ const FilterAndSort = ( ) => {
                 ...localFilters,
                 startDate: formatDate(localFilters.startDate),
                 endDate: formatDate(localFilters.endDate),
+                deliveryDate: formatDate(localFilters.deliveryDate),
             };
 
             if (!token) throw new Error("No autenticado");
@@ -142,6 +144,7 @@ const FilterAndSort = ( ) => {
             searchTerm: '',
             sortBy: '',
             sortOrder: '',
+            deliveryDate: '',
             });
         try {
                 const token = localStorage.getItem("authToken");
@@ -327,6 +330,18 @@ const FilterAndSort = ( ) => {
                                     <option value="11">Noviembre</option>
                                     <option value="12">Diciembre</option>
                                 </select>
+                            </div>
+
+                            {/* Filtro de fecha de entrega */}
+                            <div>
+                                <label className="block text-gray-700">Fecha de entrega</label>
+                                <DatePicker
+                                    selected={localFilters.deliveryDate}
+                                    onChange={(date) => handleLocalFilterChange('deliveryDate', date)}
+                                    dateFormat="yyyy-MM-dd"
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    placeholderText="Selecciona una fecha"
+                                />
                             </div>
 
                             {/* Filtro de Fecha de Inicio */}
