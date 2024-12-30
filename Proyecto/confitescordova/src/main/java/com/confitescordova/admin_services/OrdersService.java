@@ -334,4 +334,8 @@ public class OrdersService {
 
         return orders;
     }
+
+    public List<CustomerTypeCountDTO> getCustomerTypeCount() {
+        return orderRepository.countCustomersByType();
+    }
 }

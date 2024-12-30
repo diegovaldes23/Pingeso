@@ -8,7 +8,7 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
 
-  const URL = 'http://165.22.189.49:8080';
+  const backend = 'http://165.22.189.49:8080';
 
   const formatToDDMMYYYY = (dateStr) => {
     if (!dateStr) return ""; // Manejo de casos nulos
@@ -30,7 +30,7 @@ export const GlobalProvider = ({ children }) => {
         const headers = { Authorization: `Bearer ${token}` }; 
 
         
-        const response = await fetch(URL + '/admin/orders', { headers });
+        const response = await fetch(backend + '/admin/orders', { headers });
 
         if (!response.ok) {
           throw new Error("Error en la solicitud: " + response.statusText);
@@ -270,7 +270,8 @@ export const GlobalProvider = ({ children }) => {
         setShowSortDropdown,
         applyFilters,
         updateOrderDeliveryDate,
-        resetFilters
+        resetFilters,
+        backend
       }}
     >
       {children}

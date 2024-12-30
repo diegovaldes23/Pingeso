@@ -6,7 +6,7 @@ import axios from "axios"; // Para enviar el archivo al backend
 import { useGlobalContext } from "../utils/GlobalModelContext";
 
 const ExcelPage = () => {
-  const { orders } = useGlobalContext();
+  const { orders, backend } = useGlobalContext();
   const [selectedFile, setSelectedFile] = useState(null); // Estado para manejar el archivo seleccionado
 
   // Exportar órdenes a Excel
@@ -62,7 +62,7 @@ const ExcelPage = () => {
     try {
       const token = localStorage.getItem("authToken"); // Token de autenticación
       const response = await axios.post(
-        "http://165.22.189.49:8080/admin/excel/upload", // Cambia la URL según tu backend
+        `${backend}/admin/excel/upload`, // Cambia la URL según tu backend
         formData,
         {
           headers: {

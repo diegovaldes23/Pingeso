@@ -7,6 +7,7 @@ import {format} from 'date-fns';
 import axios from 'axios';
 import { unicode } from '@fortawesome/free-brands-svg-icons/fa42Group';
 import { get } from 'lodash';
+import { useGlobalContext } from '../utils/GlobalModelContext';
 
 function AddOrderPage() {
     // Estados para almacenar la información del formulario
@@ -29,6 +30,7 @@ function AddOrderPage() {
     const [availableProducts, setAvailableProducts] = useState([]);
     const [deliveryDate, setDeliveryDate] = useState(''); // Nueva variable para fecha de entrega
     const [customProducts, setCustomProducts] = useState([]); // Nueva variable para productos personalizados
+    const { backend } = useGlobalContext();
 
     // Función para convertir la fecha a formato ISO (yyyy-MM-dd)
     function formatDateToDDMMYYYY(dateString) {
@@ -87,7 +89,7 @@ function AddOrderPage() {
                 if (!token) throw new Error("No autenticado");
                 // const headers = { Authorization: `Bearer ${token}` };
 
-                const response = await axios.get("http://165.22.189.49:8080/admin/products", {
+                const response = await axios.get(`${backend}/admin/products`, {
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, },
                     
                 });
@@ -170,7 +172,7 @@ function AddOrderPage() {
                 throw new Error("No autenticado: Token no encontrado");
             }
     
-            const response = await axios.post('http://165.22.189.49:8080/admin/orders/post', orderData, {
+            const response = await axios.post(`${backend}/admin/orders/post`, orderData, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,

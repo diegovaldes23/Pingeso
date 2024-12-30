@@ -2,6 +2,7 @@ package com.confitescordova.admin_repositories;
 
 import com.confitescordova.admin_entities.Customer;
 import com.confitescordova.admin_services.CommuneOrderCountDTO;
+import com.confitescordova.admin_services.CustomerTypeCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -40,4 +41,10 @@ public interface OrdersRepository extends CrudRepository<Orders, Long>, JpaSpeci
 
     @Query("SELECT o FROM Orders o WHERE o.username_creator = :usernameCreator")
     List<Orders> findByUsernameCreator(@Param("usernameCreator") String usernameCreator);
+
+    @Query("SELECT new com.confitescordova.admin_services.CustomerTypeCountDTO(o.customer_type, COUNT(DISTINCT o.phone)) " +
+            "FROM Orders o " +
+            "GROUP BY o.customer_type")
+    List<CustomerTypeCountDTO> countCustomersByType();
+
 } 

@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.confitescordova.admin_entities.*;
 import com.confitescordova.admin_services.CommuneOrderCountDTO;
+import com.confitescordova.admin_services.CustomerTypeCountDTO;
 import com.confitescordova.admin_services.SalesByChannelDTO;
 import com.confitescordova.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -198,5 +199,10 @@ public class OrdersController {
         // Llama al servicio para obtener las órdenes filtradas
         List<Orders> orders = orderService.getOrdersByFiltering(region, commune, startDate, endDate, customerType, purchaseSource, status, productName, year, month, searchTerm, deliveryDate);
         return ResponseEntity.ok(orders);
+    }
+
+    @GetMapping("/customer-types")
+    public ResponseEntity<List<CustomerTypeCountDTO>> getCustomerTypes(){
+        return ResponseEntity.ok(orderService.getCustomerTypeCount());
     }
 }

@@ -7,7 +7,7 @@ import { format, parseISO } from 'date-fns';
 
 
 const OrdersList = () => {
-  const { orders, setOrders, filteredOrders, getStatusClass, handleStatusChange, setIsModalOpen, setSelectedOrder } = useGlobalContext();
+  const { orders, setOrders, filteredOrders, getStatusClass, handleStatusChange, setIsModalOpen, setSelectedOrder, backend } = useGlobalContext();
 
   const [isEditing, setIsEditing] = useState(false);
   const [deliveryDate, setDeliveryDate] = useState('');
@@ -91,7 +91,7 @@ const OrdersList = () => {
       try {
         const token = localStorage.getItem("authToken"); 
         if (!token) throw new Error("No autenticado");
-        const response = await fetch('http://165.22.189.49:8080/admin/orders/status', {
+        const response = await fetch(`${backend}/admin/orders/status`, {
           method: 'PUT', // O PATCH dependiendo de tu API
           headers: {
             'Content-Type': 'application/json', Authorization: `Bearer ${token}`,
@@ -185,7 +185,7 @@ useEffect(() => {
             const token = localStorage.getItem("authToken"); 
             if (!token) throw new Error("No autenticado");
             // Realizar la solicitud GET para obtener los productos
-            const response = await axios.get('http://165.22.189.49:8080/admin/products', {
+            const response = await axios.get(`${backend}/admin/products`, {
                 headers: { 
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`, // Mueve esta línea dentro de `headers`
@@ -254,7 +254,7 @@ useEffect(() => {
             console.log(updatedOrder.orderProducts);
           const token = localStorage.getItem("authToken"); 
             if (!token) throw new Error("No autenticado");
-          const response = await fetch(`http://165.22.189.49:8080/admin/orders/${editOrder.id}`, {
+          const response = await fetch(`${backend}/admin/orders/${editOrder.id}`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json', Authorization: `Bearer ${token}`,

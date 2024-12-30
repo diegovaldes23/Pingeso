@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 import { Pie, Bar } from 'react-chartjs-2';
+import { useGlobalContext } from '../utils/GlobalModelContext';
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -17,11 +18,12 @@ const Statistics = () => {
     salesByCommune: {},
     salesByChannel: {},
     productRevenue: {},
+    customerTypeCount: {},
   });
 
-  
-
   const [topCustomers, setTopCustomers] = useState([]);
+
+  const { backend } = useGlobalContext();
 
   const renderContent = () => {
     switch (activeTab) {
@@ -60,6 +62,7 @@ const Statistics = () => {
                             <option value="commune">Ventas por comuna</option>
                             <option value="channel">Pedidos por canal</option>
                             <option value="products">Ingresos por producto</option>
+                            <option value="customertypes">Tipos de cliente</option>
                         </select>
                         {/* Flecha para el desplegable */}
                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
@@ -158,22 +161,23 @@ const Statistics = () => {
         if (!token) throw new Error("No autenticado");
         const headers = { Authorization: `Bearer ${token}` };
 
-        const ordersRes = await fetch("http://165.22.189.49:8080/admin/orders", { headers });
+        const ordersRes = await fetch(`${backend}/admin/orders`, { headers });
         const ordersData = await ordersRes.json();
 
-        const salesByCommuneRes = await fetch("http://165.22.189.49:8080/admin/orders/salesByCommune", { headers });
+        const salesByCommuneRes = await fetch(`${backend}/admin/orders/salesByCommune`, { headers });
         const salesByCommuneData = await salesByCommuneRes.json();
 
-        const salesByChannelRes = await fetch("http://165.22.189.49:8080/admin/orders/salesByChannel", { headers });
+        const salesByChannelRes = await fetch(`${backend}/admin/orders/salesByChannel`, { headers });
         const salesByChannelData = await salesByChannelRes.json();
 
-        const productSalesRes = await fetch("http://165.22.189.49:8080/admin/orderproduct/product-sales", { headers });;
+        const productSalesRes = await fetch(`${backend}/admin/orderproduct/product-sales`, { headers });;
         const productSalesData = await productSalesRes.json();
 
-        console.log(productSalesData);
-
-        const topCustomerRes = await fetch("http://165.22.189.49:8080/admin/orders/top-customers", { headers });
+        const topCustomerRes = await fetch(`${backend}/admin/orders/top-customers`, { headers });
         const topCustomersData = await topCustomerRes.json();
+
+        const customerTypes = await fetch(`${backend}/admin/orders/customer-types`, { headers });
+        const customerTypesData = await customerTypes.json();
 
         let totalRevenue = 0;
         let totalOrders = ordersData.length;
@@ -207,6 +211,10 @@ const Statistics = () => {
           }, {}),
           productRevenue: productSalesData.reduce((acc, item) => {
             acc[item.productName] = item.cost;
+            return acc;
+          }, {}),
+          customerTypeCount: customerTypesData.reduce((acc, item) => {
+            acc[item.customerType] = item.count;
             return acc;
           }, {}),
         });
@@ -285,12 +293,21 @@ const Statistics = () => {
         };
       case 'products':
         return {
-          labels: Object.keys(stats.productRevenue),
-          datasets: [{
-            label: 'Ingresos por producto',
-            data: Object.values(stats.productRevenue || {}).map((val) => val || 0), // Maneja undefined
-            backgroundColor: pastelColors.slice(0, Object.keys(stats.productRevenue).length)
-          }]
+            labels: Object.keys(stats.productRevenue),
+            datasets: [{
+                label: 'Ingresos por producto',
+                data: Object.values(stats.productRevenue || {}).map((val) => val || 0), // Maneja undefined
+                backgroundColor: pastelColors.slice(0, Object.keys(stats.productRevenue).length)
+            }]
+        };
+      case 'customertypes':
+        return {
+            labels: Object.keys(stats.customerTypeCount),
+            datasets: [{
+                label: 'Tipos de cliente',
+                data: Object.values(stats.customerTypeCount),
+                backgroundColor: ['#FF6B6B', '#4ECDC4'],
+            }]
         };
       default:
         return null;
@@ -299,12 +316,14 @@ const Statistics = () => {
   
 
   const getSortedData = () => {
-    const data = selectedView === 'commune' 
-      ? stats.salesByCommune 
-      : selectedView === 'channel' 
-        ? stats.salesByChannel 
-        : stats.productRevenue;
-
+    const data = selectedView === 'commune'
+      ? stats.salesByCommune
+      : selectedView === 'channel'
+        ? stats.salesByChannel
+        : selectedView === 'customertypes'
+          ? stats.customerTypeCount
+          : stats.productRevenue;
+  
     return Object.entries(data)
       .sort(([, a], [, b]) => {
         return sortOrder === 'asc' ? a - b : b - a;

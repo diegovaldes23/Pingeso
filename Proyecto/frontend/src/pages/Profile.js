@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../utils/GlobalModelContext";
 
 const Profile = () => {
     const [userData, setUserData] = useState(null); // Inicialmente null
@@ -21,6 +22,7 @@ const Profile = () => {
     const [errorOrdersMessage, setErrorOrdersMessage] = useState(""); // Mensaje de error específico para órdenes
     const [users, setUsers] = useState([]); // Estado para usuarios del sistema
     const [errorUsersMessage, setErrorUsersMessage] = useState(""); // Mensaje de error específico para usuarios
+    const { backend } = useGlobalContext();
 
     const handleDeleteUser = async (userId) => {
       const authToken = localStorage.getItem("authToken");
@@ -37,7 +39,7 @@ const Profile = () => {
       if (!confirmDelete) return;
     
       try {
-        const response = await fetch(`http://165.22.189.49:8080/admin/user/${userId}`, {
+        const response = await fetch(`${backend}/admin/user/${userId}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -66,7 +68,7 @@ const Profile = () => {
 
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://165.22.189.49:8080/admin/user/${username}`, {
+        const response = await fetch(`${backend}/admin/user/${username}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -94,7 +96,7 @@ const Profile = () => {
 
     const fetchUsers = async () => {
         try {
-          const response = await fetch("http://165.22.189.49:8080/admin/user", {
+          const response = await fetch(`${backend}/admin/user`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -113,7 +115,7 @@ const Profile = () => {
 
     const fetchUserOrders = async () => {
         try {
-          const response = await fetch(`http://165.22.189.49:8080/admin/orders/byCreator/${username}`, {
+          const response = await fetch(`${backend}/admin/orders/byCreator/${username}`, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -222,7 +224,7 @@ const Profile = () => {
             role: form_role,
         };
         try {
-            const response = await fetch("http://165.22.189.49:8080/auth/register", {
+            const response = await fetch(`${backend}/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

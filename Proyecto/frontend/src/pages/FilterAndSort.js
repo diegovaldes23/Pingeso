@@ -21,7 +21,7 @@ import {format} from 'date-fns';
  */
 const FilterAndSort = ( ) => {
     // Extracción de métodos y estado de filtros del contexto global
-    const { orders, setFilteredOrders, filters, setFilters, applyFilters } = useGlobalContext();
+    const { orders, setFilteredOrders, filters, setFilters, applyFilters, backend } = useGlobalContext();
 
     const [localFilters, setLocalFilters] = useState({
         region: '',
@@ -96,7 +96,7 @@ const FilterAndSort = ( ) => {
             if (!token) throw new Error("No autenticado");
             const params = new URLSearchParams(formattedFilters);
             // Realizar la solicitud GET para obtener las órdenes
-            const response = await axios.get(`http://165.22.189.49:8080/admin/orders/filtering?${params.toString()}`, {
+            const response = await axios.get(`${backend}/admin/orders/filtering?${params.toString()}`, {
                 headers: { 
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`, // Mueve esta línea dentro de `headers`
@@ -151,7 +151,7 @@ const FilterAndSort = ( ) => {
                 if (!token) throw new Error("No autenticado");
                 
                 // Realiza una solicitud al backend para obtener todas las órdenes originales
-                const response = await axios.get('http://165.22.189.49:8080/admin/orders', {
+                const response = await axios.get(`${backend}/admin/orders`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import cordovaFoto from "../icons/cordovafoto.png"; // Imagen para la columna izquierda
 import logoCordova from "../icons/logocordova.png"; // Logo para la esquina superior izquierda
+import { useGlobalContext } from "../utils/GlobalModelContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -9,7 +10,8 @@ const Login = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const API_URL = "http://165.22.189.49:8080";
+  const { backend } = useGlobalContext();
+  const API_URL = backend;
 
   const handleLogin = async (e) => {
     e.preventDefault();
