@@ -8,6 +8,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const { backend } = useGlobalContext();
@@ -15,6 +16,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
@@ -32,13 +34,24 @@ const Login = () => {
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("username", username);
       localStorage.setItem("role_u", data.role); // Rol del usuario
+
+      setTimeout(() => {
+        navigate("/orders");
+      }, 4000);
+
       navigate("/orders");
     } catch (err) {
       setError("Error al iniciar sesión. Verifica tus credenciales.");
+      setIsLoading(false);
     }
   };
 
-  return (
+  return isLoading ? (
+    <div className="flex items-center justify-center h-screen bg-white">
+    {/* Spinner animado */}
+    <div className="w-16 h-16 border-4 border-indigo-800 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+  ) : (
     <div className="flex h-screen overflow-hidden">
       {/* Columna izquierda */}
       <div className="w-1/2">

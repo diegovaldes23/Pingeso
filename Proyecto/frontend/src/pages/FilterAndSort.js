@@ -333,7 +333,8 @@ const FilterAndSort = ( ) => {
                             </div>
 
                             {/* Filtro de fecha de entrega */}
-                            <div>
+                            <div className="col-span-2 grid grid-cols-2 gap-4">
+                                <div>
                                 <label className="block text-gray-700">Fecha de entrega</label>
                                 <DatePicker
                                     selected={localFilters.deliveryDate}
@@ -342,32 +343,35 @@ const FilterAndSort = ( ) => {
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     placeholderText="Selecciona una fecha"
                                 />
+                                </div>
                             </div>
 
-                            {/* Filtro de Fecha de Inicio */}
-                            <div>
-                                <label className="block text-gray-700">Fecha de Inicio</label>
-                                <DatePicker
-                                    selected={localFilters.startDate}
-                                    onChange={(date) => handleLocalFilterChange('startDate', date)}
-                                    dateFormat="yyyy-MM-dd"
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                    placeholderText="Selecciona una fecha"
-                                />
-                            </div>
+                            <div className="col-span-2 grid grid-cols-2 gap-4">
 
-                            {/* Filtro de Fecha de Término */}
-                            <div>
-                                <label className="block text-gray-700">Fecha de Término</label>
-                                <DatePicker
-                                    selected={localFilters.endDate}
-                                    onChange={(date) => handleLocalFilterChange('endDate', date)}
-                                    dateFormat="yyyy-MM-dd"
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                    placeholderText="Selecciona una fecha"
-                                />
-                            </div>
+                                {/* Filtro de Fecha de Inicio */}
+                                <div>
+                                    <label className="block text-gray-700">Fecha de Inicio</label>
+                                    <DatePicker
+                                        selected={localFilters.startDate}
+                                        onChange={(date) => handleLocalFilterChange('startDate', date)}
+                                        dateFormat="yyyy-MM-dd"
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        placeholderText="Selecciona una fecha"
+                                    />
+                                </div>
 
+                                {/* Filtro de Fecha de Término */}
+                                <div>
+                                    <label className="block text-gray-700">Fecha de Término</label>
+                                    <DatePicker
+                                        selected={localFilters.endDate}
+                                        onChange={(date) => handleLocalFilterChange('endDate', date)}
+                                        dateFormat="yyyy-MM-dd"
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                        placeholderText="Selecciona una fecha"
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <div className="mb-4">

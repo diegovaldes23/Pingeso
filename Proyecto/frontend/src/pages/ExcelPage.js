@@ -8,6 +8,7 @@ import { useGlobalContext } from "../utils/GlobalModelContext";
 const ExcelPage = () => {
   const { orders, backend } = useGlobalContext();
   const [selectedFile, setSelectedFile] = useState(null); // Estado para manejar el archivo seleccionado
+  const [isLoading, setIsLoading] = useState(false);
 
   // Exportar órdenes a Excel
   const exportToExcel = () => {
@@ -60,6 +61,7 @@ const ExcelPage = () => {
     formData.append("file", selectedFile);
 
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("authToken"); // Token de autenticación
       const response = await axios.post(
         `${backend}/admin/excel/upload`, // Cambia la URL según tu backend
@@ -89,18 +91,26 @@ const ExcelPage = () => {
         icon: "error",
         confirmButtonText: "Cerrar",
       });
+    } finally {
+        setIsLoading(false);
     }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      {isLoading ? (
+      <div className="flex flex-col items-center justify-center">
+        {/* Pantalla de carga */}
+        <div className="loader w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-gray-700 font-semibold">Cargando órdenes...</p>
+      </div>
+    ) : (
       <div className="max-w-4xl w-full p-10 bg-white shadow-lg rounded-lg h-[50vh] flex flex-col items-center justify-center">
-        {/* Título de página */}
+        {/* Contenido principal */}
         <h1 className="text-3xl font-bold text-center mb-6 text-indigo-800">
           Gestión de órdenes
         </h1>
 
-        {/* Botón de exportar */}
         <div className="flex justify-center mb-4">
           <button
             onClick={exportToExcel}
@@ -109,7 +119,6 @@ const ExcelPage = () => {
             Exportar
           </button>
 
-          {/* Input para cargar archivo */}
           <label
             htmlFor="import-file"
             className="bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition duration-300 cursor-pointer"
@@ -125,7 +134,6 @@ const ExcelPage = () => {
           />
         </div>
 
-        {/* Botón de importar */}
         <div className="flex justify-center">
           <button
             onClick={importOrders}
@@ -135,7 +143,6 @@ const ExcelPage = () => {
           </button>
         </div>
 
-        {/* Texto descriptivo */}
         <div className="text-center mt-6">
           <p className="text-gray-600">
             Selecciona un archivo Excel para importar órdenes o exporta las
@@ -143,6 +150,7 @@ const ExcelPage = () => {
           </p>
         </div>
       </div>
+    )}
     </div>
   );
 };

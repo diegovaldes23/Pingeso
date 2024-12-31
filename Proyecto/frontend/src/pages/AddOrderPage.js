@@ -477,22 +477,17 @@ function AddOrderPage() {
                         </div>
                     ))}
 
-                    <button
-                        type="button"
-                        onClick={addProductField}
-                        className="mt-2 text-cyan-500 hover:text-cyan-600"
-                    >
-                        + Agregar producto
-                    </button>
+                    <div>
+                        <button
+                            type="button"
+                            onClick={addProductField}
+                            className="mt-2 text-cyan-500 hover:text-cyan-600"
+                        >
+                            + Agregar producto
+                        </button>
+                    </div>
 
-                    {/* Agregar botón de producto personalizado aquí */}
-                    <button
-                        type="button"
-                        onClick={addCustomProductField}
-                        className="mt-2 text-purple-500 hover:text-purple-600"
-                    >
-                        + Agregar producto personalizado
-                    </button>
+                    
 
                     {/* Productos personalizados */}
                     {customProducts.map((customProduct, index) => (
@@ -514,7 +509,7 @@ function AddOrderPage() {
                             <input
                                 type="number"
                                 placeholder="Precio"
-                                value={customProduct.unit_cost}
+                                value={customProduct.unit_cost.toLocaleString()}
                                 onChange={(e) => {
                                     const updatedProducts = [...customProducts];
                                     updatedProducts[index].unit_cost = e.target.value;
@@ -537,6 +532,16 @@ function AddOrderPage() {
                         </div>
                     ))}
 
+                    <div>
+                        {/* Agregar botón de producto personalizado aquí */}
+                        <button
+                            type="button"
+                            onClick={addCustomProductField}
+                            className="mt-2 text-purple-500 hover:text-purple-600"
+                        >
+                            + Agregar producto personalizado
+                        </button>
+                    </div>
                 </div>
 
                 {/* Subtotal, Costo de envío y Total */}
