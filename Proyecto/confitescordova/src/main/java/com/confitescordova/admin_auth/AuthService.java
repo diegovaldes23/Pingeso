@@ -93,4 +93,24 @@ public class AuthService {
     private boolean isAdmittedUsername(String username) {
         return true;
     }
+
+
+    public void changePassword(String username, String oldPassword, String newPassword) throws Exception {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+
+        // Verificar si la contraseña actual es correcta
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new Exception("La contraseña actual es incorrecta.");
+        }
+
+        // Validar que la nueva contraseña sea diferente a la actual
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new Exception("La nueva contraseña no puede ser igual a la actual.");
+        }
+
+        // Actualizar la contraseña
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
 }

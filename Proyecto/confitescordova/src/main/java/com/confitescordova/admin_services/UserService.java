@@ -6,6 +6,7 @@ import com.confitescordova.admin_repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public UserEntity getUserByUsername(String username) {
         UserEntity user =  userRepository.findByUsername(username)
@@ -61,8 +65,30 @@ public class UserService {
             throw new IllegalArgumentException("No puedes eliminar a otro usuario con el rol ADMIN.");
         }
 
-        System.out.println("eliminando el usuario " + userId);
+        // System.out.println("eliminando el usuario " + userId);
         userRepository.deleteById(userId);
+    }
+
+    public UserEntity updateUserProfile(String username, UserEntity request) throws Exception {
+        // Buscar al usuario por su username
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new Exception("Usuario no encontrado"));
+
+        // Actualizar los campos proporcionados
+        if (request.getFirstname() != null) {
+            user.setFirstname(request.getFirstname());
+        }
+        if (request.getLastname() != null) {
+            user.setLastname(request.getLastname());
+        }
+        if (request.getEmail() != null) {
+            user.setEmail(request.getEmail());
+        }
+
+        // Guardar los cambios en la base de datos
+        UserEntity us = userRepository.save(user);
+        us.setPassword(null);
+        return us;
     }
 
 }

@@ -18,6 +18,16 @@ const Profile = () => {
     const [successMessage, setSuccessMessage] = useState("");
     const navigate = useNavigate();
 
+    const [showChangePasswordModal, setShowChangePasswordModal] = useState(false); // Estado para modal de cambio de contraseña
+    const [oldPassword, setOldPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [errorChangePasswordMessage, setErrorChangePasswordMessage] = useState("");
+    const [successChangePasswordMessage, setSuccessChangePasswordMessage] = useState("");
+
+    const [showEditProfileModal, setShowEditProfileModal] = useState(false); // Estado para modal de editar perfil
+    const [successEditProfileMessage, setSuccessEditProfileMessage] = useState("");
+    const [errorEditProfileMessage, setErrorEditProfileMessage] = useState("");
+
     const [orders, setOrders] = useState([]); // Estado dinámico para las órdenes
     const [errorOrdersMessage, setErrorOrdersMessage] = useState(""); // Mensaje de error específico para órdenes
     const [users, setUsers] = useState([]); // Estado para usuarios del sistema
@@ -57,6 +67,31 @@ const Profile = () => {
       }
     };
 
+    const getRoleColor = (role) => {
+      switch (role) {
+        case "ADMIN":
+          return "bg-[#36A2EB]";
+        case "ANALYST":
+          return "bg-[#FF9D3C]";
+        case "MODERATOR":
+          return "bg-[#8E55FF]";
+        default:
+          return "bg-gray-500";
+      }
+    };
+  
+    const getRoleTextColor = (role) => {
+      switch (role) {
+        case "ADMIN":
+          return "text-[#36A2EB]";
+        case "ANALYST":
+          return "text-[#FF9D3C]";
+        case "MODERATOR":
+          return "text-[#8E55FF]";
+        default:
+          return "text-gray-500";
+      }
+    };
   useEffect(() => {
     const username = localStorage.getItem("username");
     const authToken = localStorage.getItem("authToken");
@@ -138,31 +173,225 @@ const Profile = () => {
     
   }, []);
 
-  const getRoleColor = (role) => {
-    switch (role) {
-      case "ADMIN":
-        return "bg-[#36A2EB]";
-      case "ANALYST":
-        return "bg-[#FF9D3C]";
-      case "MODERATOR":
-        return "bg-[#8E55FF]";
-      default:
-        return "bg-gray-500";
+  // Modal de editar perfil
+  const handleOpenEditProfileModal = () => {
+    setShowEditProfileModal(true);
+    setErrorEditProfileMessage("");
+    setSuccessEditProfileMessage("");
+  };
+
+  const handleCloseEditProfileModal = () => {
+    setShowEditProfileModal(false);
+    setErrorEditProfileMessage("");
+    setSuccessEditProfileMessage("");
+    setFirstname("");
+    setLastname("");
+    setEmail("");
+  };
+
+  const handleEditProfile = async () => {
+    const username = localStorage.getItem("username");
+    const authToken = localStorage.getItem("authToken");
+
+    if (!firstname || !lastname || !email) {
+      setErrorEditProfileMessage("Por favor, complete todos los campos.");
+      return;
+    }
+
+    const payload = {
+      username,
+      firstname,
+      lastname,
+      email,
+    };
+
+    try {
+      const response = await fetch(`${backend}/admin/user/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setSuccessEditProfileMessage("Perfil actualizado con éxito.");
+        setErrorEditProfileMessage("");
+
+        // Actualizar la información del usuario local
+        const updatedUserData = { ...userData, firstname, lastname, email };
+        setUserData(updatedUserData);
+
+        // Cierra el modal después de 2 segundos
+        setTimeout(() => {
+          setShowEditProfileModal(false);
+        }, 700);
+      } else {
+        setErrorEditProfileMessage("Error al actualizar el perfil.");
+      }
+    } catch (error) {
+      setErrorEditProfileMessage("Error al actualizar el perfil.");
     }
   };
 
-  const getRoleTextColor = (role) => {
-    switch (role) {
-      case "ADMIN":
-        return "text-[#36A2EB]";
-      case "ANALYST":
-        return "text-[#FF9D3C]";
-      case "MODERATOR":
-        return "text-[#8E55FF]";
-      default:
-        return "text-gray-500";
+  const renderEditProfileModal = () => (
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg w-96">
+        <h2 className={`text-2xl mb-4 font-bold  ${getRoleTextColor(userData.role)}`} >Editar perfil</h2>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">Nombre</label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={firstname}
+            onChange={(e) => setFirstname(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">Apellido</label>
+          <input
+            type="text"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={lastname}
+            onChange={(e) => setLastname(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">Correo electrónico</label>
+          <input
+            type="email"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="space-y-3">
+          <p><strong className={`${getRoleTextColor(userData.role)}`}>Nota:</strong> El nombre de usuario (username) es el único parámetro que no se puede cambiar.</p>
+          <p><strong className={`${getRoleTextColor(userData.role)}`}>Contraseña:</strong> Si desea cambiar la contraseña cierre este modal y presione el botón de <strong>Cambiar contraseña</strong></p>
+        </div>
+        
+
+        {errorEditProfileMessage && <p className="text-red-500">{errorEditProfileMessage}</p>}
+        {successEditProfileMessage && <p className="text-green-500">{successEditProfileMessage}</p>}
+        <div className="mt-4 flex justify-between">
+          <button
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={handleCloseEditProfileModal}
+          >
+            Cerrar
+          </button>
+          <button
+            className={`px-4 py-2 text-white rounded ${getRoleColor(userData.role)} hover:text-black`} 
+            onClick={handleEditProfile}
+          >
+            Guardar cambios
+          </button>
+
+          
+        </div>
+      </div>
+    </div>
+  );
+
+  const handleOpenChangePasswordModal = () => {
+    setShowChangePasswordModal(true);
+    setOldPassword("");
+    setNewPassword("");
+    setErrorChangePasswordMessage("");
+    setSuccessChangePasswordMessage("");
+  };
+
+  const handleCloseChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
+    setErrorChangePasswordMessage("");
+    setSuccessChangePasswordMessage("");
+  };
+
+  const handleChangePassword = async () => {
+    const username = localStorage.getItem("username");
+    const authToken = localStorage.getItem("authToken");
+
+    if (!oldPassword || !newPassword) {
+      setErrorChangePasswordMessage("Por favor, complete todos los campos.");
+      return;
+    }
+
+    const payload = {
+      username,
+      oldPassword,
+      newPassword,
+    };
+
+    try {
+      const response = await fetch(`${backend}/admin/user/change_password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setSuccessChangePasswordMessage("Contraseña cambiada con éxito.");
+        setErrorChangePasswordMessage("");
+
+        // Cierra el modal después de 2 segundos
+        setTimeout(() => {
+          setShowChangePasswordModal(false);
+        }, 700);
+      } else {
+        setErrorChangePasswordMessage("Error al cambiar la contraseña.");
+      }
+    } catch (error) {
+      setErrorChangePasswordMessage("Error al cambiar la contraseña.");
     }
   };
+
+  const renderChangePasswordModal = () => (
+    <div className="fixed inset-0 flex justify-center items-center bg-gray-800 bg-opacity-50">
+      <div className="bg-white p-6 rounded-lg w-96">
+        <h2 className={`text-2xl mb-4 font-bold  ${getRoleTextColor(userData.role)}`} >Cambiar contraseña</h2>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">Contraseña actual</label>
+          <input
+            type="password"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={oldPassword}
+            onChange={(e) => setOldPassword(e.target.value)}
+          />
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-semibold mb-1">Nueva contraseña</label>
+          <input
+            type="password"
+            className="w-full p-2 border border-gray-300 rounded"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </div>
+        {errorChangePasswordMessage && <p className="text-red-500">{errorChangePasswordMessage}</p>}
+        {successChangePasswordMessage && <p className="text-green-500">{successChangePasswordMessage}</p>}
+        <div className="mt-4 flex justify-between">
+          <button
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={handleCloseChangePasswordModal}
+          >
+            Cerrar
+          </button>
+          <button
+            className={`px-4 py-2 text-white rounded ${getRoleColor(userData.role)} hover:text-black`} 
+            onClick={handleChangePassword}
+          >
+            Cambiar contraseña
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
+  
 
   const translateRole = (role) => {
     switch (role) {
@@ -239,7 +468,8 @@ const Profile = () => {
                 // Cierra el modal y refresca la página después de 0,7 segundos (700 ms)
                 setTimeout(() => {
                     setShowModal(false);
-                    window.location.reload(); // Refrescar la página
+                    // navigate("/profile"); // Redirigir al inicio de sesión
+                    // window.location.reload(); 
                 }, 700);
             } else {
                 setErrorRegisterMessage("Error en registro de usuario");
@@ -324,13 +554,15 @@ const Profile = () => {
 
                 <div className="mt-4 flex justify-between">
                     <button
-                        className="px-4 py-2 bg-[#FFABBD] rounded hover:bg-[#FF6384] hover:text-white"
+                        className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
                         onClick={handleCloseModal}
                     >
                         Cerrar
                     </button>
                     <button
-                        className="px-4 py-2 bg-[#FF4B72] text-white rounded hover:bg-[#FF6384] hover:text-white"
+      
+                        className={`px-4 py-2 text-white rounded ${getRoleColor(userData.role)} hover:text-black`} 
+                        
                         onClick={handleRegisterUser}
                     >
                         Registrar
@@ -386,7 +618,7 @@ const Profile = () => {
                                             ) : user.role !== "ADMIN" ? (
                                               <button
                                                 onClick={() => handleDeleteUser(user.id)}
-                                                className= {` px-2 py-1 ${getRoleColor(userData.role)}  text-white rounded hover:bg-red-600`}
+                                                className= {` px-2 py-1 ${getRoleColor(userData.role)}  text-white rounded hover:text-black`}
                                               >
                                                 Eliminar
                                               </button>
@@ -403,7 +635,7 @@ const Profile = () => {
                             )}
 
                             <button
-                                className="mt-4 px-4 py-2 bg-[#36A2EB] hover:text-white rounded hover:bg-[#36A2EB]"
+                                className="mt-4 px-4 py-2 bg-[#36A2EB] text-white hover:text-black rounded hover:bg-[#36A2EB]"
                                 onClick={handleOpenModal}
                             >
                                 Insertar usuario
@@ -548,8 +780,8 @@ const Profile = () => {
           #{userData.id} {userData.username}
         </h1>
       </div>
+      <h2 className="text-2xl font-bold py-2">Detalles del perfil:</h2>
 
-      <h2 className="text-2xl font-bold mb-6">Detalles del perfil:</h2>
       <div className="grid grid-cols-4 gap-4 mb-12">
         <div className="bg-gray-50 p-4 rounded-lg flex flex-col items-center">
           <p className="text-sm text-gray-600">Nombre de usuario</p>
@@ -568,6 +800,25 @@ const Profile = () => {
           <p className="text-2xl font-bold">{userData.email}</p>
         </div>
       </div>
+
+      <div className="flex flex-row items-center justify-center space-x-20">
+        <button
+            className={`w-80 px-4 py-2 rounded ${getRoleColor(userData?.role)} text-white hover:text-black`}
+            onClick={handleOpenChangePasswordModal}
+          >
+            Cambiar contraseña
+        </button>
+
+        <button
+          className={`w-80 px-4 py-2 rounded ${getRoleColor(userData?.role)} text-white hover:text-black`}
+          onClick={handleOpenEditProfileModal}
+        >
+          Editar perfil
+        </button>
+      </div>
+
+      {showChangePasswordModal && renderChangePasswordModal()}
+      {showEditProfileModal && renderEditProfileModal()}
 
       <div className="bg-white rounded-lg shadow p-6">
       <div className="flex space-x-4 mb-6">
