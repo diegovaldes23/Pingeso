@@ -171,6 +171,28 @@ const Sidebar = () => {
             )}
           </Link>
         </li>
+        {/* Contactanos */}
+                {/* Contáctanos */}
+                <li
+          className={`flex items-center p-4 rounded hover:bg-indigo-600 cursor-pointer transition-all duration-300 ${
+            isCollapsed ? "justify-center" : "justify-start"
+          }`}
+        >
+          <Link
+            to="/contact"
+            className="flex items-center w-full p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" viewBox="0 0 24 24">
+              <path fill="white" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+            {!isCollapsed && (
+              <span className="ml-3 transition-opacity duration-300 whitespace-nowrap">
+                Contáctanos
+              </span>
+            )}
+          </Link>
+        </li>
+
 
         {/* Cerrar sesión */}
         <li

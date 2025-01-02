@@ -7,6 +7,7 @@ import AddOrderPage from "./pages/AddOrderPage";
 import Dashboard from "./pages/Dashboard";
 import ExcelPage from "./pages/ExcelPage";
 import Login from "./pages/Login";
+import ContactPage from "./pages/ContactPage";
 
 import Statistics from "./pages/Statistics";
 
@@ -29,6 +30,8 @@ const AppContent = () => {
           <Route path="/excel" element={<ExcelPage />} />
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/contact" element={<ContactPage />} />
+
         </Routes>
       </div>
     </div>
