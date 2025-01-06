@@ -34,11 +34,11 @@ const ContactPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-indigo-200 flex flex-col items-center py-12">
+    <div className="min-h-screen bg-gradient-to-r from-indigo-100 to-indigo-200 flex flex-col items-center py-20">
       <h1 className="text-4xl font-extrabold text-indigo-800 mb-8">
-        Nuestro Equipo
+        Nuestro equipo
       </h1>
-      <div className="w-11/12 max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="w-11/12 max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 py-10">
         {creators.map((creator, index) => (
           <div
             key={index}

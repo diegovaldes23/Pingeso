@@ -21,7 +21,7 @@ public class UserEntity implements UserDetails {
     @Id
     @Column(name = "id", unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
     @Column(unique = true, nullable = false)
     String username; // el username tiene que ser único y no puede ser null

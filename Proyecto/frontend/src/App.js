@@ -19,9 +19,9 @@ const AppContent = () => {
   const hideSidebar = location.pathname === "/"; // Condición para ocultar el Sidebar en login
 
   return (
-    <div className="flex max-h-max">
+    <div className="flex h-screen">
       {!hideSidebar && <Sidebar />} {/* Renderiza Sidebar solo si no está en / */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 overflow-y-auto p-6">
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/orders" element={<OrdersPage />} />
@@ -31,7 +31,6 @@ const AppContent = () => {
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/contact" element={<ContactPage />} />
-
         </Routes>
       </div>
     </div>

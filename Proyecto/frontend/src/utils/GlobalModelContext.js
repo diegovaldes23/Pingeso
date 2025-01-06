@@ -8,7 +8,7 @@ export const GlobalProvider = ({ children }) => {
   // Estados y funciones globales
   const [orders, setOrders] = useState([]);
 
-  const backend = 'http://localhost:8080';
+  const backend = 'http://165.22.189.49:8080';
 
   const formatToDDMMYYYY = (dateStr) => {
     if (!dateStr) return ""; // Manejo de casos nulos

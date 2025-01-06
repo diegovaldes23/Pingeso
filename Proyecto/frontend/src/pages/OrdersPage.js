@@ -51,7 +51,7 @@ const OrdersPage = () => {
     }, [filteredOrders]);
 
     return (
-        <div className="orders-container">
+        <div className="orders-container flex flex-col flex-1 overflow-auto">
             <header className="mt-10 mb-10 flex flex-col items-center">
                 <h1 className="text-4xl font-extrabold text-gray-800">Gestión de pedidos</h1>
             </header>

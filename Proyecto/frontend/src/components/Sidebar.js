@@ -3,11 +3,16 @@ import { Link, useLocation, useNavigate  } from "react-router-dom"; // Importar 
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation(); // Obtener la ubicación actual
   const navigate = useNavigate(); // Para redirigir al usuario
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  const toggleMobileSidebar = () => {
+    setIsMobileOpen(!isMobileOpen);
   };
 
   // Función para cerrar sesión
@@ -27,7 +32,8 @@ const Sidebar = () => {
     <div
       className={`bg-indigo-800 text-white flex flex-col transition-all duration-300 overflow-y-auto ${
         isCollapsed ? "w-20" : "w-60"
-    } ${isFull ? "h-screen" : "min-h-full"}`}
+    }  
+    ${isFull ? "h-screen" : "min-h-full"}`}
     >
       {/* Botón para colapsar/expandir */}
       <div

@@ -281,23 +281,23 @@ useEffect(() => {
 
     return (
         <>
-          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden sm:overflow-x-auto">
             <thead className="bg-indigo-800">
               <tr>
-                <th className="py-1 px-2 border text-white">ID</th>
-                <th className="py-1 px-2 border text-white">Cliente</th>
-                <th className="py-1 px-2 border text-white">Teléfono</th>
-                <th className="py-1 px-2 border text-white">Comuna</th>
-                <th className="py-1 px-2 border text-white">Dirección</th>
-                <th className="py-1 px-2 border text-white">Fecha pedido</th>
-                <th className="py-1 px-2 border text-white">Productos</th>
-                <th className="py-1 px-2 border text-white">Subtotal productos</th>
-                <th className="py-1 px-2 border text-white">Valor despacho</th>
-                <th className="py-1 px-2 border text-white">Valor total</th>
-                <th className="py-1 px-2 border text-white">Estado</th>
-                <th className="py-1 px-2 border text-white">Fecha entrega</th>
-                <th className="py-1 px-2 border text-white">Descripción</th>
-                <th className="py-1 px-2 border text-white">Acciones</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">ID</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Cliente</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Teléfono</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Comuna</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Dirección</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Fecha pedido</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Productos</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Subtotal productos</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Valor despacho</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Valor total</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Estado</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Fecha entrega</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Descripción</th>
+                <th className="py-1 px-2 border text-white text-sm md:text-base">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -306,7 +306,7 @@ useEffect(() => {
                   <tr key={order.id} className="hover:bg-gray-100 max-h-10 border">
                     <td className="py-1 px-2 border">{order.id}</td>
                     <td className="py-1 px-2 align-middle max-w-18">
-                        <div className="line-clamp-1">
+                        <div className="line-clamp-1 max-w-[100px] sm:max-w-[150px]">
                             {order.name}
                         </div>
                     </td>
@@ -411,7 +411,7 @@ useEffect(() => {
                 <h2 className="text-2xl font-semibold mb-6">Editar pedido</h2>
 
                 {/* Nombre del cliente y Teléfono */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 mb-4">
                     <div>
                         <label className="block text-gray-700">Nombre del cliente</label>
                         <input
